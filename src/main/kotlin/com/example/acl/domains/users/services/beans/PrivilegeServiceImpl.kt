@@ -4,16 +4,20 @@ import com.example.coreweb.utils.PageAttr
 import com.example.common.utils.ExceptionUtil
 import com.example.auth.entities.Privilege
 import com.example.acl.domains.users.repositories.PrivilegeRepository
+import com.example.acl.domains.users.repositories.UrlAccessRepository
 import com.example.acl.domains.users.services.PrivilegeService
+import com.example.auth.entities.UrlAccess
 import com.example.common.exceptions.exists.AlreadyExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class PrivilegeServiceImpl @Autowired constructor(
-        private val privilegeRepo: PrivilegeRepository
+open class PrivilegeServiceImpl @Autowired constructor(
+        private val privilegeRepo: PrivilegeRepository,
+        private val urlAccessRepository: UrlAccessRepository
 ) : PrivilegeService {
 
     override fun empty(): Boolean {
@@ -28,6 +32,7 @@ class PrivilegeServiceImpl @Autowired constructor(
         return this.privilegeRepo.find(name)
     }
 
+    @Transactional
     override fun save(entity: Privilege): Privilege {
         // When creating new privilege check if already exists with same name
         if (entity.id == null) {
@@ -35,7 +40,12 @@ class PrivilegeServiceImpl @Autowired constructor(
                     || this.privilegeRepo.existsByLabel(entity.label))
                 throw AlreadyExistsException("Privilege with same name or label already exists!")
         }
-        return this.privilegeRepo.save(entity)
+        val privilege = this.privilegeRepo.save(entity)
+
+        this.urlAccessRepository.deleteByPrivilegeId(privilege.id)
+        this.urlAccessRepository.saveAll(entity.urlAccesses.map { UrlAccess(privilege, it.accessLevel, it.url) })
+
+        return find(privilege.id).orElseThrow { ExceptionUtil.invalid("Couldn't save privilege") }
     }
 
     override fun find(id: Long): Optional<Privilege> {
@@ -43,7 +53,7 @@ class PrivilegeServiceImpl @Autowired constructor(
     }
 
     override fun search(query: String, page: Int, size: Int): Page<Privilege> {
-        return this.privilegeRepo.search(query, PageAttr.getPageRequest(page,size))
+        return this.privilegeRepo.search(query, PageAttr.getPageRequest(page, size))
     }
 
 

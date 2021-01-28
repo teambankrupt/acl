@@ -19,8 +19,28 @@ class PrivilegeDto : BaseDto() {
     lateinit var label: String
 
     @NotBlank.List
-    @JsonProperty("access_urls")
+    @JsonProperty("urls_all_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var accessUrls: List<String>
+    lateinit var urlsAllAccess: List<String>
+
+    @NotBlank.List
+    @JsonProperty("urls_read_access")
+    @ApiModelProperty(dataType = "List")
+    lateinit var urlsReadAccess: List<String>
+
+    @NotBlank.List
+    @JsonProperty("urls_create_access")
+    @ApiModelProperty(dataType = "List")
+    lateinit var urlsCreateAccess: List<String>
+
+    @NotBlank.List
+    @JsonProperty("urls_update_access")
+    @ApiModelProperty(dataType = "List")
+    lateinit var urlsUpdateAccess: List<String>
+
+    @NotBlank.List
+    @JsonProperty("urls_delete_access")
+    @ApiModelProperty(dataType = "List")
+    lateinit var urlsDeleteAccess: List<String>
 
 }

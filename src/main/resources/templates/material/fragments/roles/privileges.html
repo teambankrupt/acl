@@ -114,12 +114,48 @@
                             </div>
                         </div>
 
-                        <div class="form-group demo-tagsinput-area">
+                        <div class="form-group demo-tagsinput-area col-sm-6">
                             <div class="form-line">
-                                <label for="accessUrls">Access Urls</label>
-                                <input type="text" id="accessUrls" name="accessUrls" class="form-control"
-                                       data-role="tagsinput" th:value="${selectedPrivilege?.accessesStr()}"
-                                       placeholder="Enter access urls">
+                                <label for="urlsAllAccess">All Access</label>
+                                <textarea id="urlsAllAccess" name="urlsAllAccess" class="form-control" rows="5"
+                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('ALL')}">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group demo-tagsinput-area col-sm-6">
+                            <div class="form-line">
+                                <label for="urlsReadAccess">Read Access</label>
+                                <textarea id="urlsReadAccess" name="urlsReadAccess" class="form-control" rows="5"
+                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('READ')}">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group demo-tagsinput-area col-sm-6">
+                            <div class="form-line">
+                                <label for="urlsCreateAccess">Create Access</label>
+                                <textarea id="urlsCreateAccess" name="urlsCreateAccess" class="form-control" rows="5"
+                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('CREATE')}">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group demo-tagsinput-area col-sm-6">
+                            <div class="form-line">
+                                <label for="urlsUpdateAccess">Update Access</label>
+                                <textarea id="urlsUpdateAccess" name="urlsUpdateAccess" class="form-control" rows="5"
+                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('UPDATE')}">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group demo-tagsinput-area col-sm-6">
+                            <div class="form-line">
+                                <label for="urlsDeleteAccess">Delete Access</label>
+                                <textarea id="urlsDeleteAccess" name="urlsDeleteAccess" class="form-control" rows="5"
+                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('DELETE')}">
+                                </textarea>
                             </div>
                         </div>
 

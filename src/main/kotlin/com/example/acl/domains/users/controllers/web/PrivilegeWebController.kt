@@ -18,7 +18,7 @@ class PrivilegeWebController @Autowired constructor(
 ) {
 
     @GetMapping(Route.V1.WEB_PRIVILEGES_PAGE)
-    fun rolesPage(model: Model): String {
+    fun privilegePage(model: Model): String {
         val privileges = this.privilegeService.findAll()
 
         model.addAttribute("privileges", privileges)
@@ -26,13 +26,13 @@ class PrivilegeWebController @Autowired constructor(
     }
 
     @PostMapping(Route.V1.WEB_PRIVILEGE_CREATE)
-    fun createRole(@Valid @ModelAttribute privilegeDto: PrivilegeDto): String {
+    fun createPrivilege(@Valid @ModelAttribute privilegeDto: PrivilegeDto): String {
         val privilege = this.privilegeService.save(this.privilegeMapper.map(privilegeDto, null))
         return "redirect:/admin/privileges/${privilege.id}"
     }
 
     @GetMapping(Route.V1.WEB_PRIVILEGE_DETAILS_PAGE)
-    fun roleDetailsPage(@PathVariable("privilege_id") privilegeId: Long,
+    fun privilegeDetailsPage(@PathVariable("privilege_id") privilegeId: Long,
                         model: Model): String {
 
         val selectedPrivilege = this.privilegeService.find(privilegeId).orElseThrow { ExceptionUtil.notFound("Privilege", privilegeId) }
@@ -45,7 +45,7 @@ class PrivilegeWebController @Autowired constructor(
     }
 
     @PostMapping(Route.V1.WEB_PRIVILEGE_UPDATE)
-    fun updateRole(@PathVariable("privilege_id") privilegeId: Long,
+    fun updatePrivilege(@PathVariable("privilege_id") privilegeId: Long,
                    @Valid @ModelAttribute privilegeDto: PrivilegeDto): String {
         var privilege = this.privilegeService.find(privilegeId).orElseThrow { ExceptionUtil.notFound("Privilege", privilegeId) }
         if (privilege.name == "ADMINISTRATION") throw ExceptionUtil.forbidden("Updating privilege ADMINISTRATION is not possible.")
