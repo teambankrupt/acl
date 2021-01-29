@@ -10,7 +10,7 @@
     </div>
 
     <div class="row clearfix">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
             <div class="card">
                 <div class="header bg-cyan">
                     <h2>
@@ -37,9 +37,9 @@
                            class="list-group-item"
                            th:classappend="${selectedPrivilege!=null && privilege.id==selectedPrivilege.id?'active':''}">
                             <h5 class="list-group-item-heading">
+                                <small class="badge bg-pink pull-left" style="font-size: 10px;"
+                                       th:text="${privilege.name}">ADMINISTRATION</small><br/>
                                 <span th:text="${privilege.label}"></span>
-                                <small class="badge bg-pink pull-right"
-                                       th:text="${privilege.name}">ADMINISTRATION</small>
                             </h5>
                             <!--                            <p class="list-group-item-text">-->
                             <!--                                <label for="access">Access:</label>-->
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
             <div class="card">
                 <div class="header bg-cyan">
                     <h2>
