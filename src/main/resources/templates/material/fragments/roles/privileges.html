@@ -126,67 +126,74 @@
                             </div>
                         </div>
 
-                        <div class="demo-tagsinput-area col-sm-3">
-                            <label>
-                                <h3 style="color: green;">Read Access</h3>
-                                <hr/>
-                            </label>
-                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${readEndpoints}" style="margin-bottom: 0;">
-                                <input type="checkbox" name="urlsReadAccess" th:id="${'md_checkbox_read'+endpoint}"
-                                       class="chk-col-green"
-                                       th:checked="${selectedPrivilege?.containsAccessUrl('READ',endpoint)}"
-                                       th:value="${endpoint}"/>
-                                <label th:for="${'md_checkbox_read'+endpoint}"><small
-                                        th:text="${endpoint}"></small></label>
-                            </item>
+                        <div class="panel panel-body">
+                            <div class="demo-tagsinput-area col-sm-3">
+                                <label>
+                                    <h3 style="color: green;">Read Access</h3>
+                                    <hr/>
+                                </label>
+                                <item class="demo-checkbox col-sm-12" th:each="endpoint: ${readEndpoints}"
+                                      style="margin-bottom: 0;">
+                                    <input type="checkbox" name="urlsReadAccess" th:id="${'md_checkbox_read'+endpoint}"
+                                           class="chk-col-green"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl('READ',endpoint)}"
+                                           th:value="${endpoint}"/>
+                                    <label th:for="${'md_checkbox_read'+endpoint}"><small
+                                            th:text="${endpoint}"></small></label>
+                                </item>
+                            </div>
+
+                            <div class="demo-tagsinput-area col-sm-3">
+                                <label>
+                                    <h3 style="color: blue;">Create Access</h3>
+                                    <hr/>
+                                </label>
+                                <item class="demo-checkbox col-sm-12" th:each="endpoint: ${createEndpoints}"
+                                      style="margin-bottom: 0;">
+                                    <input type="checkbox" name="urlsCreateAccess"
+                                           th:id="${'md_checkbox_create'+endpoint}"
+                                           class="chk-col-green"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl('CREATE',endpoint)}"
+                                           th:value="${endpoint}"/>
+                                    <label th:for="${'md_checkbox_create'+endpoint}"><small
+                                            th:text="${endpoint}"></small></label>
+                                </item>
+                            </div>
+
+                            <div class="demo-tagsinput-area col-sm-3">
+                                <label>
+                                    <h3 style="color: darkorange;">Update Access</h3>
+                                    <hr/>
+                                </label>
+                                <item class="demo-checkbox col-sm-12" th:each="endpoint: ${updateEndpoints}"
+                                      style="margin-bottom: 0;">
+                                    <input type="checkbox" name="urlsUpdateAccess"
+                                           th:id="${'md_checkbox_update'+endpoint}"
+                                           class="chk-col-green"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl('UPDATE',endpoint)}"
+                                           th:value="${endpoint}"/>
+                                    <label th:for="${'md_checkbox_update'+endpoint}"><small
+                                            th:text="${endpoint}"></small></label>
+                                </item>
+                            </div>
+
+                            <div class="demo-tagsinput-area col-sm-3">
+                                <label>
+                                    <h3 style="color: red;">Delete Access</h3>
+                                    <hr/>
+                                </label>
+                                <item class="demo-checkbox col-sm-12" th:each="endpoint: ${deleteEndpoints}"
+                                      style="margin-bottom: 0;">
+                                    <input type="checkbox" name="urlsDeleteAccess"
+                                           th:id="${'md_checkbox_delete'+endpoint}"
+                                           class="chk-col-green"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl('DELETE',endpoint)}"
+                                           th:value="${endpoint}"/>
+                                    <label th:for="${'md_checkbox_delete'+endpoint}"><small
+                                            th:text="${endpoint}"></small></label>
+                                </item>
+                            </div>
                         </div>
-
-                        <div class="demo-tagsinput-area col-sm-3">
-                            <label>
-                                <h3 style="color: blue;">Create Access</h3>
-                                <hr/>
-                            </label>
-                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${createEndpoints}" style="margin-bottom: 0;">
-                                <input type="checkbox" name="urlsCreateAccess" th:id="${'md_checkbox_create'+endpoint}"
-                                       class="chk-col-green"
-                                       th:checked="${selectedPrivilege?.containsAccessUrl('CREATE',endpoint)}"
-                                       th:value="${endpoint}"/>
-                                <label th:for="${'md_checkbox_create'+endpoint}"><small
-                                        th:text="${endpoint}"></small></label>
-                            </item>
-                        </div>
-
-                        <div class="demo-tagsinput-area col-sm-3">
-                            <label>
-                                <h3 style="color: darkorange;">Update Access</h3>
-                                <hr/>
-                            </label>
-                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${updateEndpoints}" style="margin-bottom: 0;">
-                                <input type="checkbox" name="urlsUpdateAccess" th:id="${'md_checkbox_update'+endpoint}"
-                                       class="chk-col-green"
-                                       th:checked="${selectedPrivilege?.containsAccessUrl('UPDATE',endpoint)}"
-                                       th:value="${endpoint}"/>
-                                <label th:for="${'md_checkbox_update'+endpoint}"><small
-                                        th:text="${endpoint}"></small></label>
-                            </item>
-                        </div>
-
-
-                        <div class="demo-tagsinput-area col-sm-3">
-                            <label>
-                                <h3 style="color: red;">Delete Access</h3>
-                                <hr/>
-                            </label>
-                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${deleteEndpoints}" style="margin-bottom: 0;">
-                                <input type="checkbox" name="urlsDeleteAccess" th:id="${'md_checkbox_delete'+endpoint}"
-                                       class="chk-col-green"
-                                       th:checked="${selectedPrivilege?.containsAccessUrl('DELETE',endpoint)}"
-                                       th:value="${endpoint}"/>
-                                <label th:for="${'md_checkbox_delete'+endpoint}"><small
-                                        th:text="${endpoint}"></small></label>
-                            </item>
-                        </div>
-
 
                         <div class="form-group m-t-40">
                             <button type="submit" class="btn btn-success">Submit</button>
