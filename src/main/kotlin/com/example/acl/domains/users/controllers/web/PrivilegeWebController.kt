@@ -5,7 +5,9 @@ import com.example.acl.domains.users.models.dtos.PrivilegeDto
 import com.example.acl.domains.users.models.mappers.PrivilegeMapper
 import com.example.acl.domains.users.services.PrivilegeService
 import com.example.acl.routing.Route
+import com.example.coreweb.listeners.EndpointsListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -21,7 +23,16 @@ class PrivilegeWebController @Autowired constructor(
     fun privilegePage(model: Model): String {
         val privileges = this.privilegeService.findAll()
 
+
         model.addAttribute("privileges", privileges)
+
+        val updateEndpoints = EndpointsListener.getEndpoints(RequestMethod.PATCH)
+        updateEndpoints.addAll(EndpointsListener.getEndpoints(RequestMethod.PUT))
+        model.addAttribute("readEndpoints", EndpointsListener.getEndpoints(RequestMethod.GET))
+        model.addAttribute("createEndpoints", EndpointsListener.getEndpoints(RequestMethod.POST))
+        model.addAttribute("updateEndpoints", updateEndpoints)
+        model.addAttribute("deleteEndpoints", EndpointsListener.getEndpoints(RequestMethod.DELETE))
+
         return "material/fragments/roles/privileges"
     }
 
@@ -33,20 +44,27 @@ class PrivilegeWebController @Autowired constructor(
 
     @GetMapping(Route.V1.WEB_PRIVILEGE_DETAILS_PAGE)
     fun privilegeDetailsPage(@PathVariable("privilege_id") privilegeId: Long,
-                        model: Model): String {
+                             model: Model): String {
 
         val selectedPrivilege = this.privilegeService.find(privilegeId).orElseThrow { ExceptionUtil.notFound("Privilege", privilegeId) }
-
         val privileges = this.privilegeService.findAll()
 
         model.addAttribute("selectedPrivilege", selectedPrivilege)
         model.addAttribute("privileges", privileges)
+
+        val updateEndpoints = EndpointsListener.getEndpoints(RequestMethod.PATCH)
+        updateEndpoints.addAll(EndpointsListener.getEndpoints(RequestMethod.PUT))
+        model.addAttribute("readEndpoints", EndpointsListener.getEndpoints(RequestMethod.GET))
+        model.addAttribute("createEndpoints", EndpointsListener.getEndpoints(RequestMethod.POST))
+        model.addAttribute("updateEndpoints", updateEndpoints)
+        model.addAttribute("deleteEndpoints", EndpointsListener.getEndpoints(RequestMethod.DELETE))
+
         return "material/fragments/roles/privileges"
     }
 
     @PostMapping(Route.V1.WEB_PRIVILEGE_UPDATE)
     fun updatePrivilege(@PathVariable("privilege_id") privilegeId: Long,
-                   @Valid @ModelAttribute privilegeDto: PrivilegeDto): String {
+                        @Valid @ModelAttribute privilegeDto: PrivilegeDto): String {
         var privilege = this.privilegeService.find(privilegeId).orElseThrow { ExceptionUtil.notFound("Privilege", privilegeId) }
         if (privilege.name == "ADMINISTRATION") throw ExceptionUtil.forbidden("Updating privilege ADMINISTRATION is not possible.")
         privilege = this.privilegeService.save(this.privilegeMapper.map(privilegeDto, privilege))

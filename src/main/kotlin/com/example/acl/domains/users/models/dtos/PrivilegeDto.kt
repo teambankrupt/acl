@@ -21,26 +21,26 @@ class PrivilegeDto : BaseDto() {
     @NotBlank.List
     @JsonProperty("urls_all_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var urlsAllAccess: List<String>
+    var urlsAllAccess: List<String> = ArrayList()
 
     @NotBlank.List
     @JsonProperty("urls_read_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var urlsReadAccess: List<String>
+     var urlsReadAccess: List<String> = ArrayList()
 
     @NotBlank.List
     @JsonProperty("urls_create_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var urlsCreateAccess: List<String>
+     var urlsCreateAccess: List<String> = ArrayList()
 
     @NotBlank.List
     @JsonProperty("urls_update_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var urlsUpdateAccess: List<String>
+     var urlsUpdateAccess: List<String> = ArrayList()
 
     @NotBlank.List
     @JsonProperty("urls_delete_access")
     @ApiModelProperty(dataType = "List")
-    lateinit var urlsDeleteAccess: List<String>
+     var urlsDeleteAccess: List<String> = ArrayList()
 
 }

@@ -41,10 +41,10 @@
                                 <small class="badge bg-pink pull-right"
                                        th:text="${privilege.name}">ADMINISTRATION</small>
                             </h5>
-<!--                            <p class="list-group-item-text">-->
-<!--                                <label for="access">Access:</label>-->
-<!--                                <span id="access" th:text="${privilege.accessesStr()}"></span>-->
-<!--                            </p>-->
+                            <!--                            <p class="list-group-item-text">-->
+                            <!--                                <label for="access">Access:</label>-->
+                            <!--                                <span id="access" th:text="${privilege.accessesStr()}"></span>-->
+                            <!--                            </p>-->
                             <p class="list-group-item-text">
                                 <small th:text="${privilege.description}"></small>
                             </p>
@@ -116,47 +116,75 @@
 
                         <div class="form-group demo-tagsinput-area col-sm-6">
                             <div class="form-line">
-                                <label for="urlsAllAccess">All Access</label>
+                                <label for="urlsAllAccess">
+                                    <h3 style="color: darkred;">All Access</h3>
+                                </label>
                                 <textarea id="urlsAllAccess" name="urlsAllAccess" class="form-control" rows="5"
-                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('ALL')}">
+                                          placeholder="Enter access urls"
+                                          th:text="${selectedPrivilege?.accessesStr('ALL')}">
                                 </textarea>
                             </div>
                         </div>
 
-                        <div class="form-group demo-tagsinput-area col-sm-6">
-                            <div class="form-line">
-                                <label for="urlsReadAccess">Read Access</label>
-                                <textarea id="urlsReadAccess" name="urlsReadAccess" class="form-control" rows="5"
-                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('READ')}">
-                                </textarea>
-                            </div>
+                        <div class="demo-tagsinput-area col-sm-3">
+                            <label>
+                                <h3 style="color: green;">Read Access</h3>
+                                <hr/>
+                            </label>
+                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${readEndpoints}" style="margin-bottom: 0;">
+                                <input type="checkbox" name="urlsReadAccess" th:id="${'md_checkbox_read'+endpoint}"
+                                       class="chk-col-green"
+                                       th:checked="${selectedPrivilege?.containsAccessUrl('READ',endpoint)}"
+                                       th:value="${endpoint}"/>
+                                <label th:for="${'md_checkbox_read'+endpoint}"><small
+                                        th:text="${endpoint}"></small></label>
+                            </item>
                         </div>
 
-                        <div class="form-group demo-tagsinput-area col-sm-6">
-                            <div class="form-line">
-                                <label for="urlsCreateAccess">Create Access</label>
-                                <textarea id="urlsCreateAccess" name="urlsCreateAccess" class="form-control" rows="5"
-                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('CREATE')}">
-                                </textarea>
-                            </div>
+                        <div class="demo-tagsinput-area col-sm-3">
+                            <label>
+                                <h3 style="color: blue;">Create Access</h3>
+                                <hr/>
+                            </label>
+                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${createEndpoints}" style="margin-bottom: 0;">
+                                <input type="checkbox" name="urlsCreateAccess" th:id="${'md_checkbox_create'+endpoint}"
+                                       class="chk-col-green"
+                                       th:checked="${selectedPrivilege?.containsAccessUrl('CREATE',endpoint)}"
+                                       th:value="${endpoint}"/>
+                                <label th:for="${'md_checkbox_create'+endpoint}"><small
+                                        th:text="${endpoint}"></small></label>
+                            </item>
                         </div>
 
-                        <div class="form-group demo-tagsinput-area col-sm-6">
-                            <div class="form-line">
-                                <label for="urlsUpdateAccess">Update Access</label>
-                                <textarea id="urlsUpdateAccess" name="urlsUpdateAccess" class="form-control" rows="5"
-                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('UPDATE')}">
-                                </textarea>
-                            </div>
+                        <div class="demo-tagsinput-area col-sm-3">
+                            <label>
+                                <h3 style="color: darkorange;">Update Access</h3>
+                                <hr/>
+                            </label>
+                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${updateEndpoints}" style="margin-bottom: 0;">
+                                <input type="checkbox" name="urlsUpdateAccess" th:id="${'md_checkbox_update'+endpoint}"
+                                       class="chk-col-green"
+                                       th:checked="${selectedPrivilege?.containsAccessUrl('UPDATE',endpoint)}"
+                                       th:value="${endpoint}"/>
+                                <label th:for="${'md_checkbox_update'+endpoint}"><small
+                                        th:text="${endpoint}"></small></label>
+                            </item>
                         </div>
 
-                        <div class="form-group demo-tagsinput-area col-sm-6">
-                            <div class="form-line">
-                                <label for="urlsDeleteAccess">Delete Access</label>
-                                <textarea id="urlsDeleteAccess" name="urlsDeleteAccess" class="form-control" rows="5"
-                                          placeholder="Enter access urls" th:text="${selectedPrivilege?.accessesStr('DELETE')}">
-                                </textarea>
-                            </div>
+
+                        <div class="demo-tagsinput-area col-sm-3">
+                            <label>
+                                <h3 style="color: red;">Delete Access</h3>
+                                <hr/>
+                            </label>
+                            <item class="demo-checkbox col-sm-12" th:each="endpoint: ${deleteEndpoints}" style="margin-bottom: 0;">
+                                <input type="checkbox" name="urlsDeleteAccess" th:id="${'md_checkbox_delete'+endpoint}"
+                                       class="chk-col-green"
+                                       th:checked="${selectedPrivilege?.containsAccessUrl('DELETE',endpoint)}"
+                                       th:value="${endpoint}"/>
+                                <label th:for="${'md_checkbox_delete'+endpoint}"><small
+                                        th:text="${endpoint}"></small></label>
+                            </item>
                         </div>
 
 
