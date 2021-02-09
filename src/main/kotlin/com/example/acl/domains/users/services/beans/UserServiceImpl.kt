@@ -133,6 +133,7 @@ open class UserServiceImpl @Autowired constructor(
             null,
             this.applicationName + " Registration",
             tokenMessage,
+            false,
             null
         )
     }
