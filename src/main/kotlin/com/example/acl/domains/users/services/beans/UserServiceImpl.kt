@@ -33,11 +33,11 @@ import java.util.*
 @Service
 @PropertySource("classpath:security.properties")
 open class UserServiceImpl @Autowired constructor(
-        private val userRepository: UserRepository,
-        private val acValidationTokenService: AcValidationTokenService,
-        private val smsService: SmsService,
-        private val mailService: MailService,
-        private val roleService: RoleService
+    private val userRepository: UserRepository,
+    private val acValidationTokenService: AcValidationTokenService,
+    private val smsService: SmsService,
+    private val mailService: MailService,
+    private val roleService: RoleService
 ) : UserService {
 
     @Value("\${auth.method}")
@@ -50,7 +50,9 @@ open class UserServiceImpl @Autowired constructor(
     lateinit var tokenValidity: String
 
     override fun search(query: String, role: String?, page: Int, size: Int): Page<User> {
-        val r = role?.let { this.roleService.find(it).orElseThrow { ExceptionUtil.notFound("Could not find role with name: $role") } }
+        val r = role?.let {
+            this.roleService.find(it).orElseThrow { ExceptionUtil.notFound("Could not find role with name: $role") }
+        }
         return this.userRepository.search(query, r, PageAttr.getPageRequest(page, size))
     }
 
@@ -124,7 +126,15 @@ open class UserServiceImpl @Autowired constructor(
         val tokenMessage = "Your " + this.applicationName + " token is: " + acValidationToken.token
         // send link by sms
         return if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
-        else this.mailService.sendEmail(phoneOrEmail, this.applicationName + " Registration", tokenMessage)
+        else this.mailService.send(
+            null,
+            phoneOrEmail,
+            null,
+            null,
+            this.applicationName + " Registration",
+            tokenMessage,
+            null
+        )
     }
 
     private fun validateIdentity(phone: Boolean, phoneOrEmail: String) {
@@ -191,7 +201,8 @@ open class UserServiceImpl @Autowired constructor(
     }
 
     override fun handlePasswordResetRequest(username: String) {
-        val user = this.findByUsername(username).orElseThrow { NotFoundException("Could not find user with username: $username") }
+        val user = this.findByUsername(username)
+            .orElseThrow { NotFoundException("Could not find user with username: $username") }
         if (this.acValidationTokenService.isLimitExceeded(user))
             throw ForbiddenException("Limit exceeded!")
 
@@ -220,7 +231,8 @@ open class UserServiceImpl @Autowired constructor(
         val roles = this.roleService.findByIds(roleIds)
         user.roles = roles.filter { role -> !role.isAdmin }.toMutableList()
         if (isAdmin) {// set admin role explicitly after clearing roles
-            val role = this.roleService.find(Roles.Admin.name).orElseThrow { NotFoundException("Admin role couldn't be set!") }
+            val role =
+                this.roleService.find(Roles.Admin.name).orElseThrow { NotFoundException("Admin role couldn't be set!") }
             user.roles.add(role)
         }
         return this.save(user)
