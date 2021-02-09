@@ -3,7 +3,6 @@ package com.example.acl.domains.users.services
 import com.example.auth.entities.User
 import org.springframework.data.domain.Page
 import java.util.*
-import javax.transaction.Transactional
 
 interface UserService {
     fun save(entity: User): User
@@ -26,7 +25,6 @@ interface UserService {
     fun handlePasswordResetRequest(username: String)
     fun setRoles(id: Long, roleIds: List<Long>): User
 
-    @Transactional
     fun resetPassword(username: String, token: String, password: String): User
 
     fun toggleAccess(userId: Long, enable: Boolean)
