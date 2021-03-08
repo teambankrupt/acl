@@ -1,5 +1,6 @@
 package com.example.acl.domains.profiles.controllers.web
 
+import com.example.acl.commons.Constants
 import com.example.acl.domains.profiles.models.dtos.ProfileDto
 import com.example.acl.domains.profiles.models.mappers.ProfileMapper
 import com.example.acl.domains.profiles.services.ProfileService
@@ -40,7 +41,7 @@ class ProfileWebController @Autowired constructor(
         @PathVariable("id") id: Long,
         model: Model
     ): String {
-        val entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound("Profile", id) }
+        val entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, id) }
         model.addAttribute("profile", entity)
         return "profiles/fragments/details"
     }
@@ -62,7 +63,7 @@ class ProfileWebController @Autowired constructor(
 
     @GetMapping(Route.V1.ADMIN_UPDATE_PROFILE_PAGE)
     override fun updatePage(@PathVariable("id") id: Long, model: Model): String {
-        val entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound("Profile", id) }
+        val entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, id) }
         model.addAttribute("profile", entity)
         return "profiles/fragments/create"
     }
@@ -73,7 +74,7 @@ class ProfileWebController @Autowired constructor(
         @Valid @ModelAttribute dto: ProfileDto,
         redirectAttributes: RedirectAttributes
     ): String {
-        var entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound("Profile", id) }
+        var entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, id) }
         entity = this.profileService.save(this.profileMapper.map(dto, entity))
         redirectAttributes.addFlashAttribute("message", "Success!!")
         return "redirect:${Route.V1.ADMIN_FIND_PROFILE.replace("{id}", entity.id.toString())}"
