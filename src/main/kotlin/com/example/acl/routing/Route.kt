@@ -31,6 +31,22 @@ class Route {
             const val WEB_USERS_UPDATE = "$ADMIN/users/{user_id}"
             const val WEB_TOGGLE_ENABLED = "$ADMIN/users/{user_id}/toggle-access"
 
+            // Profiles
+            const val SEARCH_PROFILES = "$API$VERSION/profiles"
+            const val CREATE_PROFILE = "$API$VERSION/profiles"
+            const val FIND_PROFILE = "$API$VERSION/profiles/{id}"
+            const val UPDATE_PROFILE = "$API$VERSION/profiles/{id}"
+            const val DELETE_PROFILE = "$API$VERSION/profiles/{id}"
+
+            // Profiles (Admin)
+            const val ADMIN_SEARCH_PROFILES = "$ADMIN/profiles"
+            const val ADMIN_CREATE_PROFILE_PAGE = "$ADMIN/profiles/create"
+            const val ADMIN_CREATE_PROFILE = "$ADMIN/profiles"
+            const val ADMIN_FIND_PROFILE = "$ADMIN/profiles/{id}"
+            const val ADMIN_UPDATE_PROFILE_PAGE = "$ADMIN/profiles/{id}/update"
+            const val ADMIN_UPDATE_PROFILE = "$ADMIN/profiles/{id}"
+            const val ADMIN_DELETE_PROFILE = "$ADMIN/profiles/{id}/delete"
+
         }
     }
 }
