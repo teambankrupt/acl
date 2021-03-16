@@ -1,6 +1,7 @@
 package com.example.acl.domains.users.models.dtos
 
 import com.example.coreweb.domains.base.models.dtos.BaseDto
+import com.example.coreweb.domains.contacts.models.entities.Contact
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -14,6 +15,8 @@ class UserResponse : BaseDto() {
     lateinit var username: String
 
     var phone: String? = null
+
+    var photo: String? = null
 
     @Email
     var email: String? = null
