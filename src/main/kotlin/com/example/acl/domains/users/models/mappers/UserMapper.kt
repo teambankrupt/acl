@@ -1,5 +1,6 @@
 package com.example.acl.domains.users.models.mappers
 
+import com.example.acl.domains.profiles.services.ProfileService
 import com.example.common.utils.ExceptionUtil
 import com.example.auth.config.security.SecurityContext
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
@@ -21,8 +22,9 @@ import java.util.stream.Collectors
 @Component
 @PropertySource("classpath:security.properties")
 class UserMapper @Autowired constructor(
-        private val userService: UserService,
-        private val roleService: RoleService
+    private val userService: UserService,
+    private val roleService: RoleService,
+    private val profileService: ProfileService
 ) {
     @Value("\${auth.method}")
     lateinit var authMethod: String
@@ -35,7 +37,8 @@ class UserMapper @Autowired constructor(
         user.username = dto.username
         user.password = PasswordUtil.encryptPassword(dto.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.email = dto.email
-        val unrestrictedRole = this.roleService.findUnrestricted(dto.role).orElseThrow { NotFoundException("Could not find role with name ${dto.role}") }
+        val unrestrictedRole = this.roleService.findUnrestricted(dto.role)
+            .orElseThrow { NotFoundException("Could not find role with name ${dto.role}") }
         user.roles = listOf(unrestrictedRole)
         this.validate(user)
         return user
@@ -53,6 +56,10 @@ class UserMapper @Autowired constructor(
         dto.phone = user.phone
         dto.email = user.email
         dto.roles = user.roles.stream().map { role -> role.id }.collect(Collectors.toList())
+        val profile = this.profileService.findByUserId(user.id)
+        if (profile.isPresent) {
+            dto.photo = profile.get().photo
+        }
         return dto
     }
 
@@ -73,7 +80,10 @@ class UserMapper @Autowired constructor(
 
             email = dto.email
             if (exUser == null || !exUser.isAdmin)
-                roles = if (SecurityContext.getCurrentUser().isAdmin) roleService.findByIds(dto.roleIds) else roleService.findByIdsUnrestricted(dto.roleIds)
+                roles =
+                    if (SecurityContext.getCurrentUser().isAdmin) roleService.findByIds(dto.roleIds) else roleService.findByIdsUnrestricted(
+                        dto.roleIds
+                    )
 
             isEnabled = dto.enabled
             isAccountNonExpired = dto.accountNonExpired
@@ -96,7 +106,9 @@ class UserMapper @Autowired constructor(
                 if (user.email == null || user.email.isEmpty()) throw InvalidException("Email can't be null or empty!")
                 if (this.userService.findByEmail(user.email).isPresent) throw AlreadyExistsException("User already exists with email: ${user.email}")
             } else { // both
-                if ((user.phone == null || user.phone.isEmpty()) && (user.email == null || user.email.isEmpty())) throw InvalidException("Email or phone can not be empty!")
+                if ((user.phone == null || user.phone.isEmpty()) && (user.email == null || user.email.isEmpty())) throw InvalidException(
+                    "Email or phone can not be empty!"
+                )
                 if (user.phone.isNotEmpty())
                     if (this.userService.findByPhone(user.phone).isPresent) throw AlreadyExistsException("User already exists with phone: ${user.phone}")
                 if (user.email.isNotEmpty())
