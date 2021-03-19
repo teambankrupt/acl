@@ -31,7 +31,6 @@ class ProfileMapper @Autowired constructor(
             this.maritalStatus = entity.maritalStatus
             this.religion = entity.religion
             this.userId = entity.user.id
-            this.contactId = entity.contact?.id
         }
 
         return dto
@@ -43,9 +42,6 @@ class ProfileMapper @Autowired constructor(
         entity.apply {
             this.user = userService.find(dto.userId)
                 .orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, dto.userId) }
-            this.contact = dto.contactId?.let {
-                contactService.find(it).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.CONTACT, it) }
-            }
             this.birthday = dto.birthday
             this.photo = dto.photo
             this.gender = dto.gender

@@ -37,7 +37,4 @@ class Profile : BaseEntity() {
 
     @OneToOne
     lateinit var user: User
-
-    @OneToOne
-    var contact: Contact? = null
 }

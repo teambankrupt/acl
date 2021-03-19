@@ -37,7 +37,6 @@ class ProfileController @Autowired constructor(
         @RequestParam("marital_status", required = false) maritalStatus: MaritalStatus?,
         @RequestParam("religion", required = false) religion: Religion?,
         @RequestParam("user_id", required = false) userId: Long?,
-        @RequestParam("contact_id", required = false) contactId: Long?,
         @RequestParam("username", required = false) username: String?,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
@@ -53,7 +52,6 @@ class ProfileController @Autowired constructor(
             religion,
             userId,
             username,
-            contactId,
             sortBy,
             direction
         )

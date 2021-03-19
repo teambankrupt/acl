@@ -31,6 +31,4 @@ class ProfileDto: BaseDto() {
     @JsonProperty("user_id")
     var userId: Long = 0
 
-    @JsonProperty("contact_id")
-    var contactId: Long? = null
 }

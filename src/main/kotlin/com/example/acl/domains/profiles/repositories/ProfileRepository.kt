@@ -19,7 +19,7 @@ interface ProfileRepository : JpaRepository<Profile, Long> {
     @Query("SELECT e FROM Profile e WHERE (:q IS NULL OR LOWER(e.createdBy) LIKE %:q%) AND e.deleted=FALSE")
     fun search(@Param("q") query: String?, pageable: Pageable): Page<Profile>
 
-    @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.createdBy) LIKE %:q%) AND (:gender IS NULL OR p.gender =:gender) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.username =:userId) AND (:username IS NULL OR p.user.id =:username) AND (:contactId IS NULL OR p.contact.id =:contactId) AND p.deleted=FALSE")
+    @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.createdBy) LIKE %:q%) AND (:gender IS NULL OR p.gender =:gender) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.id =:userId) AND (:username IS NULL OR p.user.username =:username)  AND p.deleted=FALSE")
     fun search(
         @Param("q") query: String?,
         @Param("gender") gender: Gender?,
@@ -28,7 +28,6 @@ interface ProfileRepository : JpaRepository<Profile, Long> {
         @Param("religion") religion: Religion?,
         @Param("userId") userId: Long?,
         @Param("username") username: String?,
-        @Param("contactId") contactId: Long?,
         pageable: Pageable
     ): Page<Profile>
 

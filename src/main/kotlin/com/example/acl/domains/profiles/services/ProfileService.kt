@@ -22,7 +22,6 @@ interface ProfileService : CrudServiceV2<Profile> {
         religion: Religion?,
         userId: Long?,
         username: String?,
-        contactId: Long?,
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Profile>

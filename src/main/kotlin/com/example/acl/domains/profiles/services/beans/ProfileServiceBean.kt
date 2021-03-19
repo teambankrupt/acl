@@ -32,7 +32,6 @@ class ProfileServiceBean @Autowired constructor(
         religion: Religion?,
         userId: Long?,
         username: String?,
-        contactId: Long?,
         sortBy: SortByFields,
         direction: Sort.Direction
     ): Page<Profile> {
@@ -44,7 +43,6 @@ class ProfileServiceBean @Autowired constructor(
             religion,
             userId,
             username,
-            contactId,
             PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
         )
     }
