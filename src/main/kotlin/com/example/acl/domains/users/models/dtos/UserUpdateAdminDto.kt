@@ -1,5 +1,6 @@
 package com.example.acl.domains.users.models.dtos
 
+import com.example.auth.enums.Genders
 import com.example.coreweb.domains.base.models.dtos.BaseDto
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -22,7 +23,7 @@ class UserUpdateAdminDto : BaseDto() {
     lateinit var password: String
 
     @NotBlank
-    lateinit var gender: String
+    lateinit var gender: Genders
 
     @NotEmpty
     lateinit var roleIds: List<Long>

@@ -2,9 +2,9 @@ package com.example.acl.domains.profiles.services
 
 import com.example.acl.domains.profiles.models.entities.Profile
 import com.example.acl.domains.profiles.models.enums.BloodGroup
-import com.example.acl.domains.profiles.models.enums.Gender
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
+import com.example.auth.enums.Genders
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.domains.base.services.CrudServiceV2
 import org.springframework.data.domain.Page
@@ -16,7 +16,7 @@ interface ProfileService : CrudServiceV2<Profile> {
         query: String,
         page: Int,
         size: Int,
-        gender: Gender?,
+        gender: Genders?,
         bloodGroup: BloodGroup?,
         maritalStatus: MaritalStatus?,
         religion: Religion?,
@@ -27,5 +27,5 @@ interface ProfileService : CrudServiceV2<Profile> {
     ): Page<Profile>
 
     fun findByUserId(id: Long): Optional<Profile>
-    fun findByUserName(username: String): Optional<Profile>
+    fun findByUsername(username: String): Optional<Profile>
 }

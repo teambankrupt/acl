@@ -3,12 +3,13 @@ package com.example.acl.domains.profiles.controllers
 import com.example.acl.commons.Constants
 import com.example.acl.domains.profiles.models.dtos.ProfileDto
 import com.example.acl.domains.profiles.models.enums.BloodGroup
-import com.example.acl.domains.profiles.models.enums.Gender
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
 import com.example.acl.domains.profiles.models.mappers.ProfileMapper
 import com.example.acl.domains.profiles.services.ProfileService
 import com.example.acl.routing.Route
+import com.example.auth.config.security.SecurityContext
+import com.example.auth.enums.Genders
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudControllerV2
 import com.example.coreweb.domains.base.models.enums.SortByFields
@@ -32,7 +33,7 @@ class ProfileController @Autowired constructor(
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
-        @RequestParam("gender", required = false) gender: Gender?,
+        @RequestParam("gender", required = false) gender: Genders?,
         @RequestParam("blood_group", required = false) bloodGroup: BloodGroup?,
         @RequestParam("marital_status", required = false) maritalStatus: MaritalStatus?,
         @RequestParam("religion", required = false) religion: Religion?,
@@ -73,6 +74,14 @@ class ProfileController @Autowired constructor(
     @GetMapping(Route.V1.FIND_PROFILE)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ProfileDto> {
         val entity = this.profileService.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, id) }
+        return ResponseEntity.ok(this.profileMapper.map(entity))
+    }
+
+    @GetMapping(Route.V1.MY_PROFILE)
+    fun myProfile(): ResponseEntity<ProfileDto> {
+        val auth = SecurityContext.getCurrentUser()
+        val entity = this.profileService.findByUsername(auth.username)
+            .orElseThrow { ExceptionUtil.notFound("No profile found with username: ${auth.username}") }
         return ResponseEntity.ok(this.profileMapper.map(entity))
     }
 

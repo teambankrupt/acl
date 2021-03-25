@@ -1,10 +1,10 @@
 package com.example.acl.domains.profiles.repositories
 
 import com.example.acl.domains.profiles.models.enums.BloodGroup
-import com.example.acl.domains.profiles.models.enums.Gender
 import com.example.acl.domains.profiles.models.enums.Religion
 import com.example.acl.domains.profiles.models.entities.Profile
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
+import com.example.auth.enums.Genders
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -22,7 +22,7 @@ interface ProfileRepository : JpaRepository<Profile, Long> {
     @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.createdBy) LIKE %:q%) AND (:gender IS NULL OR p.gender =:gender) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.id =:userId) AND (:username IS NULL OR p.user.username =:username)  AND p.deleted=FALSE")
     fun search(
         @Param("q") query: String?,
-        @Param("gender") gender: Gender?,
+        @Param("gender") gender: Genders?,
         @Param("bloodGroup") bloodGroup: BloodGroup?,
         @Param("maritalStatus") maritalStatus: MaritalStatus?,
         @Param("religion") religion: Religion?,
@@ -38,6 +38,6 @@ interface ProfileRepository : JpaRepository<Profile, Long> {
     fun findByUserId(@Param("userId") userId: Long): Optional<Profile>
 
     @Query("SELECT p FROM Profile p WHERE p.user.username=:username AND p.deleted=FALSE")
-    fun findByUserName(@Param("username") username: String): Optional<Profile>
+    fun findByUsername(@Param("username") username: String): Optional<Profile>
 
 }

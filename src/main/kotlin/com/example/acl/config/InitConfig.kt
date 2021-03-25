@@ -7,6 +7,7 @@ import com.example.auth.entities.User
 import com.example.acl.domains.users.services.PrivilegeService
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
+import com.example.auth.enums.Genders
 import com.example.auth.enums.Privileges
 import com.example.auth.enums.Roles
 import com.example.auth.utils.PasswordUtil
@@ -68,7 +69,7 @@ class InitConfig @Autowired constructor(
         user.password = PasswordUtil.encryptPassword(this.adminPass, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.phone = this.adminPhone
         user.email = this.adminEmail
-        user.gender = "male"
+        user.gender = Genders.MALE
         user.roles = ArrayList()
         user.roles.add(this.roleService.find(Roles.Admin.name).orElseThrow { NotFoundException("Could not assign admin role to admin as it's not found!") })
 

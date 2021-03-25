@@ -35,6 +35,7 @@ class Route {
             const val SEARCH_PROFILES = "$API$VERSION/profiles"
             const val CREATE_PROFILE = "$API$VERSION/profiles"
             const val FIND_PROFILE = "$API$VERSION/profiles/{id}"
+            const val MY_PROFILE = "$API$VERSION/my-profile"
             const val UPDATE_PROFILE = "$API$VERSION/profiles/{id}"
             const val DELETE_PROFILE = "$API$VERSION/profiles/{id}"
 

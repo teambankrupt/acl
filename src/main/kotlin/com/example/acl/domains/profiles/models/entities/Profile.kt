@@ -1,12 +1,11 @@
 package com.example.acl.domains.profiles.models.entities
 
 import com.example.acl.domains.profiles.models.enums.BloodGroup
-import com.example.acl.domains.profiles.models.enums.Gender
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
 import com.example.auth.entities.User
+import com.example.auth.enums.Genders
 import com.example.coreweb.domains.base.entities.BaseEntity
-import com.example.coreweb.domains.contacts.models.entities.Contact
 import java.time.Instant
 import javax.persistence.*
 
@@ -21,7 +20,7 @@ class Profile : BaseEntity() {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 100)
-    lateinit var gender: Gender
+    lateinit var gender: Genders
 
     @Enumerated(EnumType.STRING)
     @Column(length = 100)

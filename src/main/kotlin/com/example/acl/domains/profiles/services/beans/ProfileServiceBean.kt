@@ -3,11 +3,11 @@ package com.example.acl.domains.profiles.services.beans
 import com.example.acl.commons.Constants
 import com.example.acl.domains.profiles.models.entities.Profile
 import com.example.acl.domains.profiles.models.enums.BloodGroup
-import com.example.acl.domains.profiles.models.enums.Gender
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
 import com.example.acl.domains.profiles.repositories.ProfileRepository
 import com.example.acl.domains.profiles.services.ProfileService
+import com.example.auth.enums.Genders
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +26,7 @@ class ProfileServiceBean @Autowired constructor(
         query: String,
         page: Int,
         size: Int,
-        gender: Gender?,
+        gender: Genders?,
         bloodGroup: BloodGroup?,
         maritalStatus: MaritalStatus?,
         religion: Religion?,
@@ -64,8 +64,8 @@ class ProfileServiceBean @Autowired constructor(
         return this.profileRepository.findByUserId(id)
     }
 
-    override fun findByUserName(username: String): Optional<Profile> {
-        return this.profileRepository.findByUserName(username)
+    override fun findByUsername(username: String): Optional<Profile> {
+        return this.profileRepository.findByUsername(username)
     }
 
     override fun save(entity: Profile): Profile {
