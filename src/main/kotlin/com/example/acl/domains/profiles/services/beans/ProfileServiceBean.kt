@@ -7,26 +7,27 @@ import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
 import com.example.acl.domains.profiles.repositories.ProfileRepository
 import com.example.acl.domains.profiles.services.ProfileService
-import com.example.auth.enums.Genders
+import com.example.auth.repositories.UserRepo
 import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-import org.springframework.stereotype.Service
-import java.util.*
-import com.example.coreweb.domains.base.models.enums.SortByFields
 import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
-class ProfileServiceBean @Autowired constructor(
-    private val profileRepository: ProfileRepository
+open class ProfileServiceBean @Autowired constructor(
+    private val profileRepository: ProfileRepository,
+    private val userRepository: UserRepo
 ) : ProfileService {
 
     override fun search(
         query: String,
         page: Int,
         size: Int,
-        gender: Genders?,
         bloodGroup: BloodGroup?,
         maritalStatus: MaritalStatus?,
         religion: Religion?,
@@ -37,7 +38,6 @@ class ProfileServiceBean @Autowired constructor(
     ): Page<Profile> {
         return this.profileRepository.search(
             query.toLowerCase(),
-            gender,
             bloodGroup,
             maritalStatus,
             religion,
@@ -68,8 +68,11 @@ class ProfileServiceBean @Autowired constructor(
         return this.profileRepository.findByUsername(username)
     }
 
+    @Transactional
     override fun save(entity: Profile): Profile {
         this.validate(entity)
+        val user = this.userRepository.save(entity.user)
+        entity.user = user
         return this.profileRepository.save(entity)
     }
 

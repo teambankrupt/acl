@@ -19,10 +19,6 @@ class Profile : BaseEntity() {
     var photo: String? = null
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 100)
-    lateinit var gender: Genders
-
-    @Enumerated(EnumType.STRING)
     @Column(length = 100)
     var bloodGroup: BloodGroup? = null
 

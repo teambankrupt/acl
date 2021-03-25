@@ -19,10 +19,9 @@ interface ProfileRepository : JpaRepository<Profile, Long> {
     @Query("SELECT e FROM Profile e WHERE (:q IS NULL OR LOWER(e.createdBy) LIKE %:q%) AND e.deleted=FALSE")
     fun search(@Param("q") query: String?, pageable: Pageable): Page<Profile>
 
-    @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.createdBy) LIKE %:q%) AND (:gender IS NULL OR p.gender =:gender) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.id =:userId) AND (:username IS NULL OR p.user.username =:username)  AND p.deleted=FALSE")
+    @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.user.name) LIKE %:q%) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.id =:userId) AND (:username IS NULL OR p.user.username =:username)  AND p.deleted=FALSE")
     fun search(
         @Param("q") query: String?,
-        @Param("gender") gender: Genders?,
         @Param("bloodGroup") bloodGroup: BloodGroup?,
         @Param("maritalStatus") maritalStatus: MaritalStatus?,
         @Param("religion") religion: Religion?,

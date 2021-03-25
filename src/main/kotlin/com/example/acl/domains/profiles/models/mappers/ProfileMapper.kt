@@ -26,7 +26,7 @@ class ProfileMapper @Autowired constructor(
 
             this.birthday = entity.birthday
             this.photo = entity.photo
-            this.gender = entity.gender
+            this.gender = entity.user.gender
             this.bloodGroup = entity.bloodGroup
             this.maritalStatus = entity.maritalStatus
             this.religion = entity.religion
@@ -44,7 +44,7 @@ class ProfileMapper @Autowired constructor(
                 .orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, dto.userId) }
             this.birthday = dto.birthday
             this.photo = dto.photo
-            this.gender = dto.gender
+            this.user.gender = dto.gender
             this.bloodGroup = dto.bloodGroup
             this.maritalStatus = dto.maritalStatus
             this.religion = dto.religion
