@@ -15,32 +15,40 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/admin/users")
 @Api(tags = [Constants.Swagger.USERS_ADMIN], description = Constants.Swagger.USERS_ADMIN_API_DETAILS)
 class UserController @Autowired constructor(
-        private val userService: UserService,
-        private val userMapper: UserMapper,
-        private val tokenService: TokenService
+    private val userService: UserService,
+    private val userMapper: UserMapper,
+    private val tokenService: TokenService
 ) {
 
     @GetMapping("")
-    fun search(@RequestParam("q", defaultValue = "") query: String,
-               @RequestParam(value = "role", defaultValue = "User") role: String,
-               @RequestParam(value = "page", defaultValue = "0") page: Int,
-               @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Any> {
+    fun search(
+        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam(value = "role", defaultValue = "User") role: String,
+        @RequestParam(value = "page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("slice", defaultValue = "false") slice: Boolean
+    ): ResponseEntity<Any> {
 
         val userPage = this.userService.search(query, role, page, size)
-
-        return ResponseEntity.ok(userPage.map { this.userMapper.map(it) })
+        return if (slice)
+            ResponseEntity.ok(userPage.map { this.userMapper.mapToSlice(it) })
+        else
+            ResponseEntity.ok(userPage.map { this.userMapper.map(it) })
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
-        val user = this.userService.find(userId).orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
+        val user =
+            this.userService.find(userId).orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
         return ResponseEntity.ok(this.userMapper.map(user))
     }
 
 
     @PostMapping("/{id}/access/toggle")
-    fun disableUser(@PathVariable("id") id: Long,
-                    @RequestParam("enabled") enabled: Boolean): ResponseEntity<Any> {
+    fun disableUser(
+        @PathVariable("id") id: Long,
+        @RequestParam("enabled") enabled: Boolean
+    ): ResponseEntity<Any> {
         var user = this.userService.find(id).orElseThrow { UserNotFoundException("Could not find user with id: $id") }
         user.isEnabled = enabled
         user = this.userService.save(user)
@@ -49,15 +57,19 @@ class UserController @Autowired constructor(
     }
 
     @PutMapping("/{id}/change_role")
-    fun changeRole(@PathVariable("id") id: Long,
-                   @RequestParam("roles") roles: List<Long>): ResponseEntity<*> {
+    fun changeRole(
+        @PathVariable("id") id: Long,
+        @RequestParam("roles") roles: List<Long>
+    ): ResponseEntity<*> {
         val user = this.userService.setRoles(id, roles)
         return ResponseEntity.ok(this.userMapper.map(user))
     }
 
     @PatchMapping("/{id}/changePassword")
-    fun changePassword(@PathVariable("id") userId: Long,
-                       @RequestParam("newPassword") newPassword: String): ResponseEntity<Any> {
+    fun changePassword(
+        @PathVariable("id") userId: Long,
+        @RequestParam("newPassword") newPassword: String
+    ): ResponseEntity<Any> {
         this.userService.setPassword(userId, newPassword)
         return ResponseEntity.ok().build()
     }
