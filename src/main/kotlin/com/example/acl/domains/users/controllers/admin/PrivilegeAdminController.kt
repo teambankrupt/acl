@@ -1,4 +1,4 @@
-package com.example.acl.domains.users.controllers
+package com.example.acl.domains.users.controllers.admin
 
 import com.example.coreweb.commons.Constants
 import com.example.coreweb.domains.base.controllers.CrudController
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/admin/privileges")
 @Api(tags = [Constants.Swagger.PRIVILEGES_ADMIN], description = Constants.Swagger.PRIVILEGES_ADMIN_API_DETAILS)
-class PrivilegeController @Autowired constructor(
+class PrivilegeAdminController @Autowired constructor(
         private val privilegeService: PrivilegeService,
         private val privilegeMapper: PrivilegeMapper
 ) : CrudController<PrivilegeDto> {

@@ -1,4 +1,4 @@
-package com.example.acl.domains.users.controllers
+package com.example.acl.domains.users.controllers.admin
 
 
 import com.example.coreweb.commons.Constants
@@ -17,7 +17,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/v1/admin/roles")
 @Api(tags = [Constants.Swagger.ROLES_ADMIN], description = Constants.Swagger.ROLES_ADMIN_API_DETAILS)
-class RoleController @Autowired constructor(
+class RoleAdminController @Autowired constructor(
         private val roleService: RoleService,
         private val roleMapper: RoleMapper
 ) : CrudController<RoleDto> {
