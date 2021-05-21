@@ -27,6 +27,7 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 import java.util.*
 
 
@@ -93,7 +94,7 @@ open class UserServiceImpl @Autowired constructor(
     }
 
 
-    override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Date): Boolean {
+    override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken {
         val isPhone = this.authMethod == "phone"
         this.validateIdentity(isPhone, phoneOrEmail)
 
@@ -125,7 +126,7 @@ open class UserServiceImpl @Autowired constructor(
         // build confirmation link
         val tokenMessage = "Your " + this.applicationName + " token is: " + acValidationToken.token
         // send link by sms
-        return if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
+        if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
         else this.mailService.send(
             null,
             phoneOrEmail,
@@ -136,6 +137,7 @@ open class UserServiceImpl @Autowired constructor(
             false,
             null
         )
+        return acValidationToken
     }
 
     private fun validateIdentity(phone: Boolean, phoneOrEmail: String) {
@@ -201,7 +203,7 @@ open class UserServiceImpl @Autowired constructor(
         return this.save(user)
     }
 
-    override fun handlePasswordResetRequest(username: String) {
+    override fun handlePasswordResetRequest(username: String): AcValidationToken {
         val user = this.findByUsername(username)
             .orElseThrow { NotFoundException("Could not find user with username: $username") }
         if (this.acValidationTokenService.isLimitExceeded(user))
@@ -221,9 +223,9 @@ open class UserServiceImpl @Autowired constructor(
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis() + Integer.parseInt(this.tokenValidity)
-        resetToken.tokenValidUntil = calendar.time
+        resetToken.tokenValidUntil = calendar.time.toInstant()
 
-        this.acValidationTokenService.save(resetToken)
+        return this.acValidationTokenService.save(resetToken)
     }
 
     override fun setRoles(id: Long, roleIds: List<Long>): User {

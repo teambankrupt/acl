@@ -17,7 +17,8 @@ public class AcValidationToken extends ValidationToken {
     private String username;
 
     public String getUsername() {
-        return username;
+        if (username != null) return username;
+        else return user.getUsername();
     }
 
     public void setUsername(String username) {

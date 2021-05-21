@@ -1,8 +1,11 @@
 package com.example.acl.domains.home.controllers.api
 
+import com.example.acl.domains.users.models.dtos.TokenResponse
 import com.example.coreweb.commons.Constants
 import com.example.auth.config.security.SecurityContext
 import com.example.acl.domains.users.models.dtos.UserRequest
+import com.example.acl.domains.users.models.entities.AcValidationToken
+import com.example.acl.domains.users.models.mappers.TokenMapper
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.routing.Route
@@ -23,9 +26,10 @@ import java.util.*
 @Api(tags = [Constants.Swagger.BASIC_APIS], description = Constants.Swagger.BASIC_API_DETAILS)
 @PropertySource("classpath:security.properties")
 class ApiHomeController @Autowired constructor(
-        private val userService: UserService,
-        private val tokenService: TokenService,
-        private val userMapper: UserMapper
+    private val userService: UserService,
+    private val tokenService: TokenService,
+    private val userMapper: UserMapper,
+    private val tokenMapper: TokenMapper
 ) {
     @Value("\${app.base-url}")
     val baseUrl: String? = null
@@ -35,20 +39,21 @@ class ApiHomeController @Autowired constructor(
 
     @PostMapping(Route.V1.VERIFY_REGISTRATION)
     @ApiOperation(value = Constants.Swagger.VERIFY_PHONE)
-    fun verifyIdentity(@RequestParam("identity") phoneOrEmail: String): ResponseEntity<String> {
+    fun verifyIdentity(@RequestParam("identity") phoneOrEmail: String): ResponseEntity<TokenResponse> {
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis() + Integer.parseInt(this.tokenValidity)
-        val sent = this.userService.requireAccountValidationByOTP(phoneOrEmail, calendar.time)
+        val acValidationToken = this.userService.requireAccountValidationByOTP(phoneOrEmail, calendar.time.toInstant())
 
-        return if (!sent) ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build()
-        else ResponseEntity.ok("Token Validity: " + this.tokenValidity + " ms")
+        return ResponseEntity.ok(this.tokenMapper.map(acValidationToken))
     }
 
     @PostMapping(Route.V1.REGISTER)
     @ApiOperation(value = Constants.Swagger.REGISTER)
-    fun register(@RequestParam("token") token: String,
-                 @RequestBody userDto: UserRequest): ResponseEntity<OAuth2AccessToken> {
+    fun register(
+        @RequestParam("token") token: String,
+        @RequestBody userDto: UserRequest
+    ): ResponseEntity<OAuth2AccessToken> {
 
         val user = this.userService.register(token, this.userMapper.map(userDto, null))
 
@@ -59,8 +64,10 @@ class ApiHomeController @Autowired constructor(
 
     @PostMapping(Route.V1.CHANGE_PASSWORD)
     @ApiOperation(value = Constants.Swagger.CHANGE_PASSWORD)
-    fun changePassword(@RequestParam("current_password") currentPassword: String,
-                       @RequestParam("new_password") newPassword: String): ResponseEntity<HttpStatus> {
+    fun changePassword(
+        @RequestParam("current_password") currentPassword: String,
+        @RequestParam("new_password") newPassword: String
+    ): ResponseEntity<HttpStatus> {
         this.userService.changePassword(SecurityContext.getCurrentUser().id, currentPassword, newPassword)
         return ResponseEntity.ok().build()
     }
@@ -69,16 +76,19 @@ class ApiHomeController @Autowired constructor(
     @GetMapping(Route.V1.RESET_PASSWORD)
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = Constants.Swagger.VERIFY_RESET_PASSWORD)
-    fun requestResetPassword(@RequestParam("username") username: String) {
-        this.userService.handlePasswordResetRequest(username)
+    fun requestResetPassword(@RequestParam("username") username: String): ResponseEntity<TokenResponse> {
+        val token = this.userService.handlePasswordResetRequest(username)
+        return ResponseEntity.ok(this.tokenMapper.map(token))
     }
 
     @PostMapping(Route.V1.RESET_PASSWORD)
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = Constants.Swagger.RESET_PASSWORD)
-    fun resetPassword(@RequestParam("username") username: String,
-                      @RequestParam("token") token: String,
-                      @RequestParam("password") password: String) {
+    fun resetPassword(
+        @RequestParam("username") username: String,
+        @RequestParam("token") token: String,
+        @RequestParam("password") password: String
+    ) {
         this.userService.resetPassword(username, token, password)
     }
 

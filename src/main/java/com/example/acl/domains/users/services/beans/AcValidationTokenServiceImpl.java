@@ -9,6 +9,7 @@ import com.example.common.exceptions.forbidden.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Service
@@ -56,12 +57,12 @@ public class AcValidationTokenServiceImpl implements AcValidationTokenService {
         Date date = new Date();
         Date fromDate = DateUtil.getDayStart(date);
         Date toDate = DateUtil.getDayEnd(date);
-        return this.tokenRepo.count(user.getId(), fromDate, toDate) >= 3;
+        return this.tokenRepo.count(user.getId(), fromDate.toInstant(), toDate.toInstant()) >= 3;
     }
 
     @Override
     public boolean canGetOTP(String username) {
         AcValidationToken token = this.tokenRepo.findFirstByUsernameOrderByIdDesc(username);
-        return token == null || !token.isTokenValid() || new Date().after(token.getTokenValidUntil());
+        return token == null || !token.isTokenValid() || Instant.now().isAfter(token.getTokenValidUntil());
     }
 }

@@ -1,7 +1,9 @@
 package com.example.acl.domains.users.services
 
+import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.auth.entities.User
 import org.springframework.data.domain.Page
+import java.time.Instant
 import java.util.*
 
 interface UserService {
@@ -15,14 +17,14 @@ interface UserService {
     fun findByRole(role: String): List<User>
 
     fun register(token: String, user: User): User
-    fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Date): Boolean
+    fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken
     fun findByUsername(username: String): Optional<User>
     fun findByPhone(phone: String): Optional<User>
     fun findByEmail(email: String): Optional<User>
 
     fun changePassword(id: Long, currentPassword: String, newPassword: String): User
     fun setPassword(id: Long, newPassword: String): User
-    fun handlePasswordResetRequest(username: String)
+    fun handlePasswordResetRequest(username: String): AcValidationToken
     fun setRoles(id: Long, roleIds: List<Long>): User
 
     fun resetPassword(username: String, token: String, password: String): User

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Repository
@@ -16,5 +17,5 @@ public interface AcValidationTokenRepository extends JpaRepository<AcValidationT
     AcValidationToken findFirstByUsernameOrderByIdDesc(String phone);
 
     @Query("SELECT COUNT(t) FROM AcValidationToken t WHERE t.id=:id AND (t.createdAt BETWEEN :fromDate AND :toDate) AND t.deleted=false")
-    int count(@Param("id") Long id, @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
+    int count(@Param("id") Long id, @Param("fromDate") Instant fromDate, @Param("toDate") Instant toDate);
 }
