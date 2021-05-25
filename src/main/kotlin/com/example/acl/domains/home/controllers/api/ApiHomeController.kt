@@ -31,8 +31,6 @@ class ApiHomeController @Autowired constructor(
     private val userMapper: UserMapper,
     private val tokenMapper: TokenMapper
 ) {
-    @Value("\${app.base-url}")
-    val baseUrl: String? = null
 
     @Value("\${token.validity}")
     lateinit var tokenValidity: String
