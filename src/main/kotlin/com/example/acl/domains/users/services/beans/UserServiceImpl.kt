@@ -75,7 +75,27 @@ open class UserServiceImpl @Autowired constructor(
 
 
     override fun save(entity: User): User {
+        this.validate(entity)
         return this.userRepository.save(entity)
+    }
+
+    private fun validate(entity: User) {
+        var user = this.findByUsername(entity.username)
+        if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
+            throw ExceptionUtil.exists("User already exists with username: ${entity.username}")
+
+        if (entity.phone!=null) {
+            user = this.findByPhone(entity.phone)
+            if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
+                throw ExceptionUtil.exists("User already exists with phone: ${entity.phone}")
+        }
+
+        if (entity.email!=null) {
+            user = this.findByEmail(entity.email)
+            if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
+                throw ExceptionUtil.exists("User already exists with email: ${entity.email}")
+        }
+
     }
 
     override fun register(token: String, user: User): User {

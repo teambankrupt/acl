@@ -13,6 +13,7 @@ import com.example.auth.utils.PasswordUtil
 import com.example.common.exceptions.exists.AlreadyExistsException
 import com.example.common.exceptions.invalid.InvalidException;
 import com.example.common.exceptions.notfound.NotFoundException
+import com.example.common.utils.Validator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.PropertySource
@@ -81,13 +82,19 @@ class UserMapper @Autowired constructor(
             } else if (exUser == null) // if password not entered for new user, throw exception
                 throw ExceptionUtil.forbidden("Password length not be empty!")
 
-            email = dto.email
-            if (exUser == null || !exUser.isAdmin)
-                roles =
-                    if (SecurityContext.getCurrentUser().isAdmin) roleService.findByIds(dto.roleIds) else roleService.findByIdsUnrestricted(
-                        dto.roleIds
-                    )
+            email = if (dto.email.isNullOrBlank()) null
+            else {
+                if (Validator.isValidEmail(dto.email!!))
+                    dto.email
+                else throw ExceptionUtil.invalid("Email ${dto.email} Invalid!")
+            }
 
+            if (exUser == null || !exUser.isAdmin) {
+                roles = if (SecurityContext.getCurrentUser().isAdmin)
+                    roleService.findByIds(dto.roleIds)
+                else
+                    roleService.findByIdsUnrestricted(dto.roleIds)
+            }
             isEnabled = dto.enabled
             isAccountNonExpired = dto.accountNonExpired
             isAccountNonLocked = dto.accountNonLocked

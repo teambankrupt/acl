@@ -96,17 +96,21 @@
                             <div class="form-line">
                                 <label for="gender">Gender</label>
                                 <div id="gender" class="demo-radio-button">
-                                    <input name="gender" value="male" type="radio" id="radio_male"
-                                           th:checked="${user?.gender=='male'}"/>
+                                    <input name="gender" value="MALE" type="radio" id="radio_male"
+                                           th:checked="${user?.gender?.toString()=='MALE'}"/>
                                     <label for="radio_male">Male</label>
 
-                                    <input name="gender" value="female" type="radio" id="radio_female"
-                                           th:checked="${user?.gender=='female'}"/>
+                                    <input name="gender" value="FEMALE" type="radio" id="radio_female"
+                                           th:checked="${user?.gender?.toString()=='FEMALE'}"/>
                                     <label for="radio_female">Female</label>
 
-                                    <input name="gender" value="other" type="radio" id="radio_other"
-                                           th:checked="${user?.gender=='other'}"/>
+                                    <input name="gender" value="OTHER" type="radio" id="radio_other"
+                                           th:checked="${user?.gender?.toString()=='OTHER'}"/>
                                     <label for="radio_other">Other</label>
+
+                                    <input name="gender" value="NOT_SPECIFIED" type="radio" id="radio_not_specified"
+                                           th:checked="${user?.gender?.toString()=='NOT_SPECIFIED'}"/>
+                                    <label for="radio_not_specified">Not Specified</label>
 
                                 </div>
                                 <!--                                <select id="gender" name="gender" class="form-control show-tick">-->
