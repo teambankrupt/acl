@@ -148,14 +148,10 @@ open class UserServiceImpl @Autowired constructor(
         // send link by sms
         if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
         else this.mailService.send(
-            null,
             phoneOrEmail,
-            null,
-            null,
             this.applicationName + " Registration",
             tokenMessage,
-            false,
-            null
+            false
         )
         return acValidationToken
     }
