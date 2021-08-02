@@ -19,6 +19,7 @@ import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.SessionIdentifierGenerator
 import com.example.common.utils.Validator
 import com.example.coreweb.domains.mail.services.MailService
+import com.example.coreweb.domains.sms.enums.Providers
 import com.example.coreweb.domains.sms.services.SmsService
 import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,6 +50,9 @@ open class UserServiceImpl @Autowired constructor(
 
     @Value("\${token.validity}")
     lateinit var tokenValidity: String
+
+    @Value("\${app.origin.region}")
+    lateinit var originRegion: String
 
     override fun search(query: String, role: String?, page: Int, size: Int): Page<User> {
         val r = role?.let {
@@ -84,13 +88,13 @@ open class UserServiceImpl @Autowired constructor(
         if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
             throw ExceptionUtil.exists("User already exists with username: ${entity.username}")
 
-        if (entity.phone!=null) {
+        if (entity.phone != null) {
             user = this.findByPhone(entity.phone)
             if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
                 throw ExceptionUtil.exists("User already exists with phone: ${entity.phone}")
         }
 
-        if (entity.email!=null) {
+        if (entity.email != null) {
             user = this.findByEmail(entity.email)
             if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
                 throw ExceptionUtil.exists("User already exists with email: ${entity.email}")
@@ -146,7 +150,8 @@ open class UserServiceImpl @Autowired constructor(
         // build confirmation link
         val tokenMessage = "Your " + this.applicationName + " token is: " + acValidationToken.token
         // send link by sms
-        if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
+        val provider = if (this.originRegion == "BD") Providers.MIM_SMS else Providers.TWILIO
+        if (this.authMethod == "phone") this.smsService.sendSms(provider, phoneOrEmail, tokenMessage)
         else this.mailService.send(
             phoneOrEmail,
             this.applicationName + " Registration",
@@ -158,7 +163,7 @@ open class UserServiceImpl @Autowired constructor(
 
     private fun validateIdentity(phone: Boolean, phoneOrEmail: String) {
         if (phone) {
-            if (!Validator.isValidPhoneNumber(phoneOrEmail))
+            if (!Validator.isValidPhoneNumber(this.originRegion, phoneOrEmail))
                 throw InvalidException("Phone number: $phoneOrEmail is invalid!")
         } else {
             if (!Validator.isValidEmail(phoneOrEmail))
@@ -227,7 +232,8 @@ open class UserServiceImpl @Autowired constructor(
 
         val otp = SessionIdentifierGenerator.generateOTP()
         val message = "Your " + this.applicationName + " token is: " + otp
-        val success = this.smsService.sendSms(user.username, message)
+        val provider = if (this.originRegion == "BD") Providers.MIM_SMS else Providers.TWILIO
+        val success = this.smsService.sendSms(provider, user.username, message)
         // save validation token
         if (!success) throw UnknownException("Could not send SMS")
 
