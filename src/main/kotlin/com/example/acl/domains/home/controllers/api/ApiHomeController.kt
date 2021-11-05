@@ -1,10 +1,10 @@
 package com.example.acl.domains.home.controllers.api
 
+import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.dtos.TokenResponse
 import com.example.coreweb.commons.Constants
 import com.example.auth.config.security.SecurityContext
 import com.example.acl.domains.users.models.dtos.UserRequest
-import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.acl.domains.users.models.mappers.TokenMapper
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
@@ -44,6 +44,12 @@ class ApiHomeController @Autowired constructor(
         val acValidationToken = this.userService.requireAccountValidationByOTP(phoneOrEmail, calendar.time.toInstant())
 
         return ResponseEntity.ok(this.tokenMapper.map(acValidationToken))
+    }
+
+    @GetMapping(Route.V1.CHECK_USERNAME)
+    fun checkUsername(@RequestParam("username") username: String): ResponseEntity<CheckUsernameResponse> {
+        val available = this.userService.checkUsername(username)
+        return ResponseEntity.ok(available)
     }
 
     @PostMapping(Route.V1.REGISTER)

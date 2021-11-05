@@ -8,6 +8,7 @@ class Route {
             private const val ADMIN = "/admin"
 
             const val VERIFY_REGISTRATION = "$API$VERSION/register/verify"
+            const val CHECK_USERNAME = "$API$VERSION/public/register/check-username"
             const val REGISTER = "$API$VERSION/register"
             const val CHANGE_PASSWORD = "$API$VERSION/change_password"
             const val RESET_PASSWORD = "$API$VERSION/reset_password"

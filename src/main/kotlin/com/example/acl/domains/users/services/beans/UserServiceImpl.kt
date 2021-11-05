@@ -1,5 +1,6 @@
 package com.example.acl.domains.users.services.beans
 
+import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.acl.domains.users.repositories.UserRepository
 import com.example.acl.domains.users.services.AcValidationTokenService
@@ -283,6 +284,23 @@ open class UserServiceImpl @Autowired constructor(
     @Transactional
     override fun toggleAccess(userId: Long, enable: Boolean) {
         this.userRepository.toggleAccess(userId, enable)
+    }
+
+    override fun checkUsername(username: String): CheckUsernameResponse {
+        val cur = CheckUsernameResponse()
+        cur.available = false
+        if (!Validator.isValidUsername(username)) {
+            cur.reason = "Username invalid!"
+            return cur
+        }
+        val user = this.userRepository.findByUsername(username)
+        if (user.isPresent) {
+            cur.reason = "Username not available!"
+            return cur
+        }
+        cur.available = true
+        cur.reason = "Available"
+        return cur
     }
 
 }

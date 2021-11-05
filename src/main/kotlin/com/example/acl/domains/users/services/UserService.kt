@@ -1,5 +1,6 @@
 package com.example.acl.domains.users.services
 
+import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.auth.entities.User
 import org.springframework.data.domain.Page
@@ -30,4 +31,5 @@ interface UserService {
     fun resetPassword(username: String, token: String, password: String): User
 
     fun toggleAccess(userId: Long, enable: Boolean)
+    fun checkUsername(username: String): CheckUsernameResponse
 }
