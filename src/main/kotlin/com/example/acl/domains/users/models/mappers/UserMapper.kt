@@ -1,18 +1,18 @@
 package com.example.acl.domains.users.models.mappers
 
-import com.example.common.utils.ExceptionUtil
-import com.example.auth.config.security.SecurityContext
-import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.dtos.UserRequest
 import com.example.acl.domains.users.models.dtos.UserResponse
 import com.example.acl.domains.users.models.dtos.UserSlice
-import com.example.auth.entities.User
+import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
+import com.example.auth.config.security.SecurityContext
+import com.example.auth.entities.User
 import com.example.auth.utils.PasswordUtil
 import com.example.common.exceptions.exists.AlreadyExistsException
-import com.example.common.exceptions.invalid.InvalidException;
+import com.example.common.exceptions.invalid.InvalidException
 import com.example.common.exceptions.notfound.NotFoundException
+import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.Validator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -35,6 +35,7 @@ class UserMapper @Autowired constructor(
         user.gender = dto.gender
         user.phone = dto.phone
         user.username = dto.username
+        user.avatar = dto.avatar
         user.password = PasswordUtil.encryptPassword(dto.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.email = dto.email
         val unrestrictedRole = this.roleService.findUnrestricted(dto.role)
@@ -56,6 +57,7 @@ class UserMapper @Autowired constructor(
         dto.phone = user.phone
         dto.email = user.email
         dto.roles = user.roles.stream().map { role -> role.id }.collect(Collectors.toList())
+        dto.avatar = user.avatar
         return dto
     }
 
@@ -65,6 +67,7 @@ class UserMapper @Autowired constructor(
             this.id = user.id
             this.name = user.name
             this.username = user.username
+            this.avatar = user.avatar
         }
     }
 
@@ -75,6 +78,7 @@ class UserMapper @Autowired constructor(
             gender = dto.gender
             phone = dto.phone
             username = dto.username
+            avatar = dto.avatar
 
             if (dto.password.isNotBlank()) {
                 if (dto.password.length < 6) throw ExceptionUtil.forbidden("Invalid password length!")

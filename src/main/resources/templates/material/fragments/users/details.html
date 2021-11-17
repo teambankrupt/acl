@@ -45,11 +45,12 @@
                            class="list-group-item"
                            th:classappend="${user!=null && u.id==user.id?'active':''}">
                             <h5 class="list-group-item-heading">
+                                <img th:src="@{/api/v1/public/users/}+${u.username}+@{/avatar}" style="height: 50px; width: 50px;">
                                 <span th:text="${u.name}"></span>
                                 <!--                                <span class="badge bg-pink pull-right" th:if="${role.restricted}">Restricted</span>-->
                                 <!--                                <span class="badge bg-cyan pull-right" th:if="${!role.restricted}">Open</span>-->
                             </h5>
-                            <p class="list-group-item-text" th:text="${u.name}"></p>
+                            <small class="list-group-item-text" th:text="${u.username}"></small>
                         </a>
                     </ul>
                 </div>
@@ -144,6 +145,14 @@
                                 <label for="phone">Phone</label>
                                 <input id="phone" type="text" name="phone" class="form-control"
                                        placeholder="Phone" th:value="${user?.phone}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-line">
+                                <label for="avatar">Avatar URL</label>
+                                <input id="avatar" type="text" name="avatar" class="form-control"
+                                       placeholder="Avatar URL" th:value="${user?.avatar}"/>
                             </div>
                         </div>
 

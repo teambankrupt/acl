@@ -28,4 +28,7 @@ class UserRequest : BaseDto() {
 
     @NotBlank
     lateinit var role: String
+
+    @Size(max = 511)
+    var avatar: String? = null
 }

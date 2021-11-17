@@ -23,4 +23,10 @@ class UserResponse : BaseDto() {
     lateinit var gender: Genders
 
     lateinit var roles: List<Long>
+
+    /*
+    READONLY
+     */
+
+    var avatar: String?=null
 }

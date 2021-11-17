@@ -40,6 +40,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>PHOTO</th>
                             <th>NAME</th>
                             <th>USERNAME</th>
                             <th>GENDER</th>
@@ -56,6 +57,9 @@
                         <tbody>
                         <tr th:each="user, iter: ${users}" class="" th:classappend="${user.canLogin()?'':'bg-pink'}">
                             <th scope="row"><span th:text="${iter.index+1}"></span></th>
+                            <td>
+                                <img th:src="@{/api/v1/public/users/}+${user.username}+@{/avatar}" style="height: 50px; width: 50px;">
+                            </td>
                             <td th:text="${user.name}">Mark</td>
                             <td th:text="${user.username}">Otto</td>
                             <td th:text="${user.gender}">@mdo</td>

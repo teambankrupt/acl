@@ -32,4 +32,7 @@ class UserUpdateAdminDto : BaseDto() {
     var accountNonLocked = false
 
     var credentialsNonExpired = false
+
+    @Size(max = 511)
+    var avatar: String? = null
 }
