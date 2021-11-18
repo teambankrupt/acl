@@ -8,6 +8,11 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
                 <!-- Call Search -->
+                <li>
+                    <form th:action="@{/admin/reload-application-context}" method="post" class="form m-t-20">
+                        <button onclick="return confirm('Are you sure you want to restart the application?');" type="submit" class="btn btn-warning  pull-right">Restart Application</button>
+                    </form>
+                </li>
                 <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
                 <!-- #END# Call Search -->
                 <!-- Notifications -->

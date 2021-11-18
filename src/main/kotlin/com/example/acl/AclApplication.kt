@@ -21,18 +21,6 @@ open class AclApplication {
             context = runApplication<AclApplication>(*args)
         }
 
-        @JvmStatic
-        fun restart() {
-            val args = context?.getBean(ApplicationArguments::class.java)
-
-            val thread = Thread {
-                context?.close()
-                context = SpringApplication.run(AclApplication::class.java, *args?.sourceArgs)
-            }
-
-            thread.isDaemon = false
-            thread.start()
-        }
     }
 
 }
