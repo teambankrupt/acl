@@ -6,14 +6,12 @@ import com.example.acl.domains.profiles.models.entities.Profile
 import com.example.acl.domains.users.services.UserService
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.models.mappers.BaseMapper
-import com.example.coreweb.domains.contacts.services.ContactService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class ProfileMapper @Autowired constructor(
-    private val userService: UserService,
-    private val contactService: ContactService
+    private val userService: UserService
 ) : BaseMapper<Profile, ProfileDto> {
 
     override fun map(entity: Profile): ProfileDto {
@@ -31,6 +29,7 @@ class ProfileMapper @Autowired constructor(
             this.maritalStatus = entity.maritalStatus
             this.religion = entity.religion
             this.userId = entity.user.id
+            this.username = entity.user.username
         }
 
         return dto

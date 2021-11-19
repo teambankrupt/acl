@@ -34,8 +34,8 @@ class ProfileDto : BaseDto() {
     var religion: Religion? = null
 
     @NotNull
-    @JsonProperty("user_id")
     @ApiModelProperty(required = true)
+    @JsonProperty("user_id")
     var userId: Long = 0
 
     /*
