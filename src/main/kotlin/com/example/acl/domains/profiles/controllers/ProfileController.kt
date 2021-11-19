@@ -12,7 +12,9 @@ import com.example.auth.config.security.SecurityContext
 import com.example.auth.enums.Genders
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudControllerV2
+import com.example.coreweb.domains.base.controllers.CrudControllerV3
 import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.utils.PageableParams
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -20,52 +22,49 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpStatus
 
 @RestController
 @Api(tags = [Constants.Swagger.PROFILE], description = Constants.Swagger.REST_API)
 class ProfileController @Autowired constructor(
     private val profileService: ProfileService,
     private val profileMapper: ProfileMapper
-) : CrudControllerV2<ProfileDto> {
+) : CrudControllerV3<ProfileDto> {
 
     @GetMapping(Route.V1.SEARCH_PROFILES)
     fun search(
-        @RequestParam("q", defaultValue = "") query: String,
-        @RequestParam("page", defaultValue = "0") page: Int,
-        @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("blood_group", required = false) bloodGroup: BloodGroup?,
         @RequestParam("marital_status", required = false) maritalStatus: MaritalStatus?,
         @RequestParam("religion", required = false) religion: Religion?,
         @RequestParam("user_id", required = false) userId: Long?,
         @RequestParam("username", required = false) username: String?,
+        @RequestParam("q", required = false) query: String?,
+        @RequestParam("page", defaultValue = "0") page: Int,
+        @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
     ): ResponseEntity<Page<ProfileDto>> {
 
         val entities = this.profileService.search(
-            query,
-            page,
-            size,
             bloodGroup,
             maritalStatus,
             religion,
             userId,
             username,
-            sortBy,
-            direction
+            PageableParams.of(query, page, size, sortBy, direction)
         )
         return ResponseEntity.ok(entities.map { this.profileMapper.map(it) })
     }
 
     //    @GetMapping(Route.V1.SEARCH_PROFILES)
     override fun search(
-        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam("q", required = false) query: String?,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
     ): ResponseEntity<Page<ProfileDto>> {
-        val entities = this.profileService.search(query, page, size, sortBy, direction)
+        val entities = this.profileService.search(PageableParams.of(query, page, size, sortBy, direction))
         return ResponseEntity.ok(entities.map { this.profileMapper.map(it) })
     }
 

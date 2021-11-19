@@ -7,7 +7,9 @@ import com.example.acl.domains.profiles.services.ProfileService
 import com.example.acl.routing.Route
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.controllers.CrudWebControllerV2
+import com.example.coreweb.domains.base.controllers.CrudWebControllerV3
 import com.example.coreweb.domains.base.models.enums.SortByFields
+import com.example.coreweb.utils.PageableParams
 import org.springframework.data.domain.Sort
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -20,18 +22,18 @@ import javax.validation.Valid
 class ProfileWebController @Autowired constructor(
     private val profileService: ProfileService,
     private val profileMapper: ProfileMapper
-) : CrudWebControllerV2<ProfileDto> {
+) : CrudWebControllerV3<ProfileDto> {
 
     @GetMapping(Route.V1.ADMIN_SEARCH_PROFILES)
     override fun search(
-        @RequestParam("q", defaultValue = "") query: String,
+        @RequestParam("q", required = false) query: String?,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
         model: Model
     ): String {
-        val entities = this.profileService.search(query, page, size, sortBy, direction)
+        val entities = this.profileService.search(PageableParams.of(query, page, size, sortBy, direction))
         model.addAttribute("profiles", entities)
         return "profiles/fragments/all"
     }

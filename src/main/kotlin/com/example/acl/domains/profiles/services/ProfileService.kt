@@ -4,24 +4,19 @@ import com.example.acl.domains.profiles.models.entities.Profile
 import com.example.acl.domains.profiles.models.enums.BloodGroup
 import com.example.acl.domains.profiles.models.enums.MaritalStatus
 import com.example.acl.domains.profiles.models.enums.Religion
-import com.example.coreweb.domains.base.models.enums.SortByFields
-import com.example.coreweb.domains.base.services.CrudServiceV2
+import com.example.coreweb.domains.base.services.CrudServiceV3
+import com.example.coreweb.utils.PageableParams
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Sort
 import java.util.*
 
-interface ProfileService : CrudServiceV2<Profile> {
+interface ProfileService : CrudServiceV3<Profile> {
     fun search(
-        query: String,
-        page: Int,
-        size: Int,
         bloodGroup: BloodGroup?,
         maritalStatus: MaritalStatus?,
         religion: Religion?,
         userId: Long?,
         username: String?,
-        sortBy: SortByFields,
-        direction: Sort.Direction
+        params: PageableParams
     ): Page<Profile>
 
     fun findByUserId(id: Long): Optional<Profile>

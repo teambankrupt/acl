@@ -11,6 +11,7 @@ import com.example.auth.repositories.UserRepo
 import com.example.common.utils.ExceptionUtil
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageAttr
+import com.example.coreweb.utils.PageableParams
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Sort
@@ -25,38 +26,30 @@ open class ProfileServiceBean @Autowired constructor(
 ) : ProfileService {
 
     override fun search(
-        query: String,
-        page: Int,
-        size: Int,
         bloodGroup: BloodGroup?,
         maritalStatus: MaritalStatus?,
         religion: Religion?,
         userId: Long?,
         username: String?,
-        sortBy: SortByFields,
-        direction: Sort.Direction
+        params: PageableParams
     ): Page<Profile> {
         return this.profileRepository.search(
-            query.toLowerCase(),
+            params.query,
             bloodGroup,
             maritalStatus,
             religion,
             userId,
             username,
-            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+            PageAttr.getPageRequest(params)
         )
     }
 
     override fun search(
-        query: String,
-        page: Int,
-        size: Int,
-        sortBy: SortByFields,
-        direction: Sort.Direction
+        params: PageableParams
     ): Page<Profile> {
         return this.profileRepository.search(
-            query.toLowerCase(),
-            PageAttr.getPageRequest(page, size, sortBy.fieldName, direction)
+            params.query,
+            PageAttr.getPageRequest(params)
         )
     }
 

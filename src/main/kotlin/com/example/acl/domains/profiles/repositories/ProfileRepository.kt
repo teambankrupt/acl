@@ -16,7 +16,7 @@ import java.util.*
 @Repository
 interface ProfileRepository : JpaRepository<Profile, Long> {
 
-    @Query("SELECT e FROM Profile e WHERE (:q IS NULL OR LOWER(e.createdBy) LIKE %:q%) AND e.deleted=FALSE")
+    @Query("SELECT e FROM Profile e WHERE (:q IS NULL OR LOWER(e.user.name) LIKE %:q%) AND e.deleted=FALSE")
     fun search(@Param("q") query: String?, pageable: Pageable): Page<Profile>
 
     @Query("SELECT p FROM Profile p WHERE (:q IS NULL OR LOWER(p.user.name) LIKE %:q%) AND (:bloodGroup IS NULL OR p.bloodGroup =:bloodGroup) AND (:maritalStatus IS NULL OR p.maritalStatus =:maritalStatus) AND (:religion IS NULL OR p.religion =:religion) AND (:userId IS NULL OR p.user.id =:userId) AND (:username IS NULL OR p.user.username =:username)  AND p.deleted=FALSE")
