@@ -36,6 +36,7 @@ class UserMapper @Autowired constructor(
         user.phone = dto.phone
         user.username = dto.username
         user.avatar = dto.avatar
+            ?: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/100px-User-avatar.svg.png"
         user.password = PasswordUtil.encryptPassword(dto.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.email = dto.email
         val unrestrictedRole = this.roleService.findUnrestricted(dto.role)
