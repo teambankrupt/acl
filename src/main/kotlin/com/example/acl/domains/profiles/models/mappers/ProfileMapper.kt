@@ -30,6 +30,7 @@ class ProfileMapper @Autowired constructor(
             this.religion = entity.religion
             this.userId = entity.user.id
             this.username = entity.user.username
+            this.public = entity.public
         }
 
         return dto
@@ -49,6 +50,7 @@ class ProfileMapper @Autowired constructor(
             this.bloodGroup = dto.bloodGroup
             this.maritalStatus = dto.maritalStatus
             this.religion = dto.religion
+            this.public = dto.public
         }
 
         return entity

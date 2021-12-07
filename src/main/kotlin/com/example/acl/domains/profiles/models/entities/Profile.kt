@@ -12,6 +12,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "profiles", schema = "acl")
 class Profile : BaseEntity() {
+    @Column(name = "is_public", nullable = false)
+    var public: Boolean = false
 
     @Column(nullable = false)
     lateinit var birthday: Instant

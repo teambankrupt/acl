@@ -14,6 +14,10 @@ class ProfileDto : BaseDto() {
 
     @NotNull
     @ApiModelProperty(required = true)
+    var public: Boolean = false
+
+    @NotNull
+    @ApiModelProperty(required = true)
     lateinit var birthday: Instant
 
     var photo: String? = null
