@@ -22,8 +22,8 @@ class ProfileDto : BaseDto() {
 
     var photo: String? = null
 
-    @JsonProperty("user_photo_as_avatar")
-    var userPhotoAsAvatar: Boolean = false
+    @JsonProperty("use_photo_as_avatar")
+    var usePhotoAsAvatar: Boolean = false
 
     @NotNull
     @ApiModelProperty(required = true)

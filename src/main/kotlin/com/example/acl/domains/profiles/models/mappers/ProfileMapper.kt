@@ -44,7 +44,7 @@ class ProfileMapper @Autowired constructor(
                 .orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, dto.userId) }
             this.birthday = dto.birthday
             this.photo = dto.photo
-            if (dto.userPhotoAsAvatar && !dto.photo.isNullOrBlank())
+            if (dto.usePhotoAsAvatar && !dto.photo.isNullOrBlank())
                 user.avatar = dto.photo
             this.user.gender = dto.gender
             this.bloodGroup = dto.bloodGroup
