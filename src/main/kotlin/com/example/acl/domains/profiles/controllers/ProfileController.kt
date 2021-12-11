@@ -74,14 +74,6 @@ class ProfileController @Autowired constructor(
         return ResponseEntity.ok(this.profileMapper.map(entity))
     }
 
-    @GetMapping(Route.V1.MY_PROFILE)
-    fun myProfile(): ResponseEntity<ProfileDto> {
-        val auth = SecurityContext.getCurrentUser()
-        val entity = this.profileService.findByUsername(auth.username)
-            .orElseThrow { ExceptionUtil.notFound("No profile found with username: ${auth.username}") }
-        return ResponseEntity.ok(this.profileMapper.map(entity))
-    }
-
     @PostMapping(Route.V1.CREATE_PROFILE)
     override fun create(@Valid @RequestBody dto: ProfileDto): ResponseEntity<ProfileDto> {
         val entity = this.profileService.save(this.profileMapper.map(dto, null))
@@ -102,6 +94,25 @@ class ProfileController @Autowired constructor(
     override fun delete(@PathVariable("id") id: Long): ResponseEntity<Any> {
         this.profileService.delete(id, true)
         return ResponseEntity.ok().build()
+    }
+
+
+    @GetMapping(Route.V1.MY_PROFILE)
+    fun myProfile(): ResponseEntity<ProfileDto> {
+        val auth = SecurityContext.getCurrentUser()
+        val entity = this.profileService.findByUsername(auth.username)
+            .orElseThrow { ExceptionUtil.notFound("No profile found with username: ${auth.username}") }
+        return ResponseEntity.ok(this.profileMapper.map(entity))
+    }
+
+
+    @PatchMapping(Route.V1.MY_PROFILE)
+    fun updateMyProfile(@Valid @RequestBody dto: ProfileDto): ResponseEntity<ProfileDto> {
+        val auth = SecurityContext.getCurrentUser()
+        var entity = this.profileService.findByUsername(auth.username)
+            .orElseThrow { ExceptionUtil.notFound("No profile found with username: ${auth.username}") }
+        entity = this.profileService.save(this.profileMapper.map(dto, entity))
+        return ResponseEntity.ok(this.profileMapper.map(entity))
     }
 
 }
