@@ -109,10 +109,9 @@ class ProfileController @Autowired constructor(
     @PatchMapping(Route.V1.MY_PROFILE)
     fun updateMyProfile(@Valid @RequestBody dto: ProfileDto): ResponseEntity<ProfileDto> {
         val auth = SecurityContext.getCurrentUser()
-        var entity = this.profileService.findByUsername(auth.username)
-            .orElseThrow { ExceptionUtil.notFound("No profile found with username: ${auth.username}") }
-        entity = this.profileService.save(this.profileMapper.map(dto, entity))
-        return ResponseEntity.ok(this.profileMapper.map(entity))
+        val exProfile = this.profileService.findByUsername(auth.username)
+        val profile = this.profileService.save(this.profileMapper.map(dto, exProfile.orElse(null)))
+        return ResponseEntity.ok(this.profileMapper.map(profile))
     }
 
 }
