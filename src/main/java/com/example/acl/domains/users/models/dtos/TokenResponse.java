@@ -1,7 +1,7 @@
 package com.example.acl.domains.users.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.time.Instant;
 
