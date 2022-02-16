@@ -2,3 +2,13 @@ target/*
 *.iml
 *.DS_Store
 .idea/*
+.npmrc
+package.json
+pnpm-lock.yaml
+pnpmfile.js
+tsconfig.json
+types.d.ts
+webpack.config.js
+webpack.generated.js
+frontend/generated/*
+node_modules/*

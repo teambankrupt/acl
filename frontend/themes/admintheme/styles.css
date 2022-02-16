@@ -1,0 +1,18 @@
+@import url('./main-layout.css');
+@import url('lumo-css-framework/all-classes.css');
+@import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
+@import url('@fontsource/poppins');    html {
+      --lumo-border-radius: calc(var(--lumo-size-m) / 2);
+--lumo-font-family: Poppins;
+
+    }
+
+    [theme~="dark"] {
+      --lumo-base-color: hsl(214, 37%, 14%);
+      --lumo-primary-color: hsla(212, 100%, 52%, 1);
+      --lumo-primary-color-50pct: hsla(212, 100%, 52%, 0.5);
+      --lumo-primary-color-10pct: hsla(212, 100%, 52%, 0.1);
+      --lumo-body-text-color: hsla(214, 0%, 99%, 0.9);
+      --lumo-primary-text-color: hsl(214, 0%, 99%);
+
+    }

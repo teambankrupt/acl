@@ -19,6 +19,7 @@
         <java.version>1.8</java.version>
         <kotlin.version>1.5.0</kotlin.version>
         <flyway.version>5.2.4</flyway.version>
+        <vaadin.version>21.0.9</vaadin.version>
     </properties>
 
     <profiles>
@@ -82,6 +83,13 @@
             <groupId>com.example</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-spring-boot-starter -->
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring-boot-starter</artifactId>
+            <version>${vaadin.version}</version>
         </dependency>
 
         <dependency>
@@ -234,6 +242,19 @@
                         <version>1.4.191</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>${vaadin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-frontend</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
