@@ -1,13 +1,12 @@
-package com.example.acl.layouts
+package com.example.acl.frontend.layouts
 
 import com.vaadin.flow.component.dependency.NpmPackage
 import com.vaadin.flow.component.dependency.NpmPackage.Container
 import com.vaadin.flow.component.page.AppShellConfigurator
-import com.vaadin.flow.server.PWA
 import com.vaadin.flow.theme.Theme
 import com.vaadin.flow.theme.lumo.Lumo
 
-@PWA(name = "OpenPB Dashboard", shortName = "OpenPB Dashboard")
+//@PWA(name = "OpenPB Dashboard", shortName = "OpenPB Dashboard")
 @Theme("admintheme", variant = Lumo.DARK)
 @Container(
 	value = [

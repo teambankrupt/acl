@@ -1,4 +1,4 @@
-package com.example.acl.layouts
+package com.example.acl.frontend.layouts
 
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.applayout.AppLayout
@@ -15,9 +15,6 @@ class MainLayout : AppLayout {
 		addToNavbar(true, createHeaderContent())
 		addToDrawer(createDrawerContent())
 	}
-
-
-
 
 	private fun createHeaderContent(): Component {
 		val toggle = DrawerToggle()

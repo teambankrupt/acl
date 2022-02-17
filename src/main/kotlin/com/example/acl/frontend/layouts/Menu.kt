@@ -1,14 +1,10 @@
-package com.example.acl.layouts
+package com.example.acl.frontend.layouts
 
 import com.example.acl.domains.home.controllers.views.AdminHomeView
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.ComponentUtil
 import com.vaadin.flow.component.dependency.NpmPackage
 import com.vaadin.flow.component.html.ListItem
 import com.vaadin.flow.component.html.Span
-import com.vaadin.flow.component.tabs.Tab
-import com.vaadin.flow.component.tabs.Tabs
-import com.vaadin.flow.component.tabs.TabsVariant
 import com.vaadin.flow.router.RouterLink
 
 
