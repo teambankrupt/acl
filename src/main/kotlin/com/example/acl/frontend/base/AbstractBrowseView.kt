@@ -15,6 +15,7 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 	private lateinit var data: Page<T>
 	private var fields: List<Field> = listOf()
 	private lateinit var selectedObj: Optional<T>
+	private var listener: ItemSelectionListener<T>? = null
 
 	fun initialize(
 		klass: Class<T>, data: Page<T>, selectedObj: Optional<T>
@@ -67,7 +68,21 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 
 	abstract override fun beforeEnter(event: BeforeEnterEvent)
 
-	abstract fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>)
+	fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>) {
+			val item = event.value
+			this.listener?.onItemSelected(true, item)
+	}
 
-	abstract fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>)
+	fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>) {
+			val item = event.value
+			this.listener?.onItemSelected(false, item)
+	}
+
+	fun setItemSelectionListener(listener: ItemSelectionListener<T>){
+		this.listener = listener
+	}
+
+	interface ItemSelectionListener<T> {
+		fun onItemSelected(selected: Boolean, item: T?)
+	}
 }

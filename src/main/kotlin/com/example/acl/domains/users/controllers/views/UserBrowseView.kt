@@ -4,6 +4,7 @@ import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractBrowseView
+import com.example.acl.frontend.components.GenericValueInput
 import com.example.auth.entities.User
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.UI
@@ -30,30 +31,33 @@ class UserBrowseView(
 		)
 	}
 
-	override fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
-		val user: UserUpdateAdminDto = event.value
-		UI.getCurrent().navigate(String.format("/users/%s/edit", user.username))
-	}
-
-	override fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
-		//		clearForm()
-		UI.getCurrent().navigate(UserFlowView::class.java)
-	}
+//	override fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
+//		val user: UserUpdateAdminDto = event.value
+//		UI.getCurrent().navigate(String.format("/users/%s/edit", user.username))
+//	}
+//
+//	override fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
+//		//		clearForm()
+//		UI.getCurrent().navigate(UserFlowView::class.java)
+//	}
 
 	override fun beforeEnter(event: BeforeEnterEvent) {
 		this.event = event
 	}
 
 	override fun defineColumnFields(): Map<String, String>? {
-//		return mapOf(
-//				"avatar" to "Avatar",
-//				"name" to "Name",
-//				"username" to "Username",
-//				"gender" to "Gender",
-//				"email" to "Email",
-//				"phone" to "Phone"
-//			)
-		return null
+		return mapOf(
+			"avatar" to "Avatar",
+			"name" to "Name",
+			"username" to "Username",
+			"gender" to "Gender",
+			"email" to "Email",
+			"phone" to "Phone",
+			"enabled" to "Enabled",
+			"accountNonLocked" to "Account Non Locked",
+			"accountNonExpired" to "Account Non Expired",
+			"credentialsNonExpired" to "Credentials Non Expired"
+		)
 	}
 
 

@@ -18,9 +18,13 @@ class UserFormView(
 			"avatar" to GenericValueInput("avatar", "Avatar"),
 			"name" to GenericValueInput("name", "Name"),
 			"username" to GenericValueInput("username", "Username"),
-			"gender" to this.getGenderInput() ,
+			"gender" to GenericValueInput("gender", "Gender"),
 			"email" to GenericValueInput("email", "Email"),
-			"phone" to GenericValueInput("phone", "Phone")
+			"phone" to GenericValueInput("phone", "Phone"),
+			"enabled" to GenericValueInput("enabled", "Enabled"),
+			"accountNonLocked" to GenericValueInput("accountNonLocked", "Account Non Locked"),
+			"accountNonExpired" to GenericValueInput("accountNonExpired", "Account Non Expired"),
+			"credentialsNonExpired" to GenericValueInput("credentialsNonExpired", "Credentials Non Expired")
 		)
 	}
 
@@ -45,6 +49,10 @@ class UserFormView(
 		}
 		genderInput.setListener(listener)
 		return genderInput
+	}
+
+	override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
+		this.getBinder().readBean(item)
 	}
 
 
