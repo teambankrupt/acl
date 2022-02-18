@@ -17,16 +17,8 @@ class UserFlowView(
 		this.initialize(
 			UserUpdateAdminDto::class.java,
 			UserBrowseView(userService, userMapper),
-			UserFormView()
+			UserFormView(userService)
 		)
 	}
-
-//	override fun getFormView(): AbstractFormView<UserUpdateAdminDto> {
-//		return UserFormView()
-//	}
-//
-//	override fun getBrowseView(): AbstractBrowseView<UserUpdateAdminDto> {
-//		return UserBrowseView(userService, userMapper)
-//	}
 
 }
