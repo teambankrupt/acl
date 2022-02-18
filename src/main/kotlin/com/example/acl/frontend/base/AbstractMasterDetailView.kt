@@ -23,25 +23,17 @@ import java.time.Instant
 import java.util.*
 
 
-abstract class AbstractMasterDetailView<T> : Div(), BeforeEnterObserver {
-	private lateinit var klass: Class<T>
+abstract class AbstractMasterDetailView<T>(klass: Class<T>) : Div(), BeforeEnterObserver {
+	private var klass: Class<T>
 	private lateinit var items: Page<T>
 	private lateinit var selectedObj: Optional<T>
 	private var fields: List<Field> = listOf()
 
-	fun initialize(klass: Class<T>, items: Page<T>, selectedObj: Optional<T>) {
-		this.initialize(klass, items, selectedObj, null, null)
-	}
-
-	fun initialize(klass: Class<T>, items: Page<T>, selectedObj: Optional<T>, columnFields: Map<String, String>?) {
-		this.initialize(klass, items, selectedObj, columnFields, null)
-	}
-
-	fun initialize(
-		klass: Class<T>, items: Page<T>, selectedObj: Optional<T>,
-		columnFields: Map<String, String>?, formFields: Map<String, String>?
-	) {
+	init {
 		this.klass = klass
+	}
+
+	fun initializeData(items: Page<T>, selectedObj: Optional<T>) {
 		this.items = items
 		this.selectedObj = selectedObj
 
@@ -50,10 +42,14 @@ abstract class AbstractMasterDetailView<T> : Div(), BeforeEnterObserver {
 		val splitLayout = SplitLayout()
 		splitLayout.setSizeFull()
 
-		splitLayout.addToPrimary(this.createGridLayout(columnFields))
-		splitLayout.addToSecondary(this.createEditorLayout(formFields))
+		splitLayout.addToPrimary(this.createGridLayout(this.defineColumnFields()))
+		splitLayout.addToSecondary(this.createEditorLayout(this.defineFormFields()))
 		add(splitLayout)
 	}
+
+	abstract fun defineFormFields(): Map<String, String>?
+
+	abstract fun defineColumnFields(): Map<String, String>?
 
 	fun createGridLayout(fieldsToShow: Map<String, String>?): Component {
 		val div = Div()
