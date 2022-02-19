@@ -8,10 +8,13 @@ import com.example.acl.frontend.components.AutoCompleteTextField
 import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
 import com.example.acl.frontend.components.GenericValueInput
 import com.vaadin.componentfactory.Autocomplete
+import com.vaadin.flow.component.ClickEvent
+import com.vaadin.flow.component.button.Button
 
 class UserFormView(
 	private val userService: UserService
 ) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java) {
+	private var selectedItem: UserUpdateAdminDto? = null
 
 	override fun defineFormFields(): Map<String, AbstractInput>? {
 		return mapOf(
@@ -25,6 +28,13 @@ class UserFormView(
 			"accountNonLocked" to GenericValueInput("accountNonLocked", "Account Non Locked"),
 			"accountNonExpired" to GenericValueInput("accountNonExpired", "Account Non Expired"),
 			"credentialsNonExpired" to GenericValueInput("credentialsNonExpired", "Credentials Non Expired")
+		)
+	}
+
+	override fun getDefaultSelectValues(): Map<String, String> {
+		val item = this.selectedItem
+		return if (item == null) mapOf() else mapOf(
+			"gender" to item.gender.name
 		)
 	}
 
@@ -52,7 +62,18 @@ class UserFormView(
 	}
 
 	override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
-		this.getBinder().readBean(item)
+		this.selectedItem = item
+		this.getBinder(selected).readBean(item)
+	}
+
+	override fun onSaveAction(event: ClickEvent<Button>, dropdownValues: MutableMap<String, String>) {
+		if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
+		getBinder(true).writeBean(this.selectedItem)
+		println(this.selectedItem)
+	}
+
+	override fun onCancelAction(event: ClickEvent<Button>) {
+		println(event.toString())
 	}
 
 
