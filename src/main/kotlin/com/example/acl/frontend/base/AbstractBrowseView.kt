@@ -82,6 +82,8 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 		this.listener = listener
 	}
 
+	abstract fun onItemPersisted(item: T?)
+
 	interface ItemSelectionListener<T> {
 		fun onItemSelected(selected: Boolean, item: T?)
 	}

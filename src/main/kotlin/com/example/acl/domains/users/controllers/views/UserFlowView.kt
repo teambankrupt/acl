@@ -5,6 +5,7 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.base.AbstractFlowView
+import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.layouts.MainLayout
 import com.vaadin.flow.router.Route
 
@@ -16,14 +17,19 @@ class UserFlowView(
 
 	init {
 		val browseView = UserBrowseView(userService, userMapper)
-		val formView = UserFormView(userService)
+		val formView = UserFormView(userService, userMapper)
 
 		browseView.setItemSelectionListener(object : AbstractBrowseView.ItemSelectionListener<UserUpdateAdminDto> {
 			override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
 				formView.onItemSelected(selected, item)
-				println(selected)
-				println(item)
 			}
+		})
+
+		formView.setItemPersistedListener(object : AbstractFormView.ItemPersistenceListener<UserUpdateAdminDto>{
+			override fun onItemPersisted(item: UserUpdateAdminDto?) {
+				browseView.onItemPersisted(item)
+			}
+
 		})
 
 		this.initialize(

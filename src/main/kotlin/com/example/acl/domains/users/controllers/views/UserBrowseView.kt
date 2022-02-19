@@ -31,16 +31,6 @@ class UserBrowseView(
 		)
 	}
 
-//	override fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
-//		val user: UserUpdateAdminDto = event.value
-//		UI.getCurrent().navigate(String.format("/users/%s/edit", user.username))
-//	}
-//
-//	override fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<UserUpdateAdminDto>, UserUpdateAdminDto>) {
-//		//		clearForm()
-//		UI.getCurrent().navigate(UserFlowView::class.java)
-//	}
-
 	override fun beforeEnter(event: BeforeEnterEvent) {
 		this.event = event
 	}
@@ -58,6 +48,10 @@ class UserBrowseView(
 			"accountNonExpired" to "Account Non Expired",
 			"credentialsNonExpired" to "Credentials Non Expired"
 		)
+	}
+
+	override fun onItemPersisted(item: UserUpdateAdminDto?) {
+//		UI.getCurrent().page.reload()
 	}
 
 

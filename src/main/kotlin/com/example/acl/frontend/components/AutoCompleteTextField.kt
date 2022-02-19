@@ -1,6 +1,7 @@
 package com.example.acl.frontend.components
 
 import com.vaadin.componentfactory.Autocomplete
+import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.Component
 
 class AutoCompleteTextField : AbstractInput {
@@ -78,8 +79,8 @@ class AutoCompleteTextField : AbstractInput {
 		return this.defaultValue
 	}
 
-	override fun getComponent(): Component? {
-		return component
+	override fun getComponent(): AbstractField<*, *>? {
+		return null
 	}
 
 

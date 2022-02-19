@@ -2,8 +2,8 @@ package com.example.acl.frontend.base
 
 import com.example.acl.frontend.components.AbstractInput
 import com.example.acl.frontend.components.GenericValueInput
+import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
-import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasStyle
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -28,11 +28,13 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var binder: Binder<T>
 	private var choosableValues: MutableMap<String, String>
 
-	var formLayout: FormLayout
-	var inputComponents: MutableMap<String, Component>
-	var buttonLayout: HorizontalLayout
+	private var formLayout: FormLayout
+	private var inputComponents: MutableMap<String, AbstractField<*, *>>
+	private var buttonLayout: HorizontalLayout
 	lateinit var btnSave: Button
 	lateinit var btnCancel: Button
+
+	var itemPersistenceListener: ItemPersistenceListener<T>? = null
 
 	init {
 		this.klass = klass
@@ -53,11 +55,14 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 	}
 
-	fun getBinder(hasSelectedItem: Boolean): Binder<T> {
-		this.hasSelectedItem = hasSelectedItem
+	fun getBinder(): Binder<T> {
+		return this.binder
+	}
+
+	fun setSelected(selected: Boolean) {
+		this.hasSelectedItem = selected
 		this.resolveBtnState(this.btnSave, this.btnCancel)
 		this.setDefaultSelectFieldValues(this.getDefaultSelectValues())
-		return this.binder
 	}
 
 	abstract fun getDefaultSelectValues(): Map<String, String>
@@ -72,9 +77,9 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 	abstract fun defineFormFields(): Map<String, AbstractInput>?
 
-	fun createFormInputs(formFields: Map<String, AbstractInput>?): MutableMap<String, Component> {
+	fun createFormInputs(formFields: Map<String, AbstractInput>?): MutableMap<String, AbstractField<*, *>> {
 		val showAllFields = formFields.isNullOrEmpty()
-		val inputComponents: MutableMap<String, Component> = mutableMapOf()
+		val inputComponents: MutableMap<String, AbstractField<*, *>> = mutableMapOf()
 
 		this.className = "flex flex-col space-s"
 		this.width = "400px"
@@ -101,12 +106,12 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 
-	private fun createInput(field: Field, ai: AbstractInput): Component {
+	private fun createInput(field: Field, ai: AbstractInput): AbstractField<*, *> {
 
 		val component = ai.getComponent()
 		if (component != null) {
 			component.setId(field.name)
-			component.onEnabledStateChanged(this.editMode)
+			component.isReadOnly = !this.editMode
 //			binder.bind(component,field.name)
 			return component
 		}
@@ -117,7 +122,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			val items = field.type.enumConstants.map { i -> i.toString() }
 			input.setItems(items)
 			input.setId(field.name)
-			input.isEnabled = this.editMode
+			input.isReadOnly = !this.editMode
 			(input as HasStyle).addClassName("full-width")
 			input.addValueChangeListener {
 				this.choosableValues[field.name] = it.value
@@ -129,14 +134,14 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		} else if (field.type == Instant::class.java) {
 			val input = DatePicker(ai.getLabel())
 			input.setId(field.name)
-			input.isEnabled = this.editMode
+			input.isReadOnly = !this.editMode
 			(input as HasStyle).addClassName("full-width")
 			binder.bind(input, field.name)
 			return input
 		} else if (field.type == Boolean::class.java) {
 			val input = Checkbox(ai.getLabel())
 			input.setId(field.name)
-			input.isEnabled = this.editMode
+			input.isReadOnly = !this.editMode
 			(input as HasStyle).addClassName("full-width")
 			binder.bind(input, field.name)
 			return input
@@ -144,7 +149,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 		val input = TextField(ai.getLabel())
 		input.setId(field.name)
-		input.isEnabled = this.editMode
+		input.isReadOnly = !this.editMode
 		(input as HasStyle).addClassName("full-width")
 		binder.bind(input, field.name)
 		return input
@@ -160,7 +165,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		this.btnCancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY)
 		this.btnCancel.addClickListener {
 			if (this.isFormResettable()) {
-				this.getBinder(false).readBean(null)
+				this.getBinder().readBean(null)
 			} else {
 				this.onButtonClicked(btnCancel.id, it)
 			}
@@ -226,7 +231,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 
 		this.inputComponents = this.inputComponents.mapValues {
-			it.value.onEnabledStateChanged(this.editMode)
+			it.value.isReadOnly = !this.editMode
 			it.value
 		}.toMutableMap()
 		this.inputComponents.forEach { this.formLayout.add(it.value) }
@@ -237,4 +242,12 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 	abstract fun onItemSelected(selected: Boolean, item: T?)
+
+	fun setItemPersistedListener(listener: ItemPersistenceListener<T>) {
+		this.itemPersistenceListener = listener
+	}
+
+	interface ItemPersistenceListener<T> {
+		fun onItemPersisted(item: T?)
+	}
 }

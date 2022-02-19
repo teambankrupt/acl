@@ -1,5 +1,6 @@
 package com.example.acl.frontend.components
 
+import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.Component
 import java.util.*
 
@@ -49,7 +50,7 @@ class GenericValueInput : AbstractInput {
 		return this.defaultValue
 	}
 
-	override fun getComponent(): Component? {
+	override fun getComponent(): AbstractField<*, *>? {
 		return null
 	}
 
