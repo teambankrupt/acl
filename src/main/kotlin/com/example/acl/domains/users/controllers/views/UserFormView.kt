@@ -13,12 +13,17 @@ import com.example.auth.enums.Genders
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.component.textfield.TextField
 
 class UserFormView(
 	private val userService: UserService,
 	private val userMapper: UserMapper
 ) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java) {
 	private var selectedItem: UserUpdateAdminDto? = null
+
+	init {
+		this.initForm(mutableMapOf())
+	}
 
 	override fun defineFormFields(): Map<String, AbstractInput>? {
 		return mapOf(

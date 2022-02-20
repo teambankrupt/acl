@@ -43,15 +43,16 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		this.inputComponents = mutableMapOf()
 		this.formLayout = FormLayout()
 
-		val formFields = this.defineFormFields()
+		this.buttonLayout = this.createButtonLayout()
+	}
 
-		this.inputComponents = this.createFormInputs(formFields)
+
+	fun initForm(components: MutableMap<String, AbstractField<*, *>>) {
+		val formFields = this.defineFormFields()
+		this.inputComponents = components.ifEmpty { this.createFormInputs(formFields) }
 		this.inputComponents.forEach { this.formLayout.add(it.value) }
 
-		this.add(formLayout)
-
-		this.buttonLayout = this.createButtonLayout()
-		this.add(buttonLayout)
+		this.add(this.formLayout, this.buttonLayout)
 
 	}
 
