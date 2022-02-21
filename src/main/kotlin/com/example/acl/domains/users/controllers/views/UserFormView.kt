@@ -5,15 +5,22 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.components.AbstractInput
+import com.example.acl.frontend.components.AutoCompleteCombobox
 import com.example.acl.frontend.components.AutoCompleteTextField
 import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
 import com.example.acl.frontend.components.GenericValueInput
 import com.example.acl.frontend.utils.Notifications
 import com.example.auth.enums.Genders
 import com.vaadin.componentfactory.Autocomplete
+import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
-import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.flow.component.combobox.ComboBox
+import com.vaadin.flow.component.combobox.GeneratedVaadinComboBox
+import com.vaadin.flow.data.provider.ListDataProvider
+import com.vaadin.flow.data.provider.Query
+import com.vaadin.flow.function.SerializablePredicate
+import java.util.stream.Stream
 
 class UserFormView(
 	private val userService: UserService,

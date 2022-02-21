@@ -13,6 +13,7 @@ import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.select.Select
+import com.vaadin.flow.component.textfield.NumberField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import java.lang.reflect.Field
@@ -122,29 +123,29 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			input.label = ai.getLabel()
 			val items = field.type.enumConstants.map { i -> i.toString() }
 			input.setItems(items)
-			input.setId(field.name)
-			input.isReadOnly = !this.editMode
-			(input as HasStyle).addClassName("full-width")
 			input.addValueChangeListener {
 				this.choosableValues[field.name] = it.value
 			}
+			this.configure(field, input, false)
 //			binder.forField(input)
 //				.withConverter(StringToEnumConverter(field.type))
 //				.bind(field.name)
 			return input
 		} else if (field.type == Instant::class.java) {
 			val input = DatePicker(ai.getLabel())
-			input.setId(field.name)
-			input.isReadOnly = !this.editMode
-			(input as HasStyle).addClassName("full-width")
-			binder.bind(input, field.name)
+			this.configure(field, input, true)
 			return input
 		} else if (field.type == Boolean::class.java) {
 			val input = Checkbox(ai.getLabel())
-			input.setId(field.name)
-			input.isReadOnly = !this.editMode
-			(input as HasStyle).addClassName("full-width")
-			binder.bind(input, field.name)
+			this.configure(field, input, true)
+			return input
+		} else if (
+			field.type == Int::class.java
+			|| field.type == Long::class.java
+			|| field.type == Double::class.java
+		) {
+			val input = NumberField(ai.getLabel())
+			this.configure(field, input, true)
 			return input
 		}
 
@@ -154,6 +155,14 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		(input as HasStyle).addClassName("full-width")
 		binder.bind(input, field.name)
 		return input
+	}
+
+	fun configure(field: Field, input: AbstractField<*, *>, bind: Boolean) {
+		input.setId(field.name)
+		input.isReadOnly = !this.editMode
+		(input as HasStyle).addClassName("full-width")
+		if (bind)
+			binder.bind(input, field.name)
 	}
 
 	private fun createButtonLayout(): HorizontalLayout {
