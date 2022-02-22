@@ -2,6 +2,7 @@ package com.example.acl.frontend.base
 
 import com.example.acl.frontend.components.AbstractInput
 import com.example.acl.frontend.components.GenericValueInput
+import com.sun.xml.bind.v2.schemagen.episode.Klass
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.HasStyle
@@ -13,12 +14,15 @@ import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.select.Select
+import com.vaadin.flow.component.textfield.EmailField
 import com.vaadin.flow.component.textfield.NumberField
+import com.vaadin.flow.component.textfield.PasswordField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import java.lang.reflect.Field
 import java.time.Instant
 import java.util.*
+import javax.validation.constraints.Email
 
 abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var klass: Class<T>
@@ -149,7 +153,13 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			return input
 		}
 
-		val input = TextField(ai.getLabel())
+		val input = if (this.containsAnnotations(field, "javax.validation.constraints.Email"))
+			EmailField(ai.getLabel())
+		else if (field.name.lowercase().contains("password"))
+			PasswordField(ai.getLabel())
+		else
+			TextField(ai.getLabel())
+
 		input.setId(field.name)
 		input.isReadOnly = !this.editMode
 		(input as HasStyle).addClassName("full-width")
@@ -255,6 +265,11 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 	fun setItemPersistedListener(listener: ItemPersistenceListener<T>) {
 		this.itemPersistenceListener = listener
+	}
+
+	fun containsAnnotations(field: Field, annotationQualifiedName: String): Boolean {
+		return field.declaredAnnotations
+			.any { it.annotationClass.qualifiedName == annotationQualifiedName }
 	}
 
 	interface ItemPersistenceListener<T> {
