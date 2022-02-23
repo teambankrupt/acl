@@ -2,33 +2,43 @@ package com.example.acl.domains.users.controllers.views
 
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper
+import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormView
-import com.example.acl.frontend.components.AbstractInput
-import com.example.acl.frontend.components.AutoCompleteCombobox
-import com.example.acl.frontend.components.AutoCompleteTextField
+import com.example.acl.frontend.components.*
 import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
-import com.example.acl.frontend.components.GenericValueInput
 import com.example.acl.frontend.utils.Notifications
 import com.example.auth.enums.Genders
 import com.vaadin.componentfactory.Autocomplete
-import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
-import com.vaadin.flow.component.combobox.ComboBox
-import com.vaadin.flow.component.combobox.GeneratedVaadinComboBox
+import com.vaadin.flow.data.provider.CallbackDataProvider
+import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
-import com.vaadin.flow.data.provider.Query
-import com.vaadin.flow.function.SerializablePredicate
-import java.util.stream.Stream
 
 class UserFormView(
 	private val userService: UserService,
-	private val userMapper: UserMapper
+	private val userMapper: UserMapper,
+	private val roleService: RoleService
 ) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java) {
 	private var selectedItem: UserUpdateAdminDto? = null
+	private var rolesInput: InputGroup<String, Long>
 
 	init {
+		this.rolesInput = InputGroup<String, Long>("roleIds", "Roles")
+			.withDataProvider(
+				{
+					roleService.findAll().map { it.name to it.id }.stream()
+				},
+				{ roleService.findAll().count() }
+			).withValueChangeListener { e ->
+				if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
+				this.selectedItem!!.roleIds = e.value.map { it.second }
+			}.setDefaultValues(
+				getDefaultRoles()
+			)
+
+
 		this.initForm(mutableMapOf())
 	}
 
@@ -44,12 +54,20 @@ class UserFormView(
 			"enabled" to GenericValueInput("enabled", "Enabled"),
 			"accountNonLocked" to GenericValueInput("accountNonLocked", "Account Non Locked"),
 			"accountNonExpired" to GenericValueInput("accountNonExpired", "Account Non Expired"),
-			"credentialsNonExpired" to GenericValueInput("credentialsNonExpired", "Credentials Non Expired")
+			"credentialsNonExpired" to GenericValueInput("credentialsNonExpired", "Credentials Non Expired"),
+			"roleIds" to this.rolesInput
 		)
 	}
 
-	override fun getDefaultSelectValues(): Map<String, String> {
+	private fun getDefaultRoles(): List<Pair<String, Long>> {
+		val user = this.selectedItem ?: return mutableListOf()
+		val roles = roleService.findByIds(user.roleIds)
+		return roles.map { it.name to it.id }
+	}
+
+	override fun getDefaultSingleSelectionValues(): Map<String, String> {
 		val item = this.selectedItem
+
 		return if (item == null) mapOf() else mapOf(
 			"gender" to item.gender.name
 		)
@@ -80,6 +98,7 @@ class UserFormView(
 
 	override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
 		this.selectedItem = item
+		this.rolesInput.setDefaultValues(this.getDefaultRoles())
 		item?.password = ""
 		this.getBinder().readBean(item)
 		this.setSelected(true)

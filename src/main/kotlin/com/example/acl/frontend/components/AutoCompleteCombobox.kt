@@ -85,7 +85,7 @@ class AutoCompleteCombobox<T> : AbstractInput {
 		return this.defaultValue
 	}
 
-	override fun getComponent(): AbstractField<*, *>? {
+	override fun getComponent(): AbstractField<*, *> {
 		return this.component
 	}
 

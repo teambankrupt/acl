@@ -68,10 +68,10 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	fun setSelected(selected: Boolean) {
 		this.hasSelectedItem = selected
 		this.resolveBtnState(this.btnSave, this.btnCancel)
-		this.setDefaultSelectFieldValues(this.getDefaultSelectValues())
+		this.setDefaultSelectFieldValues(this.getDefaultSingleSelectionValues())
 	}
 
-	abstract fun getDefaultSelectValues(): Map<String, String>
+	abstract fun getDefaultSingleSelectionValues(): Map<String, String>
 
 	private fun setDefaultSelectFieldValues(choosableValues: Map<String, String>) {
 		choosableValues.forEach {
@@ -248,7 +248,6 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		// clear forms
 		this.formLayout.removeAll()
 		this.choosableValues.clear()
-
 
 		this.inputComponents = this.inputComponents.mapValues {
 			it.value.isReadOnly = !this.editMode
