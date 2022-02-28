@@ -2,7 +2,6 @@ package com.example.acl.frontend.base
 
 import com.example.acl.frontend.components.AbstractInput
 import com.example.acl.frontend.components.GenericValueInput
-import com.sun.xml.bind.v2.schemagen.episode.Klass
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.HasStyle
@@ -12,6 +11,7 @@ import com.vaadin.flow.component.checkbox.Checkbox
 import com.vaadin.flow.component.datepicker.DatePicker
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.component.html.Span
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.select.Select
 import com.vaadin.flow.component.textfield.EmailField
@@ -19,10 +19,10 @@ import com.vaadin.flow.component.textfield.NumberField
 import com.vaadin.flow.component.textfield.PasswordField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
+import com.vaadin.flow.data.binder.Validator
 import java.lang.reflect.Field
 import java.time.Instant
 import java.util.*
-import javax.validation.constraints.Email
 
 abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var klass: Class<T>
@@ -38,6 +38,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var buttonLayout: HorizontalLayout
 	lateinit var btnSave: Button
 	lateinit var btnCancel: Button
+	private var errorMsgLayout: Div = Div()
 
 	var itemPersistenceListener: ItemPersistenceListener<T>? = null
 
@@ -46,6 +47,13 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		this.binder = Binder<T>(klass)
 		this.choosableValues = mutableMapOf()
 		this.inputComponents = mutableMapOf()
+
+		this.errorMsgLayout.isVisible = false
+		val errTitle = Span("Validation Errors")
+		errTitle.element.themeList.add("badge error")
+		this.errorMsgLayout.add(errTitle)
+		this.add(errorMsgLayout)
+
 		this.formLayout = FormLayout()
 
 		this.buttonLayout = this.createButtonLayout()
@@ -81,9 +89,9 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		}
 	}
 
-	abstract fun defineFormFields(): Map<String, AbstractInput>?
+	abstract fun defineFormFields(): Map<String, AbstractInput<T>>?
 
-	fun createFormInputs(formFields: Map<String, AbstractInput>?): MutableMap<String, AbstractField<*, *>> {
+	fun createFormInputs(formFields: Map<String, AbstractInput<T>>?): MutableMap<String, AbstractField<*, *>> {
 		val showAllFields = formFields.isNullOrEmpty()
 		val inputComponents: MutableMap<String, AbstractField<*, *>> = mutableMapOf()
 
@@ -104,7 +112,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			}
 		} else {
 			this.fields.forEach {
-				inputComponents[it.name] = this.createInput(it, GenericValueInput(it.name, it.name))
+				inputComponents[it.name] = this.createInput(it, GenericValueInput(it.name, it.name, null))
 			}
 		}
 
@@ -112,7 +120,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 
-	private fun createInput(field: Field, ai: AbstractInput): AbstractField<*, *> {
+	private fun createInput(field: Field, ai: AbstractInput<T>): AbstractField<*, *> {
 
 		val component = ai.getComponent()
 		if (component != null) {
@@ -130,18 +138,18 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			input.addValueChangeListener {
 				this.choosableValues[field.name] = it.value
 			}
-			this.configure(field, input, false)
+			this.configure(field, input, ai, false)
 //			binder.forField(input)
 //				.withConverter(StringToEnumConverter(field.type))
 //				.bind(field.name)
 			return input
 		} else if (field.type == Instant::class.java) {
 			val input = DatePicker(ai.getLabel())
-			this.configure(field, input, true)
+			this.configure(field, input, ai, true)
 			return input
 		} else if (field.type == Boolean::class.java) {
 			val input = Checkbox(ai.getLabel())
-			this.configure(field, input, true)
+			this.configure(field, input, ai, true)
 			return input
 		} else if (
 			field.type == Int::class.java
@@ -149,7 +157,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			|| field.type == Double::class.java
 		) {
 			val input = NumberField(ai.getLabel())
-			this.configure(field, input, true)
+			this.configure(field, input, ai, true)
 			return input
 		}
 
@@ -160,19 +168,19 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		else
 			TextField(ai.getLabel())
 
-		input.setId(field.name)
-		input.isReadOnly = !this.editMode
-		(input as HasStyle).addClassName("full-width")
-		binder.bind(input, field.name)
+		this.configure(field, input, ai, true)
 		return input
 	}
 
-	fun configure(field: Field, input: AbstractField<*, *>, bind: Boolean) {
+	fun configure(field: Field, input: AbstractField<*, *>, ai: AbstractInput<T>, bind: Boolean) {
 		input.setId(field.name)
 		input.isReadOnly = !this.editMode
 		(input as HasStyle).addClassName("full-width")
-		if (bind)
+		if (bind) {
+			if (ai.getValidator() != null)
+				binder.withValidator(Validator.from(ai.getValidator(), ai.getErrorView().message))
 			binder.bind(input, field.name)
+		}
 	}
 
 	private fun createButtonLayout(): HorizontalLayout {
@@ -209,22 +217,46 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 	private fun onButtonClicked(btnId: Optional<String>, event: ClickEvent<Button>) {
-		btnId.ifPresent {
+		if (!btnId.isPresent) return
 
-			if (this.editMode) {
-				if (it == "id_save") {
-					this.onSaveAction(event, this.choosableValues)
-				} else if (it == "id_cancel") {
-					this.onCancelAction(event)
-				}
+		if (this.editMode) {
+			if (btnId.get() == "id_save") {
+				if (this.validateBean())
+					return
+				this.onSaveAction(event, this.choosableValues)
+			} else if (btnId.get() == "id_cancel") {
+				this.errorMsgLayout.removeAll()
+				this.errorMsgLayout.isVisible = false
+				this.onCancelAction(event)
 			}
-
-			this.editMode = !this.editMode
-			this.reInitializeLayout()
-
 		}
 
+		this.editMode = !this.editMode
+		this.reInitializeLayout()
+
+
 	}
+
+	private fun validateBean(): Boolean {
+		this.getBinder().bean = this.getBean()
+		val result = this.getBinder().validate()
+		val hasErrors = result.hasErrors()
+		if (hasErrors) {
+			this.errorMsgLayout.isVisible = true
+			result.validationErrors.forEach {
+				val msg = Span()
+				msg.element.setProperty("innerHTML", "<br/>* " + it.errorMessage)
+				msg.addClassName("text-error")
+				this.errorMsgLayout.add(msg)
+			}
+		} else {
+			this.errorMsgLayout.removeAll()
+			this.errorMsgLayout.isVisible = false
+		}
+		return hasErrors
+	}
+
+	abstract fun getBean(): T
 
 	abstract fun onSaveAction(event: ClickEvent<Button>, dropdownValues: MutableMap<String, String>)
 	abstract fun onCancelAction(event: ClickEvent<Button>)

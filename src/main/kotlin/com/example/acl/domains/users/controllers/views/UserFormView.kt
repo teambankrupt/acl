@@ -12,49 +12,50 @@ import com.example.auth.enums.Genders
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
+import com.vaadin.flow.data.binder.ValidationException
 import com.vaadin.flow.data.provider.CallbackDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
 class UserFormView(
-	private val userService: UserService,
-	private val userMapper: UserMapper,
-	private val roleService: RoleService
+	private val userService: UserService, private val userMapper: UserMapper, private val roleService: RoleService
 ) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java) {
 	private var selectedItem: UserUpdateAdminDto? = null
-	private var rolesInput: InputGroup<String, Long>
+	private var rolesInput: InputGroup<UserUpdateAdminDto, String, Long>
 
 	init {
-		this.rolesInput = InputGroup<String, Long>("roleIds", "Roles")
-			.withDataProvider(
-				{
-					roleService.findAll().map { it.name to it.id }.stream()
-				},
-				{ roleService.findAll().count() }
-			).withValueChangeListener { e ->
-				if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
-				this.selectedItem!!.roleIds = e.value.map { it.second }
-			}.setDefaultValues(
-				getDefaultRoles()
-			)
+		this.rolesInput = InputGroup<UserUpdateAdminDto, String, Long>("roleIds", "Roles").withDataProvider({
+			roleService.findAll().map { it.name to it.id }.stream()
+		}, { roleService.findAll().count() }).withValueChangeListener { e ->
+			if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
+			this.selectedItem!!.roleIds = e.value.map { it.second }
+		}.setDefaultValues(
+			getDefaultRoles()
+		)
 
 
 		this.initForm(mutableMapOf())
 	}
 
-	override fun defineFormFields(): Map<String, AbstractInput>? {
+	override fun defineFormFields(): Map<String, AbstractInput<UserUpdateAdminDto>>? {
 		return mapOf(
-			"avatar" to GenericValueInput("avatar", "Avatar"),
-			"name" to GenericValueInput("name", "Name"),
-			"username" to GenericValueInput("username", "Username"),
-			"password" to GenericValueInput("password", "Password"),
-			"gender" to GenericValueInput("gender", "Gender"),
-			"email" to GenericValueInput("email", "Email"),
-			"phone" to GenericValueInput("phone", "Phone"),
-			"enabled" to GenericValueInput("enabled", "Enabled"),
-			"accountNonLocked" to GenericValueInput("accountNonLocked", "Account Non Locked"),
-			"accountNonExpired" to GenericValueInput("accountNonExpired", "Account Non Expired"),
-			"credentialsNonExpired" to GenericValueInput("credentialsNonExpired", "Credentials Non Expired"),
+			"avatar" to GenericValueInput<UserUpdateAdminDto>("avatar", "Avatar") {
+				!it.avatar.isNullOrBlank()
+			},
+			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name", null),
+			"username" to GenericValueInput<UserUpdateAdminDto>("username", "Username", null),
+			"password" to GenericValueInput<UserUpdateAdminDto>("password", "Password", null),
+			"gender" to GenericValueInput<UserUpdateAdminDto>("gender", "Gender", null),
+			"email" to GenericValueInput<UserUpdateAdminDto>("email", "Email", null),
+			"phone" to GenericValueInput<UserUpdateAdminDto>("phone", "Phone", null),
+			"enabled" to GenericValueInput<UserUpdateAdminDto>("enabled", "Enabled", null),
+			"accountNonLocked" to GenericValueInput<UserUpdateAdminDto>("accountNonLocked", "Account Non Locked", null),
+			"accountNonExpired" to GenericValueInput<UserUpdateAdminDto>(
+				"accountNonExpired", "Account Non Expired", null
+			),
+			"credentialsNonExpired" to GenericValueInput<UserUpdateAdminDto>(
+				"credentialsNonExpired", "Credentials Non Expired", null
+			),
 			"roleIds" to this.rolesInput
 		)
 	}
@@ -73,8 +74,8 @@ class UserFormView(
 		)
 	}
 
-	private fun getGenderInput(): AutoCompleteTextField {
-		val genderInput = AutoCompleteTextField("gender", "Gender")
+	private fun getGenderInput(): AutoCompleteTextField<UserUpdateAdminDto> {
+		val genderInput = AutoCompleteTextField<UserUpdateAdminDto>("gender", "Gender", null)
 		val listener = object : AcListener {
 			override fun onAcChange(event: Autocomplete.AucompleteChangeEvent) {
 				val users = userService.search(event.value, 0, 5)
@@ -106,6 +107,7 @@ class UserFormView(
 
 	override fun onSaveAction(event: ClickEvent<Button>, dropdownValues: MutableMap<String, String>) {
 		val dto = this.selectedItem ?: UserUpdateAdminDto()
+
 		getBinder().writeBean(dto)
 
 		val genderStr = dropdownValues["gender"] ?: Genders.NOT_SPECIFIED.name
@@ -122,6 +124,10 @@ class UserFormView(
 
 	override fun onCancelAction(event: ClickEvent<Button>) {
 		println(event.toString())
+	}
+
+	override fun getBean(): UserUpdateAdminDto {
+		return this.selectedItem ?: UserUpdateAdminDto()
 	}
 
 

@@ -1,57 +1,71 @@
 package com.example.acl.frontend.components
 
+import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.AbstractField
-import com.vaadin.flow.component.Component
+import com.vaadin.flow.function.SerializablePredicate
 import java.util.*
 
-class GenericValueInput : AbstractInput {
-	private var label: String
-	private var placeholder: String
-	private var fieldName: String
-	private var defaultValue: String? = null
+open class GenericValueInput<T> : AbstractInput<T> {
+	protected var iLabel: String
+	protected var iPlaceholder: String
+	protected var iFieldName: String
+	protected var iDefaultValue: String? = null
+	protected var iValidator: SerializablePredicate<T>? = null
 
 	constructor(
 		fieldName: String,
-		label: String
+		label: String,
+		validator: SerializablePredicate<T>?
 	) {
 		val title =
 			fieldName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-		this.label = title
-		this.placeholder = title
-		this.fieldName = fieldName
-		this.label = label
+		this.iLabel = title
+		this.iPlaceholder = title
+		this.iFieldName = fieldName
+		this.iLabel = label
+		this.iValidator = validator
 	}
 
 	constructor(
 		fieldName: String,
 		label: String,
 		placeholder: String,
-		defaultValue: String?
+		defaultValue: String?,
+		validator: SerializablePredicate<T>?
 	) {
-		this.fieldName = fieldName
-		this.label = label
-		this.placeholder = placeholder
-		this.defaultValue = defaultValue
+		this.iFieldName = fieldName
+		this.iLabel = label
+		this.iPlaceholder = placeholder
+		this.iDefaultValue = defaultValue
+		this.iValidator = validator
 	}
 
 	override fun getLabel(): String {
-		return this.label
+		return this.iLabel
 	}
 
 	override fun getPlaceholder(): String {
-		return this.placeholder
+		return this.iPlaceholder
 	}
 
 	override fun getFieldName(): String {
-		return this.fieldName
+		return this.iFieldName
 	}
 
 	override fun getDefaultValue(): String? {
-		return this.defaultValue
+		return this.iDefaultValue
 	}
 
 	override fun getComponent(): AbstractField<*, *>? {
 		return null
+	}
+
+	override fun getValidator(): SerializablePredicate<T>? {
+		return this.iValidator
+	}
+
+	override fun getErrorView(): ErrorView {
+		return ErrorView("Input not valid!")
 	}
 
 }

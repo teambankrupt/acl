@@ -1,12 +1,14 @@
 package com.example.acl.frontend.components
 
+import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.checkbox.CheckboxGroup
 import com.vaadin.flow.data.provider.CallbackDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.selection.MultiSelectionEvent
+import com.vaadin.flow.function.SerializablePredicate
 
-class InputGroup<L, V> : AbstractInput {
+class InputGroup<B, L, V> : AbstractInput<B> {
 	private var label: String
 	private var placeholder: String
 	private var fieldName: String
@@ -36,12 +38,12 @@ class InputGroup<L, V> : AbstractInput {
 		this.component.label = this.label
 	}
 
-	fun withItems(values: List<Pair<L, V>>): InputGroup<L, V> {
+	fun withItems(values: List<Pair<L, V>>): InputGroup<B, L, V> {
 		this.component.setItems(values)
 		return this
 	}
 
-	fun setDefaultValues(values: List<Pair<L, V>>): InputGroup<L, V> {
+	fun setDefaultValues(values: List<Pair<L, V>>): InputGroup<B, L, V> {
 		this.component.clear()
 		this.component.select(values)
 		return this
@@ -50,7 +52,7 @@ class InputGroup<L, V> : AbstractInput {
 	fun withDataProvider(
 		fetchCallback: CallbackDataProvider.FetchCallback<Pair<L, V>, Void>,
 		countCallback: CallbackDataProvider.CountCallback<Pair<L, V>, Void>
-	): InputGroup<L, V> {
+	): InputGroup<B, L, V> {
 		val provider = DataProvider.fromCallbacks(fetchCallback, countCallback)
 		this.component.setItems(provider)
 		this.component.setItemLabelGenerator { it.first.toString() }
@@ -59,7 +61,7 @@ class InputGroup<L, V> : AbstractInput {
 
 	fun withValueChangeListener(
 		valueChangeListener: (e: AbstractField.ComponentValueChangeEvent<CheckboxGroup<Pair<L, V>>, Set<Pair<L, V>>>) -> Unit
-	): InputGroup<L, V> {
+	): InputGroup<B, L, V> {
 		this.component.addValueChangeListener {
 			valueChangeListener(it)
 		}
@@ -68,7 +70,7 @@ class InputGroup<L, V> : AbstractInput {
 
 	fun withSelectionListener(
 		selectionListener: (e: MultiSelectionEvent<CheckboxGroup<Pair<L, V>>, Pair<L, V>>) -> Unit
-	): InputGroup<L, V> {
+	): InputGroup<B, L, V> {
 		this.component.addSelectionListener {
 			selectionListener(it)
 		}
@@ -94,6 +96,14 @@ class InputGroup<L, V> : AbstractInput {
 
 	override fun getComponent(): AbstractField<*, *> {
 		return this.component
+	}
+
+	override fun getValidator(): SerializablePredicate<B>? {
+		TODO("Not yet implemented")
+	}
+
+	override fun getErrorView(): ErrorView {
+		TODO("Not yet implemented")
 	}
 
 }

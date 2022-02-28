@@ -2,24 +2,19 @@ package com.example.acl.frontend.components
 
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.AbstractField
-import com.vaadin.flow.component.Component
+import com.vaadin.flow.function.SerializablePredicate
 
-class AutoCompleteTextField : AbstractInput {
-	private var label: String
-	private var placeholder: String
-	private var fieldName: String
-	private var defaultValue: String? = null
+class AutoCompleteTextField<B> : GenericValueInput<B> {
+
 	private var component: Autocomplete
 
 	private var acListener: AcListener? = null
 
 	constructor(
 		fieldName: String,
-		label: String
-	) {
-		this.fieldName = fieldName
-		this.label = label
-		this.placeholder = label
+		label: String,
+		validator: SerializablePredicate<B>?
+	) : super(fieldName, label, validator) {
 		this.component = Autocomplete(5)
 		this.setUpAutocomplete()
 	}
@@ -28,12 +23,9 @@ class AutoCompleteTextField : AbstractInput {
 		fieldName: String,
 		label: String,
 		placeholder: String,
-		defaultValue: String?
-	) {
-		this.fieldName = fieldName
-		this.label = label
-		this.placeholder = placeholder
-		this.defaultValue = defaultValue
+		defaultValue: String?,
+		validator: SerializablePredicate<B>?
+	) : super(fieldName, label, placeholder, defaultValue, validator) {
 		this.component = Autocomplete(5)
 		this.setUpAutocomplete()
 	}
@@ -43,8 +35,8 @@ class AutoCompleteTextField : AbstractInput {
 	}
 
 	private fun setUpAutocomplete() {
-		this.component.label = this.label
-		this.component.setPlaceholder(this.placeholder)
+		this.component.label = this.iLabel
+		this.component.setPlaceholder(this.iPlaceholder)
 		this.component.addChangeListener {
 			if (this.acListener != null)
 				this.acListener!!.onAcChange(it)
@@ -63,21 +55,6 @@ class AutoCompleteTextField : AbstractInput {
 		this.component.options = options
 	}
 
-	override fun getLabel(): String {
-		return this.label
-	}
-
-	override fun getPlaceholder(): String {
-		return this.placeholder
-	}
-
-	override fun getFieldName(): String {
-		return this.fieldName
-	}
-
-	override fun getDefaultValue(): String? {
-		return this.defaultValue
-	}
 
 	override fun getComponent(): AbstractField<*, *>? {
 		return null
