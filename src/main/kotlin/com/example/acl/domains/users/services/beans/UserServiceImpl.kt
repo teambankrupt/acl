@@ -16,6 +16,7 @@ import com.example.common.exceptions.invalid.InvalidException
 import com.example.common.exceptions.notfound.NotFoundException
 import com.example.common.exceptions.notfound.UserNotFoundException
 import com.example.common.exceptions.unknown.UnknownException
+import com.example.common.utils.DateUtil
 import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.SessionIdentifierGenerator
 import com.example.common.utils.Validator
@@ -301,6 +302,30 @@ open class UserServiceImpl @Autowired constructor(
         cur.available = true
         cur.reason = "Available"
         return cur
+    }
+
+    override fun getGrowthStats(period: DateUtil.Periods): LinkedHashMap<String, Any> {
+        val dateRange = DateUtil.buildDateRange(period)
+        val fromDate = dateRange[DateUtil.DateRangeType.DATE_FROM]!!.time;
+        val toDate = dateRange[DateUtil.DateRangeType.DATE_TO]!!.time;
+        val dates: Collection<Date> = when (period) {
+            DateUtil.Periods.TODAY -> DateUtil.getDatesBetween(fromDate, toDate)
+            DateUtil.Periods.THIS_WEEK -> DateUtil.getWeeksBetween(fromDate, toDate)
+            DateUtil.Periods.THIS_MONTH -> DateUtil.getMonthBetween(fromDate, toDate)
+            else -> DateUtil.getMonthBetween(fromDate, toDate)
+        }
+
+        val map = LinkedHashMap<String, Any>()
+        dates.forEach {
+            val total = this.userRepository.countByDateRange(fromDate.toInstant(), toDate.toInstant())
+            when (period) {
+                DateUtil.Periods.TODAY -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_DAY_MONTH_NAME)] = total
+                DateUtil.Periods.THIS_WEEK -> map[DateUtil.getDateType(it)] = total
+                DateUtil.Periods.THIS_MONTH -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE)] = total
+                else -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE_MONTH_YEAR)] = total
+            }
+        }
+        return map
     }
 
 }

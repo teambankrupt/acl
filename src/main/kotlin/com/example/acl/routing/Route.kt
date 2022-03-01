@@ -37,6 +37,8 @@ class Route {
             const val FIND_ME = "$API$VERSION/users/me"
             const val UPDATE_AVATAR = "$API$VERSION/users/me/update-avatar"
 
+            // User Admin Statistics
+            const val ADMIN_USERS_GROWTH_STATS = "$API$VERSION$ADMIN/users/growth"
 
             // Profiles
             const val SEARCH_PROFILES = "$API$VERSION/profiles"
