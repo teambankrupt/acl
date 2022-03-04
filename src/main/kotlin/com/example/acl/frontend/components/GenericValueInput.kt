@@ -2,6 +2,7 @@ package com.example.acl.frontend.components
 
 import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.AbstractField
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.function.SerializablePredicate
 import java.util.*
 
@@ -56,7 +57,7 @@ open class GenericValueInput<T> : AbstractInput<T> {
 		return this.iDefaultValue
 	}
 
-	override fun getComponent(): AbstractField<*, *>? {
+	override fun getComponent(): Component? {
 		return null
 	}
 
@@ -65,7 +66,7 @@ open class GenericValueInput<T> : AbstractInput<T> {
 	}
 
 	override fun getErrorView(): ErrorView {
-		return ErrorView("Input not valid!")
+		return ErrorView(this.iLabel+ " input is invalid!")
 	}
 
 }

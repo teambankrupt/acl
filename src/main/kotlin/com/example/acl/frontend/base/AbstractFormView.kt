@@ -4,6 +4,7 @@ import com.example.acl.frontend.components.AbstractInput
 import com.example.acl.frontend.components.GenericValueInput
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasStyle
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -34,7 +35,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var choosableValues: MutableMap<String, String>
 
 	private var formLayout: FormLayout
-	private var inputComponents: MutableMap<String, AbstractField<*, *>>
+	private var inputComponents: MutableMap<String, Component>
 	private var buttonLayout: HorizontalLayout
 	lateinit var btnSave: Button
 	lateinit var btnCancel: Button
@@ -60,7 +61,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 
-	fun initForm(components: MutableMap<String, AbstractField<*, *>>) {
+	fun initForm(components: MutableMap<String, Component>) {
 		val formFields = this.defineFormFields()
 		this.inputComponents = components.ifEmpty { this.createFormInputs(formFields) }
 		this.inputComponents.forEach { this.formLayout.add(it.value) }
@@ -91,9 +92,9 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 	abstract fun defineFormFields(): Map<String, AbstractInput<T>>?
 
-	fun createFormInputs(formFields: Map<String, AbstractInput<T>>?): MutableMap<String, AbstractField<*, *>> {
+	fun createFormInputs(formFields: Map<String, AbstractInput<T>>?): MutableMap<String, Component> {
 		val showAllFields = formFields.isNullOrEmpty()
-		val inputComponents: MutableMap<String, AbstractField<*, *>> = mutableMapOf()
+		val inputComponents: MutableMap<String, Component> = mutableMapOf()
 
 		this.className = "flex flex-col space-s"
 		this.width = "400px"
@@ -120,12 +121,13 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	}
 
 
-	private fun createInput(field: Field, ai: AbstractInput<T>): AbstractField<*, *> {
+	private fun createInput(field: Field, ai: AbstractInput<T>): Component {
 
 		val component = ai.getComponent()
 		if (component != null) {
 			component.setId(field.name)
-			component.isReadOnly = !this.editMode
+			if (component is AbstractField<*, *>)
+				component.isReadOnly = !this.editMode
 //			binder.bind(component,field.name)
 			return component
 		}
@@ -231,10 +233,19 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			}
 		}
 
-		this.editMode = !this.editMode
+		this.setEditMode(!this.editMode)
 		this.reInitializeLayout()
 
 
+	}
+
+	fun setEditMode(editMode: Boolean) {
+		this.editMode = editMode
+		this.onEditModeChange(editMode)
+	}
+
+	fun isEditMode(): Boolean {
+		return this.editMode
 	}
 
 	private fun validateBean(): Boolean {
@@ -259,6 +270,9 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	abstract fun getBean(): T
 
 	abstract fun onSaveAction(event: ClickEvent<Button>, dropdownValues: MutableMap<String, String>)
+
+	abstract fun onEditModeChange(editMode: Boolean)
+
 	abstract fun onCancelAction(event: ClickEvent<Button>)
 
 	private fun resolveBtnState(vararg buttons: Button) {
@@ -282,8 +296,10 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		this.choosableValues.clear()
 
 		this.inputComponents = this.inputComponents.mapValues {
-			it.value.isReadOnly = !this.editMode
-			it.value
+			val v = it.value
+			if (v is AbstractField<*, *>)
+				v.isReadOnly = !this.editMode
+			v
 		}.toMutableMap()
 		this.inputComponents.forEach { this.formLayout.add(it.value) }
 

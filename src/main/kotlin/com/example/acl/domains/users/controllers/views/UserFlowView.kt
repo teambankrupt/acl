@@ -8,18 +8,20 @@ import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.base.AbstractFlowView
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.layouts.MainLayout
+import com.example.cms.domains.fileuploads.services.FileUploadService
 import com.vaadin.flow.router.Route
 
 @Route("/users/:username?/:action?(edit)", layout = MainLayout::class)
 class UserFlowView(
 	userService: UserService,
 	userMapper: UserMapper,
-	roleService: RoleService
+	roleService: RoleService,
+	uploadService: FileUploadService
 ) : AbstractFlowView<UserUpdateAdminDto>() {
 
 	init {
 		val browseView = UserBrowseView(userService, userMapper)
-		val formView = UserFormView(userService, userMapper, roleService)
+		val formView = UserFormView(userService, userMapper, roleService, uploadService)
 
 		browseView.setItemSelectionListener(object : AbstractBrowseView.ItemSelectionListener<UserUpdateAdminDto> {
 			override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {

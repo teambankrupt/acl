@@ -7,8 +7,12 @@ import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.components.*
 import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
+import com.example.acl.frontend.models.FileDefinition
 import com.example.acl.frontend.utils.Notifications
+import com.example.auth.config.security.SecurityContext
 import com.example.auth.enums.Genders
+import com.example.cms.domains.fileuploads.models.entities.UploadProperties
+import com.example.cms.domains.fileuploads.services.FileUploadService
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
@@ -18,13 +22,18 @@ import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
 
 class UserFormView(
-	private val userService: UserService, private val userMapper: UserMapper, private val roleService: RoleService
-) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java) {
+	private val userService: UserService,
+	private val userMapper: UserMapper,
+	private val roleService: RoleService,
+	private val fileUploadService: FileUploadService
+) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java), UploadInput.FileUploadListener {
 	private var selectedItem: UserUpdateAdminDto? = null
+	private var avatarUrl: String? = null
 	private var rolesInput: InputGroup<UserUpdateAdminDto, String, Long>
+	private var avatarUpload: UploadInput<UserUpdateAdminDto>
 
 	init {
-		this.rolesInput = InputGroup<UserUpdateAdminDto, String, Long>("roleIds", "Roles").withDataProvider({
+		this.rolesInput = InputGroup<UserUpdateAdminDto, String, Long>("roleIds", "Roles") { true }.withDataProvider({
 			roleService.findAll().map { it.name to it.id }.stream()
 		}, { roleService.findAll().count() }).withValueChangeListener { e ->
 			if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
@@ -33,15 +42,25 @@ class UserFormView(
 			getDefaultRoles()
 		)
 
+		this.avatarUpload = UploadInput<UserUpdateAdminDto>(
+			"avatar",
+			"Avatar",
+			{ true },
+			this.fileUploadService,
+			FileDefinition("png", "uploads", SecurityContext.getLoggedInUsername()),
+			this,
+			false
+		)
 
 		this.initForm(mutableMapOf())
 	}
 
 	override fun defineFormFields(): Map<String, AbstractInput<UserUpdateAdminDto>>? {
 		return mapOf(
-			"avatar" to GenericValueInput<UserUpdateAdminDto>("avatar", "Avatar") {
-				!it.avatar.isNullOrBlank()
-			},
+//			"avatar" to GenericValueInput<UserUpdateAdminDto>("avatar", "Avatar") {
+//				!it.avatar.isNullOrBlank()
+//			},
+			"avatar" to this.avatarUpload,
 			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name", null),
 			"username" to GenericValueInput<UserUpdateAdminDto>("username", "Username", null),
 			"password" to GenericValueInput<UserUpdateAdminDto>("password", "Password", null),
@@ -110,16 +129,24 @@ class UserFormView(
 
 		getBinder().writeBean(dto)
 
+		// Prepare dto
 		val genderStr = dropdownValues["gender"] ?: Genders.NOT_SPECIFIED.name
 		dto.gender = Genders.valueOf(genderStr)
+		dto.avatar = this.avatarUrl
+
+		// save entity
 		val exUser = this.selectedItem?.id?.let { this.userService.find(it).orElse(null) }
 		val user = this.userService.save(this.userMapper.map(dto, exUser))
-		this.selectedItem = this.userMapper.mapToAdminDto(user)
 
+		// update ui
+		this.selectedItem = this.userMapper.mapToAdminDto(user)
 		this.getBinder().writeBean(this.selectedItem)
 
 		this.itemPersistenceListener?.onItemPersisted(this.selectedItem)
 		Notifications.success("Successfully saved ${user.name} !")
+
+		// avatar upload state
+		this.avatarUpload.setEnabled(this.isEditMode())
 	}
 
 	override fun onCancelAction(event: ClickEvent<Button>) {
@@ -128,6 +155,15 @@ class UserFormView(
 
 	override fun getBean(): UserUpdateAdminDto {
 		return this.selectedItem ?: UserUpdateAdminDto()
+	}
+
+	override fun onFileUploaded(properties: UploadProperties, contentLength: Long, mimeType: String) {
+		this.avatarUrl = properties.fileUrl
+		Notifications.success("File ${properties.fileName} is uploaded")
+	}
+
+	override fun onEditModeChange(editMode: Boolean) {
+		this.avatarUpload.setEnabled(editMode)
 	}
 
 
