@@ -45,7 +45,7 @@ class UserFormView(
 		this.avatarUpload = UploadInput<UserUpdateAdminDto>(
 			"avatar",
 			"Avatar",
-			{ true },
+			{ !it.avatar.isNullOrBlank() },
 			this.fileUploadService,
 			FileDefinition("png", "uploads", SecurityContext.getLoggedInUsername()),
 			this,
@@ -61,7 +61,7 @@ class UserFormView(
 //				!it.avatar.isNullOrBlank()
 //			},
 			"avatar" to this.avatarUpload,
-			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name", null),
+			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name") { it.name.length > 10 },
 			"username" to GenericValueInput<UserUpdateAdminDto>("username", "Username", null),
 			"password" to GenericValueInput<UserUpdateAdminDto>("password", "Password", null),
 			"gender" to GenericValueInput<UserUpdateAdminDto>("gender", "Gender", null),

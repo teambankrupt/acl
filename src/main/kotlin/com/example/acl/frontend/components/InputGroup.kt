@@ -108,7 +108,7 @@ class InputGroup<B, L, V> : AbstractInput<B> {
 	}
 
 	override fun getErrorView(): ErrorView {
-		return ErrorView(this.label+" input is invalid.")
+		return ErrorView(this.fieldName to "input is invalid.")
 	}
 
 }

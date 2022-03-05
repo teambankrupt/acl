@@ -64,7 +64,11 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	fun initForm(components: MutableMap<String, Component>) {
 		val formFields = this.defineFormFields()
 		this.inputComponents = components.ifEmpty { this.createFormInputs(formFields) }
-		this.inputComponents.forEach { this.formLayout.add(it.value) }
+		this.inputComponents.forEach {
+			this.formLayout.add(it.value)
+			if (it.value is Span)
+				it.value.isVisible = false
+		}
 
 		this.add(this.formLayout, this.buttonLayout)
 
@@ -108,7 +112,8 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 			formFields!!.forEach {
 				val field = this.fields.find { f -> f.name == it.key }
 				if (field != null) {
-					inputComponents[field.name] = (this.createInput(field, it.value))
+					inputComponents[field.name] = this.createInput(field, it.value)
+					inputComponents[field.name + "-error-msg-view"] = it.value.getErrorView().span
 				}
 			}
 		} else {
@@ -180,7 +185,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		(input as HasStyle).addClassName("full-width")
 		if (bind) {
 			if (ai.getValidator() != null)
-				binder.withValidator(Validator.from(ai.getValidator(), ai.getErrorView().message))
+				binder.withValidator(Validator.from(ai.getValidator(), ai.getErrorView().getMessage()))
 			binder.bind(input, field.name)
 		}
 	}
@@ -253,7 +258,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		val result = this.getBinder().validate()
 		val hasErrors = result.hasErrors()
 		if (hasErrors) {
-			this.errorMsgLayout.isVisible = true
+			this.clearErrorMsg(true)
 			result.validationErrors.forEach {
 				val msg = Span()
 				msg.element.setProperty("innerHTML", "<br/>* " + it.errorMessage)
@@ -261,10 +266,14 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 				this.errorMsgLayout.add(msg)
 			}
 		} else {
-			this.errorMsgLayout.removeAll()
-			this.errorMsgLayout.isVisible = false
+			this.clearErrorMsg(false)
 		}
 		return hasErrors
+	}
+
+	fun clearErrorMsg(visible: Boolean) {
+		this.errorMsgLayout.removeAll()
+		this.errorMsgLayout.isVisible = visible
 	}
 
 	abstract fun getBean(): T

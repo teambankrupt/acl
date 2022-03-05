@@ -66,7 +66,7 @@ open class GenericValueInput<T> : AbstractInput<T> {
 	}
 
 	override fun getErrorView(): ErrorView {
-		return ErrorView(this.iLabel+ " input is invalid!")
+		return ErrorView(this.iFieldName to "input is invalid!")
 	}
 
 }
