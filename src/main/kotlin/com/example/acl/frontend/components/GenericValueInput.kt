@@ -1,7 +1,6 @@
 package com.example.acl.frontend.components
 
 import com.example.acl.frontend.views.ErrorView
-import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.function.SerializablePredicate
 import java.util.*
@@ -11,12 +10,12 @@ open class GenericValueInput<T> : AbstractInput<T> {
 	protected var iPlaceholder: String
 	protected var iFieldName: String
 	protected var iDefaultValue: String? = null
-	protected var iValidator: SerializablePredicate<T>? = null
+	protected var iValidator: SerializablePredicate<in Any>? = null
 
 	constructor(
 		fieldName: String,
 		label: String,
-		validator: SerializablePredicate<T>?
+		validator: SerializablePredicate<in Any>?
 	) {
 		val title =
 			fieldName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
@@ -32,7 +31,7 @@ open class GenericValueInput<T> : AbstractInput<T> {
 		label: String,
 		placeholder: String,
 		defaultValue: String?,
-		validator: SerializablePredicate<T>?
+		validator: SerializablePredicate<in Any>?
 	) {
 		this.iFieldName = fieldName
 		this.iLabel = label
@@ -61,7 +60,7 @@ open class GenericValueInput<T> : AbstractInput<T> {
 		return null
 	}
 
-	override fun getValidator(): SerializablePredicate<T>? {
+	override fun getValidator(): SerializablePredicate<in Any>? {
 		return this.iValidator
 	}
 

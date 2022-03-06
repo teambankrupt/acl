@@ -2,6 +2,9 @@ package com.example.acl.frontend.base
 
 import com.example.acl.frontend.components.AbstractInput
 import com.example.acl.frontend.components.GenericValueInput
+import com.example.acl.frontend.models.FormValidator
+import com.example.acl.frontend.models.enums.Delimiters
+import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.Component
@@ -20,7 +23,9 @@ import com.vaadin.flow.component.textfield.NumberField
 import com.vaadin.flow.component.textfield.PasswordField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
+import com.vaadin.flow.data.binder.ValidationResult
 import com.vaadin.flow.data.binder.Validator
+import com.vaadin.flow.function.SerializablePredicate
 import java.lang.reflect.Field
 import java.time.Instant
 import java.util.*
@@ -32,6 +37,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	private var hasSelectedItem: Boolean = false
 
 	private var binder: Binder<T>
+	private var binders: MutableList<Binder<T>> = mutableListOf()
 	private var choosableValues: MutableMap<String, String>
 
 	private var formLayout: FormLayout
@@ -77,6 +83,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 	fun getBinder(): Binder<T> {
 		return this.binder
 	}
+
 
 	fun setSelected(selected: Boolean) {
 		this.hasSelectedItem = selected
@@ -184,11 +191,23 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		input.isReadOnly = !this.editMode
 		(input as HasStyle).addClassName("full-width")
 		if (bind) {
-			if (ai.getValidator() != null)
-				binder.withValidator(Validator.from(ai.getValidator(), ai.getErrorView().getMessage()))
-			binder.bind(input, field.name)
+			// Form Validation
+			val fv = this.getFormValidator()
+			this.binder
+				.withValidator(Validator.from(fv.validator, fv.messageMap.toString()))
+				.bind(input, field.name)
+
+			// Field Validation
+			if (ai.getValidator() != null) {
+				val fieldBinder = Binder<T>(klass)
+				fieldBinder.forField(input).withValidator(ai.getValidator(), ai.getErrorView().getMessage())
+				fieldBinder.bind(input, field.name)
+				this.binders.add(fieldBinder)
+			}
 		}
 	}
+
+	abstract fun getFormValidator(): FormValidator<T>
 
 	private fun createButtonLayout(): HorizontalLayout {
 		val buttonLayout = HorizontalLayout()
@@ -228,7 +247,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 
 		if (this.editMode) {
 			if (btnId.get() == "id_save") {
-				if (this.validateBean())
+				if (!this.validateBean())
 					return
 				this.onSaveAction(event, this.choosableValues)
 			} else if (btnId.get() == "id_cancel") {
@@ -260,6 +279,7 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		if (hasErrors) {
 			this.clearErrorMsg(true)
 			result.validationErrors.forEach {
+				showValidationError(it)
 				val msg = Span()
 				msg.element.setProperty("innerHTML", "<br/>* " + it.errorMessage)
 				msg.addClassName("text-error")
@@ -268,12 +288,27 @@ abstract class AbstractFormView<T>(klass: Class<T>) : Div() {
 		} else {
 			this.clearErrorMsg(false)
 		}
-		return hasErrors
+		return true
+	}
+
+	fun showValidationError(result: ValidationResult) {
+//		val fieldName = it.errorMessage.split(Delimiters.COLON.value).first()
+//		val component = this.inputComponents[fieldName]
+		val c = this.inputComponents.filter { it.value is Span }
+			.map { it.value as Span }.firstOrNull { it.text == result.errorMessage }
+		c?.isVisible = true
+//		for (component in this.inputComponents) {
+//			if (component.value !is Span) continue
+//			val c = component.value as Span
+//			if (c.text == result.errorMessage)
+//				c.isVisible = true
+//		}
 	}
 
 	fun clearErrorMsg(visible: Boolean) {
 		this.errorMsgLayout.removeAll()
 		this.errorMsgLayout.isVisible = visible
+		this.inputComponents.filter { it is Span }.forEach { it.value.isVisible = false }
 	}
 
 	abstract fun getBean(): T

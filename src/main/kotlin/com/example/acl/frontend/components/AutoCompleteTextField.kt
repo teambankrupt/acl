@@ -13,7 +13,7 @@ class AutoCompleteTextField<B> : GenericValueInput<B> {
 	constructor(
 		fieldName: String,
 		label: String,
-		validator: SerializablePredicate<B>?
+		validator: SerializablePredicate<in Any>?
 	) : super(fieldName, label, validator) {
 		this.component = Autocomplete(5)
 		this.setUpAutocomplete()
@@ -24,7 +24,7 @@ class AutoCompleteTextField<B> : GenericValueInput<B> {
 		label: String,
 		placeholder: String,
 		defaultValue: String?,
-		validator: SerializablePredicate<B>?
+		validator: SerializablePredicate<in Any>?
 	) : super(fieldName, label, placeholder, defaultValue, validator) {
 		this.component = Autocomplete(5)
 		this.setUpAutocomplete()

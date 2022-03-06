@@ -14,12 +14,12 @@ class InputGroup<B, L, V> : AbstractInput<B> {
 	private var fieldName: String
 	private var defaultValues: List<V> = mutableListOf()
 	private var component: CheckboxGroup<Pair<L, V>>
-	private var iValidator: SerializablePredicate<B>? = null
+	private var iValidator: SerializablePredicate<in Any>? = null
 
 	constructor(
 		fieldName: String,
 		label: String,
-		validator: SerializablePredicate<B>
+		validator: SerializablePredicate<in Any>
 	) {
 		this.fieldName = fieldName
 		this.label = label
@@ -33,7 +33,7 @@ class InputGroup<B, L, V> : AbstractInput<B> {
 		fieldName: String,
 		label: String,
 		placeholder: String,
-		validator: SerializablePredicate<B>
+		validator: SerializablePredicate<in Any>
 	) {
 		this.fieldName = fieldName
 		this.label = label
@@ -103,7 +103,7 @@ class InputGroup<B, L, V> : AbstractInput<B> {
 		return this.component
 	}
 
-	override fun getValidator(): SerializablePredicate<B>? {
+	override fun getValidator(): SerializablePredicate<in Any>? {
 		return this.iValidator
 	}
 

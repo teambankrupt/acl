@@ -22,7 +22,7 @@ class UploadInput<T> : GenericValueInput<T> {
 	constructor(
 		fieldName: String,
 		label: String,
-		validator: SerializablePredicate<T>,
+		validator: SerializablePredicate<in Any>,
 		uploadService: FileUploadService,
 		fileDefinition: FileDefinition,
 		uploadListener: FileUploadListener?,
@@ -43,7 +43,7 @@ class UploadInput<T> : GenericValueInput<T> {
 		label: String,
 		placeholder: String,
 		defaultValue: String?,
-		validator: SerializablePredicate<T>,
+		validator: SerializablePredicate<in Any>,
 		uploadService: FileUploadService,
 		fileDefinition: FileDefinition,
 		uploadListener: FileUploadListener?,

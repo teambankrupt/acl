@@ -11,6 +11,6 @@ interface AbstractInput<T> {
 	fun getFieldName(): String
 	fun getDefaultValue(): String?
 	fun getComponent(): Component?
-	fun getValidator(): SerializablePredicate<T>?
+	fun getValidator(): SerializablePredicate<in Any>?
 	fun getErrorView(): ErrorView
 }

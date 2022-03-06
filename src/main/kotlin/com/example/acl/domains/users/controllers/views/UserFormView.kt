@@ -8,6 +8,7 @@ import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.components.*
 import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
 import com.example.acl.frontend.models.FileDefinition
+import com.example.acl.frontend.models.FormValidator
 import com.example.acl.frontend.utils.Notifications
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.enums.Genders
@@ -20,6 +21,7 @@ import com.vaadin.flow.data.binder.ValidationException
 import com.vaadin.flow.data.provider.CallbackDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.ListDataProvider
+import com.vaadin.flow.function.SerializablePredicate
 
 class UserFormView(
 	private val userService: UserService,
@@ -45,7 +47,7 @@ class UserFormView(
 		this.avatarUpload = UploadInput<UserUpdateAdminDto>(
 			"avatar",
 			"Avatar",
-			{ !it.avatar.isNullOrBlank() },
+			{ !(it as String?).isNullOrBlank() },
 			this.fileUploadService,
 			FileDefinition("png", "uploads", SecurityContext.getLoggedInUsername()),
 			this,
@@ -61,14 +63,18 @@ class UserFormView(
 //				!it.avatar.isNullOrBlank()
 //			},
 			"avatar" to this.avatarUpload,
-			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name") { it.name.length > 10 },
+			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name", null),
 			"username" to GenericValueInput<UserUpdateAdminDto>("username", "Username", null),
 			"password" to GenericValueInput<UserUpdateAdminDto>("password", "Password", null),
 			"gender" to GenericValueInput<UserUpdateAdminDto>("gender", "Gender", null),
 			"email" to GenericValueInput<UserUpdateAdminDto>("email", "Email", null),
 			"phone" to GenericValueInput<UserUpdateAdminDto>("phone", "Phone", null),
 			"enabled" to GenericValueInput<UserUpdateAdminDto>("enabled", "Enabled", null),
-			"accountNonLocked" to GenericValueInput<UserUpdateAdminDto>("accountNonLocked", "Account Non Locked", null),
+			"accountNonLocked" to GenericValueInput<UserUpdateAdminDto>(
+				"accountNonLocked",
+				"Account Non Locked",
+				null
+			),
 			"accountNonExpired" to GenericValueInput<UserUpdateAdminDto>(
 				"accountNonExpired", "Account Non Expired", null
 			),
@@ -164,6 +170,13 @@ class UserFormView(
 
 	override fun onEditModeChange(editMode: Boolean) {
 		this.avatarUpload.setEnabled(editMode)
+	}
+
+	override fun getFormValidator(): FormValidator<UserUpdateAdminDto> {
+		return FormValidator(
+			{ true },
+			mapOf()
+		)
 	}
 
 
