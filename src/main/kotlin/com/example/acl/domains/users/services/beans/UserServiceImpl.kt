@@ -305,23 +305,25 @@ open class UserServiceImpl @Autowired constructor(
     }
 
     override fun getGrowthStats(period: DateUtil.Periods): LinkedHashMap<String, Any> {
-        val dateRange = DateUtil.buildDateRange(period)
-        val fromDate = dateRange[DateUtil.DateRangeType.DATE_FROM]!!.time;
-        val toDate = dateRange[DateUtil.DateRangeType.DATE_TO]!!.time;
-        val dates: Collection<Date> = when (period) {
-            DateUtil.Periods.TODAY -> DateUtil.getDatesBetween(fromDate, toDate)
-            DateUtil.Periods.THIS_WEEK -> DateUtil.getWeeksBetween(fromDate, toDate)
-            DateUtil.Periods.THIS_MONTH -> DateUtil.getMonthBetween(fromDate, toDate)
-            else -> DateUtil.getMonthBetween(fromDate, toDate)
-        }
+
+        val dates: Collection<Date> = DateUtil.getDatesForPeriod(period)
 
         val map = LinkedHashMap<String, Any>()
         dates.forEach {
-            val total = this.userRepository.countByDateRange(fromDate.toInstant(), toDate.toInstant())
+            val total = this.userRepository.countByDateRange(
+                DateUtil.getPolarizedDatesForPeriod(period, it, true).toInstant(),
+                DateUtil.getPolarizedDatesForPeriod(period, it, false).toInstant()
+            )
             when (period) {
-                DateUtil.Periods.TODAY -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_DAY_MONTH_NAME)] = total
+                DateUtil.Periods.TODAY -> map[DateUtil.getReadableDateWithDayName(
+                    it,
+                    DateUtil.DATE_PATTERN_DAY_MONTH_NAME
+                )] = total
                 DateUtil.Periods.THIS_WEEK -> map[DateUtil.getDateType(it)] = total
-                DateUtil.Periods.THIS_MONTH -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE)] = total
+                DateUtil.Periods.THIS_MONTH -> map[DateUtil.getReadableDateWithDayName(
+                    it,
+                    DateUtil.DATE_PATTERN_READABLE
+                )] = total
                 else -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE_MONTH_YEAR)] = total
             }
         }

@@ -23,7 +23,6 @@ class UserStatsController @Autowired constructor(
 ) {
 
     @GetMapping(Route.V1.ADMIN_USERS_GROWTH_STATS)
-    @ApiOperation(value = "Orders Growth statistics")
     fun getGrowthStats(@RequestParam("period") period: DateUtil.Periods): ResponseEntity<LinkedHashMap<String, Any>> {
 
         val stats = this.userService.getGrowthStats(period)
