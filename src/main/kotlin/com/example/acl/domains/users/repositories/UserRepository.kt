@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.time.Instant
 import java.util.*
 
 @Repository
@@ -34,4 +35,10 @@ interface UserRepository : JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.enabled=:enabled WHERE u.id=:userId")
     fun toggleAccess(@Param("userId") userId: Long, @Param("enabled") enabled: Boolean)
+
+    @Query("SELECT count(u) FROM User u WHERE (u.createdAt BETWEEN :fromDate AND :toDate) AND u.deleted = false ")
+    fun countByDateRange(
+        @Param("fromDate") fromDate: Instant,
+        @Param("toDate") toDate: Instant
+    ): Long
 }
