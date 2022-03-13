@@ -1,15 +1,19 @@
 package com.example.acl.frontend.components
 
+import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.data.provider.CallbackDataProvider
 
-class ComboBoxInput<T>() : ComboBox<T>(), AbstractInputV2<T> {
+class ComboBoxInput<T>(
+	override var fieldValidator: FieldValidator<T>?
+) : ComboBox<T>(), AbstractInputV2<T> {
 
-	constructor(id: String, label: String) : this() {
+	constructor(id: String, label: String, validator: FieldValidator<T>?) : this(validator) {
 		this.setId(id)
 		this.label = label
 		this.placeholder = label
+		this.fieldValidator = validator
 	}
 
 	override fun setVal(value: T) {
@@ -60,4 +64,14 @@ class ComboBoxInput<T>() : ComboBox<T>(), AbstractInputV2<T> {
 	override fun clearVal() {
 		this.clear()
 	}
+
+	override fun getValidator(): FieldValidator<T>? {
+		return this.fieldValidator
+	}
+
+	override fun setErrMessage(errorMsg: String) {
+		this.errorMessage = errorMsg
+		this.label = this.label + "\n($errorMsg)"
+	}
+
 }

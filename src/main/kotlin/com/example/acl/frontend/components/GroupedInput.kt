@@ -1,14 +1,18 @@
 package com.example.acl.frontend.components
 
+import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.checkbox.CheckboxGroup
 import com.vaadin.flow.data.provider.CallbackDataProvider
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.selection.MultiSelectionEvent
 
-class GroupedInput<L, V>() : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pair<L, V>>> {
+class GroupedInput<L, V>(
+	override var fieldValidator: FieldValidator<Set<Pair<L, V>>>?
+) : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pair<L, V>>> {
 
-	constructor(id: String, label: String) : this() {
+
+	constructor(id: String, label: String, fieldValidator: FieldValidator<Set<Pair<L, V>>>?) : this(fieldValidator) {
 		this.setId(id)
 		this.label = label
 	}
@@ -18,7 +22,7 @@ class GroupedInput<L, V>() : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pa
 		return this
 	}
 
-	fun setDefaultValues(values: List<Pair<L, V>>): GroupedInput<L, V> {
+	fun setSelectedValues(values: Iterable<Pair<L, V>>): GroupedInput<L, V> {
 		this.clear()
 		this.select(values)
 		return this
@@ -53,7 +57,7 @@ class GroupedInput<L, V>() : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pa
 	}
 
 	override fun setVal(value: Set<Pair<L, V>>) {
-		this.value = value
+		this.setSelectedValues(value)
 	}
 
 	override fun getVal(): Set<Pair<L, V>>? {
@@ -68,5 +72,13 @@ class GroupedInput<L, V>() : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pa
 		return this
 	}
 
+	override fun getValidator(): FieldValidator<Set<Pair<L, V>>>? {
+		return this.fieldValidator
+	}
+
+	override fun setErrMessage(errorMsg: String) {
+		this.errorMessage = errorMsg
+		this.label = this.label + "\n($errorMsg)"
+	}
 
 }

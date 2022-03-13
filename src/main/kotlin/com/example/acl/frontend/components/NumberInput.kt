@@ -2,24 +2,24 @@ package com.example.acl.frontend.components
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.html.Label
+import com.vaadin.flow.component.textfield.NumberField
 import com.vaadin.flow.component.textfield.TextField
 
-class TextInput(
-	override var fieldValidator: FieldValidator<String>?
-) : TextField(), AbstractInputV2<String> {
+class NumberInput(
+	override var fieldValidator: FieldValidator<Double>?
+) : NumberField(), AbstractInputV2<Double> {
 
-	constructor(id: String, label: String, fieldValidator: FieldValidator<String>?) : this(fieldValidator) {
+	constructor(id: String, label: String, fieldValidator: FieldValidator<Double>?) : this(fieldValidator) {
 		this.setId(id)
 		this.label = label
 		this.placeholder = label
 	}
 
-	override fun setVal(value: String) {
+	override fun setVal(value: Double) {
 		this.value = value
 	}
 
-	override fun getVal(): String? {
+	override fun getVal(): Double? {
 		return this.value
 	}
 
@@ -31,7 +31,7 @@ class TextInput(
 		this.clear()
 	}
 
-	override fun getValidator(): FieldValidator<String>? {
+	override fun getValidator(): FieldValidator<Double>? {
 		return this.fieldValidator
 	}
 

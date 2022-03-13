@@ -1,6 +1,7 @@
 package com.example.acl.frontend.base
 
 import com.example.acl.frontend.components.layouts.FormLayout
+import com.example.acl.frontend.utils.Notifications
 import com.vaadin.flow.component.AttachEvent
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
@@ -95,6 +96,11 @@ abstract class AbstractFormViewV2<T> : Div() {
 
 		if (this.editMode) {
 			if (btnId.get() == "id_save") {
+				if (this.validateInputs()) {
+					this.formLayout.initialize(this.editMode)
+					Notifications.error("Form validation failed")
+					return
+				}
 				this.onSaveAction(event, this.formLayout.getValues())
 			} else if (btnId.get() == "id_cancel") {
 				this.onCancelAction(event)
@@ -103,6 +109,19 @@ abstract class AbstractFormViewV2<T> : Div() {
 
 		this.setEditMode(!this.editMode)
 		this.resolveBtnState(this.btnSave, this.btnCancel)
+	}
+
+	private fun validateInputs(): Boolean {
+//		return this.formLayout.inputs.any { !it.validateInput().valid }
+		var hasError = false
+		this.formLayout.inputs.forEach {
+			val result = it.validateInput()
+			if (!result.valid) {
+				hasError = true
+				it.setErrMessage(result.message)
+			}
+		}
+		return hasError
 	}
 
 	fun setEditMode(editMode: Boolean) {

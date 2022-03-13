@@ -1,5 +1,6 @@
 package com.example.acl.frontend.components
 
+import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.models.FileDefinition
 import com.example.cms.domains.fileuploads.models.entities.UploadProperties
 import com.example.cms.domains.fileuploads.services.FileUploadService
@@ -14,7 +15,8 @@ import java.io.InputStream
 class MultiUploadInput(
 	private val uploadService: FileUploadService,
 	private val fileDefinition: FileDefinition,
-	private val uploadListener: FileUploadListener?
+	private val uploadListener: FileUploadListener?,
+	override var fieldValidator: FieldValidator<List<String>>?
 ) : Upload(MultiFileMemoryBuffer()), AbstractInputV2<List<String>> {
 
 	private val urls: MutableList<String> = mutableListOf()
@@ -24,15 +26,15 @@ class MultiUploadInput(
 		label: String,
 		uploadService: FileUploadService,
 		fileDefinition: FileDefinition,
-		uploadListener: FileUploadListener?
-	) : this(uploadService, fileDefinition, uploadListener) {
+		uploadListener: FileUploadListener?,
+		fieldValidator: FieldValidator<List<String>>?
+	) : this(uploadService, fileDefinition, uploadListener, fieldValidator) {
 
 		this.setId(id)
 		this.dropLabel = Label(label)
 		this.buildComponent()
 
 	}
-
 
 	fun buildComponent() {
 
@@ -72,6 +74,14 @@ class MultiUploadInput(
 
 	override fun getComponent(): Component {
 		return this
+	}
+
+	override fun getValidator(): FieldValidator<List<String>>? {
+		return this.fieldValidator
+	}
+
+	override fun setErrMessage(errorMsg: String) {
+		this.dropLabel = Label("\n($errorMsg)")
 	}
 
 }
