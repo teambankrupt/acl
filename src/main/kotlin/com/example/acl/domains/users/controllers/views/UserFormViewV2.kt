@@ -5,7 +5,8 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormViewV2
-import com.example.acl.frontend.components.ComboBoxInput
+import com.example.acl.frontend.components.GroupedInput
+import com.example.acl.frontend.components.SelectInput
 import com.example.acl.frontend.components.TextInput
 import com.example.acl.frontend.components.layouts.FormLayout
 import com.example.auth.enums.Genders
@@ -20,7 +21,8 @@ class UserFormViewV2(
 	private val fileUploadService: FileUploadService
 ) : AbstractFormViewV2<UserUpdateAdminDto>() {
 	lateinit var txtName: TextInput
-	lateinit var cBoxGender: ComboBoxInput<String>
+	lateinit var cBoxGender: SelectInput<String>
+	lateinit var ckRoles: GroupedInput<String, Long>
 
 	override fun onEditModeChange(editMode: Boolean) {
 		println(editMode)
@@ -33,15 +35,35 @@ class UserFormViewV2(
 
 	override fun initForm(formLayout: FormLayout) {
 		this.txtName = TextInput("name", "Name")
-		this.cBoxGender = ComboBoxInput<String>("gender", "Gender").withItems(
-			Genders.values().map { it.name })
+		this.cBoxGender = SelectInput<String>("gender", "Gender", Genders.values().map { it.name })
+		this.ckRoles = GroupedInput<String, Long>("roleIds", "Roles")
+			.withDataProvider({
+				roleService.findAll().map { it.name to it.id }.stream()
+			}, {
+				roleService.findAll().count()
+			})
+//			.withValueChangeListener { e ->
+//				if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
+//				this.selectedItem!!.roleIds = e.value.map { it.second }
+//			}
+			.setDefaultValues(
+				getDefaultRoles()
+			)
+//			.withItems(Genders.values().map { it.name })
 
 		formLayout.addInputs(
 			listOf(
 				txtName,
-				cBoxGender
+				cBoxGender,
+				ckRoles
 			)
 		)
+	}
+
+	private fun getDefaultRoles(): List<Pair<String, Long>> {
+		val user = this.getSelected() ?: return mutableListOf()
+		val roles = roleService.findByIds(user.roleIds)
+		return roles.map { it.name to it.id }
 	}
 
 	override fun onSaveAction(event: ClickEvent<Button>, result: Map<String, Any?>) {

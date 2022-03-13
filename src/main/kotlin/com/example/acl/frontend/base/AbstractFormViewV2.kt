@@ -1,7 +1,7 @@
 package com.example.acl.frontend.base
 
-import com.example.acl.frontend.components.AbstractInputV2
 import com.example.acl.frontend.components.layouts.FormLayout
+import com.vaadin.flow.component.AttachEvent
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -26,11 +26,16 @@ abstract class AbstractFormViewV2<T> : Div() {
 		editorDiv.className = "p-l flex-grow"
 		this.add(editorDiv)
 
-		this.initForm(this.formLayout)
-		this.formLayout.initialize(this.editMode)
 		this.buttonLayout = this.createButtonLayout()
 
 		this.add(this.formLayout, this.buttonLayout)
+	}
+
+	override fun onAttach(attachEvent: AttachEvent?) {
+		super.onAttach(attachEvent)
+
+		this.initForm(this.formLayout)
+		this.formLayout.initialize(this.editMode)
 	}
 
 	abstract fun initForm(formLayout: FormLayout)
