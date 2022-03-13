@@ -12,7 +12,7 @@ abstract class AbstractFlowView<T> : Div() {
 	fun initialize(
 		klass: Class<T>,
 		browseView: AbstractBrowseView<T>,
-		formView: AbstractFormView<T>
+		formView: AbstractFormViewV2<T>
 	) {
 		this.klass = klass
 		this.fields = this.fields.ifEmpty { klass.declaredFields.map { it } }

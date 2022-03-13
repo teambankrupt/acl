@@ -7,6 +7,7 @@ import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.base.AbstractFlowView
 import com.example.acl.frontend.base.AbstractFormView
+import com.example.acl.frontend.base.AbstractFormViewV2
 import com.example.acl.frontend.layouts.MainLayout
 import com.example.cms.domains.fileuploads.services.FileUploadService
 import com.vaadin.flow.router.Route
@@ -21,15 +22,15 @@ class UserFlowView(
 
 	init {
 		val browseView = UserBrowseView(userService, userMapper)
-		val formView = UserFormView(userService, userMapper, roleService, uploadService)
+		val formView = UserFormViewV2(userService, userMapper, roleService, uploadService)
 
 		browseView.setItemSelectionListener(object : AbstractBrowseView.ItemSelectionListener<UserUpdateAdminDto> {
 			override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
-				formView.onItemSelected(selected, item)
+				formView.setSelected(item)
 			}
 		})
 
-		formView.setItemPersistedListener(object : AbstractFormView.ItemPersistenceListener<UserUpdateAdminDto> {
+		formView.setItemPersistedListener(object : AbstractFormViewV2.ItemPersistenceListener<UserUpdateAdminDto> {
 			override fun onItemPersisted(item: UserUpdateAdminDto?) {
 				browseView.onItemPersisted(item)
 			}
