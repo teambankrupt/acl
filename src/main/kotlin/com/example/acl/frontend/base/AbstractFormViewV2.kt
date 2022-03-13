@@ -1,5 +1,6 @@
 package com.example.acl.frontend.base
 
+import com.example.acl.frontend.components.AbstractInputV2
 import com.example.acl.frontend.components.layouts.FormLayout
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
@@ -37,6 +38,13 @@ abstract class AbstractFormViewV2<T> : Div() {
 	fun setSelected(item: T?) {
 		this.selectedItem = item
 		this.resolveBtnState(this.btnSave, this.btnCancel)
+		this.onItemSelected(item)
+	}
+
+	abstract fun onItemSelected(item: T?)
+
+	fun getSelected(): T? {
+		return this.selectedItem
 	}
 
 	fun hasSelectedItem(): Boolean {
@@ -53,9 +61,7 @@ abstract class AbstractFormViewV2<T> : Div() {
 		this.btnCancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY)
 		this.btnCancel.addClickListener {
 			if (this.isFormResettable()) {
-				val children = this.formLayout.children
-				this.formLayout.removeAll()
-				children.forEach { c -> this.formLayout.add(c) }
+				this.formLayout.resetValues()
 			} else {
 				this.onButtonClicked(btnCancel.id, it)
 			}
@@ -69,7 +75,7 @@ abstract class AbstractFormViewV2<T> : Div() {
 			this.onButtonClicked(this.btnSave.id, it)
 		}
 
-		this.resolveBtnState(this.btnSave)
+		this.resolveBtnState(this.btnSave, this.btnCancel)
 		buttonLayout.add(this.btnSave, this.btnCancel)
 		return buttonLayout
 	}
@@ -91,6 +97,7 @@ abstract class AbstractFormViewV2<T> : Div() {
 		}
 
 		this.setEditMode(!this.editMode)
+		this.resolveBtnState(this.btnSave, this.btnCancel)
 	}
 
 	fun setEditMode(editMode: Boolean) {
