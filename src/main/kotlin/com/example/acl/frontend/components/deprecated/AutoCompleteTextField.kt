@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.deprecated
 
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.AbstractField

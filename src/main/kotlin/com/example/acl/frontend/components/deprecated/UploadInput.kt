@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.deprecated
 
 import com.example.acl.frontend.models.FileDefinition
 import com.example.cms.domains.fileuploads.models.entities.UploadProperties

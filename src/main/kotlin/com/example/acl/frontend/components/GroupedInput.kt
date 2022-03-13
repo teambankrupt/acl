@@ -1,6 +1,5 @@
 package com.example.acl.frontend.components
 
-import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.checkbox.CheckboxGroup
 import com.vaadin.flow.data.provider.CallbackDataProvider

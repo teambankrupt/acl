@@ -5,8 +5,8 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormView
-import com.example.acl.frontend.components.*
-import com.example.acl.frontend.components.AutoCompleteTextField.AcListener
+import com.example.acl.frontend.components.deprecated.*
+import com.example.acl.frontend.components.deprecated.AutoCompleteTextField.AcListener
 import com.example.acl.frontend.models.FileDefinition
 import com.example.acl.frontend.models.FormValidator
 import com.example.acl.frontend.utils.Notifications
@@ -17,11 +17,6 @@ import com.example.cms.domains.fileuploads.services.FileUploadService
 import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
-import com.vaadin.flow.data.binder.ValidationException
-import com.vaadin.flow.data.provider.CallbackDataProvider
-import com.vaadin.flow.data.provider.DataProvider
-import com.vaadin.flow.data.provider.ListDataProvider
-import com.vaadin.flow.function.SerializablePredicate
 
 class UserFormView(
 	private val userService: UserService,

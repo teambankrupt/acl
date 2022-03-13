@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.deprecated
 
 import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.Component

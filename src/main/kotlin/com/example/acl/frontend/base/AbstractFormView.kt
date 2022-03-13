@@ -1,10 +1,8 @@
 package com.example.acl.frontend.base
 
-import com.example.acl.frontend.components.AbstractInput
-import com.example.acl.frontend.components.GenericValueInput
+import com.example.acl.frontend.components.deprecated.AbstractInput
+import com.example.acl.frontend.components.deprecated.GenericValueInput
 import com.example.acl.frontend.models.FormValidator
-import com.example.acl.frontend.models.enums.Delimiters
-import com.example.acl.frontend.views.ErrorView
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.Component
@@ -25,7 +23,6 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.binder.ValidationResult
 import com.vaadin.flow.data.binder.Validator
-import com.vaadin.flow.function.SerializablePredicate
 import java.lang.reflect.Field
 import java.time.Instant
 import java.util.*

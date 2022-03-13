@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.deprecated
 
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent
