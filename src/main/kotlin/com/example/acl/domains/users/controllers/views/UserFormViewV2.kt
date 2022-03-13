@@ -5,10 +5,10 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormViewV2
-import com.example.acl.frontend.components.GroupedInput
-import com.example.acl.frontend.components.SelectInput
-import com.example.acl.frontend.components.TextInput
+import com.example.acl.frontend.components.*
 import com.example.acl.frontend.components.layouts.FormLayout
+import com.example.acl.frontend.models.FileDefinition
+import com.example.auth.config.security.SecurityContext
 import com.example.auth.enums.Genders
 import com.example.cms.domains.fileuploads.services.FileUploadService
 import com.vaadin.flow.component.ClickEvent
@@ -23,6 +23,7 @@ class UserFormViewV2(
 	lateinit var txtName: TextInput
 	lateinit var cBoxGender: SelectInput<String>
 	lateinit var ckRoles: GroupedInput<String, Long>
+	lateinit var avatarUpload: MultiUploadInput
 
 	override fun onEditModeChange(editMode: Boolean) {
 		println(editMode)
@@ -42,20 +43,23 @@ class UserFormViewV2(
 			}, {
 				roleService.findAll().count()
 			})
-//			.withValueChangeListener { e ->
-//				if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
-//				this.selectedItem!!.roleIds = e.value.map { it.second }
-//			}
 			.setDefaultValues(
 				getDefaultRoles()
 			)
-//			.withItems(Genders.values().map { it.name })
+		this.avatarUpload = MultiUploadInput(
+			"avatar",
+			"Avatar",
+			this.fileUploadService,
+			FileDefinition("png", "uploads", SecurityContext.getLoggedInUsername()),
+			null
+		)
 
 		formLayout.addInputs(
 			listOf(
-				txtName,
-				cBoxGender,
-				ckRoles
+				this.txtName,
+				this.cBoxGender,
+				this.ckRoles,
+				this.avatarUpload
 			)
 		)
 	}
