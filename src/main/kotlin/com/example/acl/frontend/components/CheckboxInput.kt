@@ -2,23 +2,23 @@ package com.example.acl.frontend.components
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.flow.component.checkbox.Checkbox
 
-class TextInput(
-	override var fieldValidator: FieldValidator<String>?
-) : TextField(), AbstractInputV2<String> {
+class CheckboxInput(
+	override var fieldValidator: FieldValidator<Boolean>?
+) : Checkbox(), AbstractInputV2<Boolean> {
 
-	constructor(id: String, label: String, fieldValidator: FieldValidator<String>?) : this(fieldValidator) {
+	constructor(id: String, label: String, fieldValidator: FieldValidator<Boolean>?) : this(fieldValidator) {
 		this.setId(id)
 		this.label = label
-		this.placeholder = label
+		this.setAriaLabel(label)
 	}
 
-	override fun setVal(value: String) {
+	override fun setVal(value: Boolean) {
 		this.value = value
 	}
 
-	override fun getVal(): String? {
+	override fun getVal(): Boolean? {
 		return this.value
 	}
 
@@ -30,14 +30,13 @@ class TextInput(
 		this.clear()
 	}
 
-	override fun getValidator(): FieldValidator<String>? {
-		return this.fieldValidator
+	override fun getValidator(): FieldValidator<Boolean>? {
+		return null
 	}
 
 	override fun setMessage(error: Boolean, message: String?) {
 		this.resolveClass(this, error)
 		if (message != null) this.label = message
-		this.errorMessage = message
 	}
 
 

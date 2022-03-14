@@ -116,10 +116,14 @@ abstract class AbstractFormViewV2<T> : Div() {
 		var hasError = false
 		this.formLayout.inputs.forEach {
 			val result = it.validateInput()
+
 			if (!result.valid) {
 				hasError = true
-				it.setErrMessage(result.message)
+				it.setMessage(true, result.message)
+			} else {
+				it.setMessage(false, null)
 			}
+
 		}
 		return hasError
 	}

@@ -9,7 +9,6 @@ import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.upload.SucceededEvent
 import com.vaadin.flow.component.upload.Upload
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer
-import com.vaadin.flow.function.SerializablePredicate
 import java.io.InputStream
 
 class MultiUploadInput(
@@ -80,8 +79,9 @@ class MultiUploadInput(
 		return this.fieldValidator
 	}
 
-	override fun setErrMessage(errorMsg: String) {
-		this.dropLabel = Label("\n($errorMsg)")
+	override fun setMessage(error: Boolean, message: String?) {
+		this.resolveClass(this, error)
+		if (message != null) this.dropLabel = Label(message)
 	}
 
 }

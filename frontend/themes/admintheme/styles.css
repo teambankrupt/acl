@@ -22,3 +22,7 @@ html {
 .text-error {
     color: red;
 }
+
+.field-error {
+    border: 1px dashed red;
+}

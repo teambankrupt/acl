@@ -3,7 +3,6 @@ package com.example.acl.frontend.components
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.textfield.NumberField
-import com.vaadin.flow.component.textfield.TextField
 
 class NumberInput(
 	override var fieldValidator: FieldValidator<Double>?
@@ -35,9 +34,10 @@ class NumberInput(
 		return this.fieldValidator
 	}
 
-	override fun setErrMessage(errorMsg: String) {
-		this.errorMessage = errorMsg
-		this.label = this.label + "\n($errorMsg)"
+	override fun setMessage(error: Boolean, message: String?) {
+		this.resolveClass(this, error)
+		if (message != null) this.label = message
+		this.errorMessage = message
 	}
 
 

@@ -29,6 +29,10 @@ class UserFormViewV2(
 	lateinit var cBoxGender: SelectInput<String>
 	lateinit var ckRoles: GroupedInput<String, Long>
 	lateinit var avatarUpload: MultiUploadInput
+	lateinit var ckEnabled: CheckboxInput
+	lateinit var ckNonExpired: CheckboxInput
+	lateinit var ckNonLocked: CheckboxInput
+	lateinit var ckCredentialsNonExpired: CheckboxInput
 
 	override fun onEditModeChange(editMode: Boolean) {
 		println("Edit Mode: $editMode")
@@ -40,6 +44,27 @@ class UserFormViewV2(
 
 
 	override fun initForm(formLayout: FormLayout) {
+		this.initFields()
+
+		formLayout.addInputs(
+			listOf(
+				this.avatarUpload,
+				this.txtName,
+				this.txtUsername,
+				this.txtPhone,
+				this.txtEmail,
+				this.txtPassword,
+				this.cBoxGender,
+				this.ckRoles,
+				this.ckEnabled,
+				this.ckNonExpired,
+				this.ckNonLocked,
+				this.ckCredentialsNonExpired
+			)
+		)
+	}
+
+	private fun initFields() {
 		this.txtName =
 			TextInput("name", "Name", FieldValidator({ it.length >= 3 }, "Name must be at least 3 characters!"))
 		this.txtUsername = TextInput("username", "Username", null)
@@ -64,19 +89,11 @@ class UserFormViewV2(
 			null,
 			null
 		)
-
-		formLayout.addInputs(
-			listOf(
-				this.avatarUpload,
-				this.txtName,
-				this.txtUsername,
-				this.txtPhone,
-				this.txtEmail,
-				this.txtPassword,
-				this.cBoxGender,
-				this.ckRoles
-			)
-		)
+		this.ckEnabled = CheckboxInput("enabled", "Enabled", FieldValidator({ true }, ""))
+		this.ckNonExpired = CheckboxInput("accountNonExpired", "Account Non Expired", FieldValidator({ true }, ""))
+		this.ckNonLocked = CheckboxInput("accountNonLocked", "Account Unlocked", FieldValidator({ true }, ""))
+		this.ckCredentialsNonExpired =
+			CheckboxInput("credentialsNonExpired", "Credentials Non Expired", FieldValidator({ true }, ""))
 	}
 
 	private fun getSelectedRoles(selectedUser: UserUpdateAdminDto?): List<Pair<String, Long>> {

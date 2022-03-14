@@ -35,9 +35,10 @@ class DateTimeInput(
 		return this.fieldValidator
 	}
 
-	override fun setErrMessage(errorMsg: String) {
-		this.errorMessage = errorMsg
-		this.label = this.label + "\n($errorMsg)"
+	override fun setMessage(error: Boolean, message: String?) {
+		this.resolveClass(this, error)
+		if (message != null) this.label = message
+		this.errorMessage = message
 	}
 
 }
