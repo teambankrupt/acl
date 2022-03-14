@@ -1,6 +1,5 @@
 package com.example.acl.frontend.components
 
-import com.example.acl.frontend.components.dialogs.ConfirmDialog
 import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.models.FileDefinition
 import com.example.cms.domains.fileuploads.models.entities.UploadProperties
@@ -11,18 +10,20 @@ import com.vaadin.flow.component.html.Label
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.upload.SucceededEvent
 import com.vaadin.flow.component.upload.Upload
+import com.vaadin.flow.component.upload.receivers.FileBuffer
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer
 import java.io.InputStream
 
-class MultiUploadInput(
+class SingleUploadInput(
 	private val uploadService: FileUploadService,
 	private val fileDefinition: FileDefinition,
 	private val uploadListener: FileUploadListener?,
-	override var fieldValidator: FieldValidator<List<String>>?
-) : Upload(MultiFileMemoryBuffer()), AbstractInputV2<List<String>> {
+	override var fieldValidator: FieldValidator<String>?
+) : Upload(FileBuffer()), AbstractInputV2<String> {
 
 	private var label: String = ""
-	private var urls: MutableList<String> = mutableListOf()
+	private var url: String? = null
 
 	constructor(
 		id: String,
@@ -30,7 +31,7 @@ class MultiUploadInput(
 		uploadService: FileUploadService,
 		fileDefinition: FileDefinition,
 		uploadListener: FileUploadListener?,
-		fieldValidator: FieldValidator<List<String>>?
+		fieldValidator: FieldValidator<String>?
 	) : this(uploadService, fileDefinition, uploadListener, fieldValidator) {
 
 		this.setId(id)
@@ -40,20 +41,14 @@ class MultiUploadInput(
 
 	}
 
-	fun setDefaultImages(urls: MutableList<String>, alt: String) {
-		this.urls = urls
+	fun setDefaultImage(url: String?, alt: String) {
+		this.url = url
+		if (url == null) return
+
 		val layout = VerticalLayout()
+		val image = Image(url, alt)
 		layout.add(Label(this.label))
-
-		this.urls.forEach { url ->
-			val image = Image(url, alt)
-			image.addClickListener {
-				this.urls.remove(url)
-				this.setDefaultImages(this.urls, alt)
-			}
-			layout.add(image)
-		}
-
+		layout.add(image)
 		this.dropLabel = layout
 	}
 
@@ -64,14 +59,14 @@ class MultiUploadInput(
 			val fileName = event.fileName
 
 			// Get input stream specifically for the finished file
-			val fileData: InputStream = (this.receiver as MultiFileMemoryBuffer).getInputStream(fileName)
+			val fileData: InputStream = (this.receiver as FileBuffer).inputStream
 			val properties: UploadProperties = this.uploadService.uploadFile(
 				fileData.readBytes(), this.fileDefinition.type, fileDefinition.namespace, fileDefinition.uniqueProperty
 			)
 			val contentLength = event.contentLength
 			val mimeType = event.mimeType
 			uploadListener?.onFileUploaded(properties, contentLength, mimeType)
-			this.urls.add(properties.fileUrl)
+			this.url = properties.fileUrl
 		}
 
 	}
@@ -81,23 +76,23 @@ class MultiUploadInput(
 		fun onFileUploaded(properties: UploadProperties, contentLength: Long, mimeType: String)
 	}
 
-	override fun setVal(value: List<String>) {
+	override fun setVal(value: String) {
 
 	}
 
-	override fun getVal(): List<String>? {
-		return this.urls
+	override fun getVal(): String? {
+		return this.url
 	}
 
 	override fun clearVal() {
-		this.urls.clear()
+		this.url = null
 	}
 
 	override fun getComponent(): Component {
 		return this
 	}
 
-	override fun getValidator(): FieldValidator<List<String>>? {
+	override fun getValidator(): FieldValidator<String>? {
 		return this.fieldValidator
 	}
 

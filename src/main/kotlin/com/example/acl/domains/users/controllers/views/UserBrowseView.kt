@@ -5,6 +5,7 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.auth.entities.User
+import com.vaadin.flow.component.UI
 import com.vaadin.flow.router.BeforeEnterEvent
 import java.util.*
 
@@ -47,7 +48,7 @@ class UserBrowseView(
 	}
 
 	override fun onItemPersisted(item: UserUpdateAdminDto?) {
-//		UI.getCurrent().page.reload()
+		UI.getCurrent().page.reload()
 	}
 
 

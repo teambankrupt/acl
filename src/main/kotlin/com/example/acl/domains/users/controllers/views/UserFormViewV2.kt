@@ -28,7 +28,7 @@ class UserFormViewV2(
 	lateinit var txtPassword: PasswordInput
 	lateinit var cBoxGender: SelectInput<String>
 	lateinit var ckRoles: GroupedInput<String, Long>
-	lateinit var avatarUpload: MultiUploadInput
+	lateinit var avatarUpload: SingleUploadInput
 	lateinit var ckEnabled: CheckboxInput
 	lateinit var ckNonExpired: CheckboxInput
 	lateinit var ckNonLocked: CheckboxInput
@@ -67,11 +67,20 @@ class UserFormViewV2(
 	private fun initFields() {
 		this.txtName =
 			TextInput("name", "Name", FieldValidator({ it.length >= 3 }, "Name must be at least 3 characters!"))
-		this.txtUsername = TextInput("username", "Username", null)
+		this.txtUsername = TextInput(
+			"username",
+			"Username",
+			FieldValidator({ it.length >= 6 }, "Username must be at least 6 characters!")
+		)
 		this.txtPhone = TextInput("phone", "Phone", null)
 		this.txtEmail = EmailInput("email", "Email", null)
 		this.txtPassword = PasswordInput("password", "Password", null)
-		this.cBoxGender = SelectInput<String>("gender", "Gender", Genders.values().map { it.name }, null)
+		this.cBoxGender = SelectInput<String>(
+			"gender",
+			"Gender",
+			Genders.values().map { it.name },
+			FieldValidator({ it != null }, "Must select a gender")
+		)
 		this.ckRoles = GroupedInput<String, Long>("roleIds", "Roles", null)
 			.withDataProvider({
 				roleService.findAll().map { it.name to it.id }.stream()
@@ -81,7 +90,7 @@ class UserFormViewV2(
 			.setSelectedValues(
 				getSelectedRoles(this.getSelected())
 			)
-		this.avatarUpload = MultiUploadInput(
+		this.avatarUpload = SingleUploadInput(
 			"avatar",
 			"Avatar",
 			this.fileUploadService,
@@ -103,10 +112,30 @@ class UserFormViewV2(
 	}
 
 	override fun onSaveAction(event: ClickEvent<Button>, result: Map<String, Any?>) {
-		result.entries.forEach { println(it) }
+//		result.entries.forEach { println(it) }
+		val dto = this.getSelected() ?: UserUpdateAdminDto()
+		dto.avatar = result["avatar"] as String?
+		dto.name = result["name"] as String
+//		dto.username = result["username"] as String
+		val gender = result["gender"] as String
+		dto.gender = Genders.valueOf(gender)
+		dto.phone = result["phone"] as String
+		dto.email = result["email"] as String?
+		val roles = result["roleIds"] as Set<Pair<String, Long>>
+		dto.roleIds = roles.map { it.second }
+		dto.enabled = result["enabled"] as Boolean
+		dto.accountNonExpired = result["accountNonExpired"] as Boolean
+		dto.accountNonLocked = result["accountNonLocked"] as Boolean
+		dto.credentialsNonExpired = result["credentialsNonExpired"] as Boolean
+
+		val exUser = this.getSelected()?.id?.let { this.userService.find(it).orElse(null) }
+		val user = this.userService.save(this.userMapper.map(dto, exUser))
+
+		this.itemPersistenceListener?.onItemPersisted(this.userMapper.mapToAdminDto(user))
 	}
 
 	override fun onItemSelected(item: UserUpdateAdminDto?) {
+		this.avatarUpload.setDefaultImage(item?.avatar, "Avatar")
 		this.txtName.value = item?.name
 		this.txtUsername.value = item?.username
 		this.txtPhone.value = item?.phone
@@ -114,6 +143,10 @@ class UserFormViewV2(
 		this.txtPassword.value = item?.password
 		this.cBoxGender.value = item?.gender?.name
 		this.ckRoles.setSelectedValues(this.getSelectedRoles(item))
+		this.ckEnabled.value = item?.enabled
+		this.ckNonExpired.value = item?.accountNonExpired
+		this.ckNonLocked.value = item?.accountNonLocked
+		this.ckCredentialsNonExpired.value = item?.credentialsNonExpired
 	}
 
 }
