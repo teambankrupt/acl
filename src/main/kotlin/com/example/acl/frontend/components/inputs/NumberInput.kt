@@ -1,24 +1,24 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.textfield.EmailField
+import com.vaadin.flow.component.textfield.NumberField
 
-class EmailInput(
-	override var fieldValidator: FieldValidator<String>?
-) : EmailField(), AbstractInputV2<String> {
+class NumberInput(
+	override var fieldValidator: FieldValidator<Double>?
+) : NumberField(), AbstractInput<Double> {
 
-	constructor(id: String, label: String, fieldValidator: FieldValidator<String>?) : this(fieldValidator) {
+	constructor(id: String, label: String, fieldValidator: FieldValidator<Double>?) : this(fieldValidator) {
 		this.setId(id)
 		this.label = label
 		this.placeholder = label
 	}
 
-	override fun setVal(value: String) {
+	override fun setVal(value: Double) {
 		this.value = value
 	}
 
-	override fun getVal(): String? {
+	override fun getVal(): Double? {
 		return this.value
 	}
 
@@ -30,7 +30,7 @@ class EmailInput(
 		this.clear()
 	}
 
-	override fun getValidator(): FieldValidator<String>? {
+	override fun getValidator(): FieldValidator<Double>? {
 		return this.fieldValidator
 	}
 
@@ -39,4 +39,6 @@ class EmailInput(
 		if (message != null) this.label = message
 		this.errorMessage = message
 	}
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
@@ -9,7 +9,7 @@ import com.vaadin.flow.data.selection.MultiSelectionEvent
 
 class GroupedInput<L, V>(
 	override var fieldValidator: FieldValidator<Set<Pair<L, V>>>?
-) : CheckboxGroup<Pair<L, V>>(), AbstractInputV2<Set<Pair<L, V>>> {
+) : CheckboxGroup<Pair<L, V>>(), AbstractInput<Set<Pair<L, V>>> {
 
 
 	constructor(id: String, label: String, fieldValidator: FieldValidator<Set<Pair<L, V>>>?) : this(fieldValidator) {

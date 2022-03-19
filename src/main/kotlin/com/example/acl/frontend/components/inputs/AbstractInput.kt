@@ -1,11 +1,11 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.models.ValidationResult
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasStyle
 
-interface AbstractInputV2<V> {
+interface AbstractInput<V> {
 	var fieldValidator: FieldValidator<V>?
 
 //	fun label(): String

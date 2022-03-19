@@ -1,12 +1,12 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.component.textfield.PasswordField
+import com.vaadin.flow.component.textfield.TextField
 
-class PasswordInput(
+class TextInput(
 	override var fieldValidator: FieldValidator<String>?
-) : PasswordField(), AbstractInputV2<String> {
+) : TextField(), AbstractInput<String> {
 
 	constructor(id: String, label: String, fieldValidator: FieldValidator<String>?) : this(fieldValidator) {
 		this.setId(id)

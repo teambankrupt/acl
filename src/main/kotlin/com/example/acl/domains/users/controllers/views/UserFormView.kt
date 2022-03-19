@@ -5,16 +5,13 @@ import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractFormView
-import com.example.acl.frontend.components.deprecated.*
-import com.example.acl.frontend.components.deprecated.AutoCompleteTextField.AcListener
+import com.example.acl.frontend.components.inputs.*
+import com.example.acl.frontend.components.layouts.FormLayout
+import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.models.FileDefinition
-import com.example.acl.frontend.models.FormValidator
-import com.example.acl.frontend.utils.Notifications
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.enums.Genders
-import com.example.cms.domains.fileuploads.models.entities.UploadProperties
 import com.example.cms.domains.fileuploads.services.FileUploadService
-import com.vaadin.componentfactory.Autocomplete
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
 
@@ -23,156 +20,133 @@ class UserFormView(
 	private val userMapper: UserMapper,
 	private val roleService: RoleService,
 	private val fileUploadService: FileUploadService
-) : AbstractFormView<UserUpdateAdminDto>(UserUpdateAdminDto::class.java), UploadInput.FileUploadListener {
-	private var selectedItem: UserUpdateAdminDto? = null
-	private var avatarUrl: String? = null
-	private var rolesInput: InputGroup<UserUpdateAdminDto, String, Long>
-	private var avatarUpload: UploadInput<UserUpdateAdminDto>
+) : AbstractFormView<UserUpdateAdminDto>() {
+	lateinit var txtName: TextInput
+	lateinit var txtUsername: TextInput
+	lateinit var txtPhone: TextInput
+	lateinit var txtEmail: EmailInput
+	lateinit var txtPassword: PasswordInput
+	lateinit var cBoxGender: SelectInput<String>
+	lateinit var ckRoles: GroupedInput<String, Long>
+	lateinit var avatarUpload: SingleUploadInput
+	lateinit var ckEnabled: CheckboxInput
+	lateinit var ckNonExpired: CheckboxInput
+	lateinit var ckNonLocked: CheckboxInput
+	lateinit var ckCredentialsNonExpired: CheckboxInput
 
-	init {
-		this.rolesInput = InputGroup<UserUpdateAdminDto, String, Long>("roleIds", "Roles") { true }.withDataProvider({
-			roleService.findAll().map { it.name to it.id }.stream()
-		}, { roleService.findAll().count() }).withValueChangeListener { e ->
-			if (this.selectedItem == null) this.selectedItem = UserUpdateAdminDto()
-			this.selectedItem!!.roleIds = e.value.map { it.second }
-		}.setDefaultValues(
-			getDefaultRoles()
+	override fun onEditModeChange(editMode: Boolean) {
+		println("Edit Mode: $editMode")
+	}
+
+	override fun onCancelAction(event: ClickEvent<Button>) {
+		println("Cancel Action: $event")
+	}
+
+
+	override fun initForm(formLayout: FormLayout) {
+		this.initFields()
+
+		formLayout.addInputs(
+			listOf(
+				this.avatarUpload,
+				this.txtName,
+				this.txtUsername,
+				this.txtPhone,
+				this.txtEmail,
+				this.txtPassword,
+				this.cBoxGender,
+				this.ckRoles,
+				this.ckEnabled,
+				this.ckNonExpired,
+				this.ckNonLocked,
+				this.ckCredentialsNonExpired
+			)
 		)
+	}
 
-		this.avatarUpload = UploadInput<UserUpdateAdminDto>(
+	private fun initFields() {
+		this.txtName =
+			TextInput("name", "Name", FieldValidator({ it.length >= 3 }, "Name must be at least 3 characters!"))
+		this.txtUsername = TextInput(
+			"username",
+			"Username",
+			FieldValidator({ it.length >= 6 }, "Username must be at least 6 characters!")
+		)
+		this.txtPhone = TextInput("phone", "Phone", null)
+		this.txtEmail = EmailInput("email", "Email", null)
+		this.txtPassword = PasswordInput("password", "Password", null)
+		this.cBoxGender = SelectInput<String>(
+			"gender",
+			"Gender",
+			Genders.values().map { it.name },
+			FieldValidator({ it != null }, "Must select a gender")
+		)
+		this.ckRoles = GroupedInput<String, Long>("roleIds", "Roles", null)
+			.withDataProvider({
+				roleService.findAll().map { it.name to it.id }.stream()
+			}, {
+				roleService.findAll().count()
+			})
+			.setSelectedValues(
+				getSelectedRoles(this.getSelected())
+			)
+		this.avatarUpload = SingleUploadInput(
 			"avatar",
 			"Avatar",
-			{ !(it as String?).isNullOrBlank() },
 			this.fileUploadService,
 			FileDefinition("png", "uploads", SecurityContext.getLoggedInUsername()),
-			this,
-			false
+			null,
+			null
 		)
-
-		this.initForm(mutableMapOf())
+		this.ckEnabled = CheckboxInput("enabled", "Enabled", FieldValidator({ true }, ""))
+		this.ckNonExpired = CheckboxInput("accountNonExpired", "Account Non Expired", FieldValidator({ true }, ""))
+		this.ckNonLocked = CheckboxInput("accountNonLocked", "Account Unlocked", FieldValidator({ true }, ""))
+		this.ckCredentialsNonExpired =
+			CheckboxInput("credentialsNonExpired", "Credentials Non Expired", FieldValidator({ true }, ""))
 	}
 
-	override fun defineFormFields(): Map<String, AbstractInput<UserUpdateAdminDto>>? {
-		return mapOf(
-//			"avatar" to GenericValueInput<UserUpdateAdminDto>("avatar", "Avatar") {
-//				!it.avatar.isNullOrBlank()
-//			},
-			"avatar" to this.avatarUpload,
-			"name" to GenericValueInput<UserUpdateAdminDto>("name", "Name", null),
-			"username" to GenericValueInput<UserUpdateAdminDto>("username", "Username", null),
-			"password" to GenericValueInput<UserUpdateAdminDto>("password", "Password", null),
-			"gender" to GenericValueInput<UserUpdateAdminDto>("gender", "Gender", null),
-			"email" to GenericValueInput<UserUpdateAdminDto>("email", "Email", null),
-			"phone" to GenericValueInput<UserUpdateAdminDto>("phone", "Phone", null),
-			"enabled" to GenericValueInput<UserUpdateAdminDto>("enabled", "Enabled", null),
-			"accountNonLocked" to GenericValueInput<UserUpdateAdminDto>(
-				"accountNonLocked",
-				"Account Non Locked",
-				null
-			),
-			"accountNonExpired" to GenericValueInput<UserUpdateAdminDto>(
-				"accountNonExpired", "Account Non Expired", null
-			),
-			"credentialsNonExpired" to GenericValueInput<UserUpdateAdminDto>(
-				"credentialsNonExpired", "Credentials Non Expired", null
-			),
-			"roleIds" to this.rolesInput
-		)
-	}
-
-	private fun getDefaultRoles(): List<Pair<String, Long>> {
-		val user = this.selectedItem ?: return mutableListOf()
+	private fun getSelectedRoles(selectedUser: UserUpdateAdminDto?): List<Pair<String, Long>> {
+		val user = selectedUser ?: return listOf()
 		val roles = roleService.findByIds(user.roleIds)
 		return roles.map { it.name to it.id }
 	}
 
-	override fun getDefaultSingleSelectionValues(): Map<String, String> {
-		val item = this.selectedItem
+	override fun onSaveAction(event: ClickEvent<Button>, result: Map<String, Any?>) {
+//		result.entries.forEach { println(it) }
+		val dto = this.getSelected() ?: UserUpdateAdminDto()
+		dto.avatar = result["avatar"] as String?
+		dto.name = result["name"] as String
+//		dto.username = result["username"] as String
+		val gender = result["gender"] as String
+		dto.gender = Genders.valueOf(gender)
+		dto.phone = result["phone"] as String
+		dto.email = result["email"] as String?
+		val roles = result["roleIds"] as Set<Pair<String, Long>>
+		dto.roleIds = roles.map { it.second }
+		dto.enabled = result["enabled"] as Boolean
+		dto.accountNonExpired = result["accountNonExpired"] as Boolean
+		dto.accountNonLocked = result["accountNonLocked"] as Boolean
+		dto.credentialsNonExpired = result["credentialsNonExpired"] as Boolean
 
-		return if (item == null) mapOf() else mapOf(
-			"gender" to item.gender.name
-		)
-	}
-
-	private fun getGenderInput(): AutoCompleteTextField<UserUpdateAdminDto> {
-		val genderInput = AutoCompleteTextField<UserUpdateAdminDto>("gender", "Gender", null)
-		val listener = object : AcListener {
-			override fun onAcChange(event: Autocomplete.AucompleteChangeEvent) {
-				val users = userService.search(event.value, 0, 5)
-				val items = users.content.map { it.name }
-				genderInput.setOptions(items)
-				items.forEach { print(it) }
-				println()
-			}
-
-			override fun onAcApplied(event: Autocomplete.AutocompleteValueAppliedEvent) {
-				println(event.value)
-			}
-
-			override fun onAcCleared(event: Autocomplete.ValueClearEvent) {
-				println(event.toString())
-			}
-		}
-		genderInput.setListener(listener)
-		return genderInput
-	}
-
-	override fun onItemSelected(selected: Boolean, item: UserUpdateAdminDto?) {
-		this.selectedItem = item
-		this.rolesInput.setDefaultValues(this.getDefaultRoles())
-		item?.password = ""
-		this.getBinder().readBean(item)
-		this.setSelected(true)
-	}
-
-	override fun onSaveAction(event: ClickEvent<Button>, dropdownValues: MutableMap<String, String>) {
-		val dto = this.selectedItem ?: UserUpdateAdminDto()
-
-		getBinder().writeBean(dto)
-
-		// Prepare dto
-		val genderStr = dropdownValues["gender"] ?: Genders.NOT_SPECIFIED.name
-		dto.gender = Genders.valueOf(genderStr)
-		dto.avatar = this.avatarUrl
-
-		// save entity
-		val exUser = this.selectedItem?.id?.let { this.userService.find(it).orElse(null) }
+		val exUser = this.getSelected()?.id?.let { this.userService.find(it).orElse(null) }
 		val user = this.userService.save(this.userMapper.map(dto, exUser))
 
-		// update ui
-		this.selectedItem = this.userMapper.mapToAdminDto(user)
-		this.getBinder().writeBean(this.selectedItem)
-
-		this.itemPersistenceListener?.onItemPersisted(this.selectedItem)
-		Notifications.success("Successfully saved ${user.name} !")
-
-		// avatar upload state
-		this.avatarUpload.setEnabled(this.isEditMode())
+		this.itemPersistenceListener?.onItemPersisted(this.userMapper.mapToAdminDto(user))
 	}
 
-	override fun onCancelAction(event: ClickEvent<Button>) {
-		println(event.toString())
+	override fun onItemSelected(item: UserUpdateAdminDto?) {
+		this.avatarUpload.setDefaultImage(item?.avatar, "Avatar")
+		this.txtName.value = item?.name
+		this.txtUsername.value = item?.username
+		this.txtPhone.value = item?.phone
+		this.txtEmail.value = item?.email
+		this.txtPassword.value = item?.password
+		this.cBoxGender.value = item?.gender?.name
+		this.ckRoles.setSelectedValues(this.getSelectedRoles(item))
+		this.ckEnabled.value = item?.enabled
+		this.ckNonExpired.value = item?.accountNonExpired
+		this.ckNonLocked.value = item?.accountNonLocked
+		this.ckCredentialsNonExpired.value = item?.credentialsNonExpired
 	}
-
-	override fun getBean(): UserUpdateAdminDto {
-		return this.selectedItem ?: UserUpdateAdminDto()
-	}
-
-	override fun onFileUploaded(properties: UploadProperties, contentLength: Long, mimeType: String) {
-		this.avatarUrl = properties.fileUrl
-		Notifications.success("File ${properties.fileName} is uploaded")
-	}
-
-	override fun onEditModeChange(editMode: Boolean) {
-		this.avatarUpload.setEnabled(editMode)
-	}
-
-	override fun getFormValidator(): FormValidator<UserUpdateAdminDto> {
-		return FormValidator(
-			{ true },
-			mapOf()
-		)
-	}
-
 
 }

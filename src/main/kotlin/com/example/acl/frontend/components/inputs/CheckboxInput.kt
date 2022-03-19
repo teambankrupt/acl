@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
@@ -6,7 +6,7 @@ import com.vaadin.flow.component.checkbox.Checkbox
 
 class CheckboxInput(
 	override var fieldValidator: FieldValidator<Boolean>?
-) : Checkbox(), AbstractInputV2<Boolean> {
+) : Checkbox(), AbstractInput<Boolean> {
 
 	constructor(id: String, label: String, fieldValidator: FieldValidator<Boolean>?) : this(fieldValidator) {
 		this.setId(id)

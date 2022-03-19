@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
@@ -7,7 +7,7 @@ import com.vaadin.flow.data.provider.CallbackDataProvider
 
 class ComboBoxInput<T>(
 	override var fieldValidator: FieldValidator<T>?
-) : ComboBox<T>(), AbstractInputV2<T> {
+) : ComboBox<T>(), AbstractInput<T> {
 
 	constructor(id: String, label: String, validator: FieldValidator<T>?) : this(validator) {
 		this.setId(id)

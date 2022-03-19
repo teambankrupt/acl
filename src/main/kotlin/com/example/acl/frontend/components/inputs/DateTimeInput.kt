@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 class DateTimeInput(
 	override var fieldValidator: FieldValidator<LocalDateTime>?
-) : DateTimePicker(), AbstractInputV2<LocalDateTime> {
+) : DateTimePicker(), AbstractInput<LocalDateTime> {
 
 	constructor(id: String, label: String, fieldValidator: FieldValidator<LocalDateTime>?) : this(fieldValidator) {
 		this.setId(id)

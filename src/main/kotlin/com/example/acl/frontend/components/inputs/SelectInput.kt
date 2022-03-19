@@ -1,4 +1,4 @@
-package com.example.acl.frontend.components
+package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.vaadin.flow.component.Component
@@ -6,7 +6,7 @@ import com.vaadin.flow.component.select.Select
 
 class SelectInput<T>(
 	override var fieldValidator: FieldValidator<T>?
-) : Select<T>(), AbstractInputV2<T> {
+) : Select<T>(), AbstractInput<T> {
 
 	constructor(id: String, label: String, items: List<T>,fieldValidator: FieldValidator<T>?) : this(fieldValidator) {
 		this.setId(id)
