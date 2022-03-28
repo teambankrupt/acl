@@ -2,8 +2,8 @@ package com.example.acl.frontend.components.inputs
 
 import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.models.FileDefinition
-import com.example.cms.domains.fileuploads.models.entities.UploadProperties
-import com.example.cms.domains.fileuploads.services.FileUploadService
+import com.example.filehandler.domains.fileuploads.models.entities.UploadProperties
+import com.example.filehandler.domains.fileuploads.services.FileUploadService
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.html.Image
 import com.vaadin.flow.component.html.Label

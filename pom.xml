@@ -81,7 +81,7 @@
 
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>cms</artifactId>
+            <artifactId>filehandler</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

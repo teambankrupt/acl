@@ -1,4 +1,4 @@
-package com.example.acl.domains.users.controllers.views
+package com.example.acl.domains.users.controllers.views.users
 
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper

@@ -1,4 +1,4 @@
-package com.example.acl.domains.users.controllers.views
+package com.example.acl.domains.users.controllers.views.users
 
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper
@@ -8,7 +8,7 @@ import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.base.AbstractFlowView
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.layouts.MainLayout
-import com.example.cms.domains.fileuploads.services.FileUploadService
+import com.example.filehandler.domains.fileuploads.services.FileUploadService
 import com.vaadin.flow.router.Route
 
 @Route("/users/:username?/:action?(edit)", layout = MainLayout::class)
