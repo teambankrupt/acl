@@ -1,6 +1,7 @@
 package com.example.acl.config
 
 
+import com.example.acl.domains.users.models.enums.AuthMethods
 import com.example.auth.entities.Privilege
 import com.example.auth.entities.Role
 import com.example.auth.entities.User
@@ -73,9 +74,10 @@ class InitConfig @Autowired constructor(
         user.roles = ArrayList()
         user.roles.add(this.roleService.find(Roles.Admin.name).orElseThrow { NotFoundException("Could not assign admin role to admin as it's not found!") })
 
-        if ("phone" == this.authMethod && (user.phone == null || user.phone.isEmpty()))
+        val authMethod = AuthMethods.fromValue(this.authMethod)
+        if (authMethod == AuthMethods.PHONE && (user.phone == null || user.phone.isEmpty()))
             throw RuntimeException("You've chooses `phone` number as authentication method, but forgot to provide admin phone number in security.properties?")
-        if ("email" == this.authMethod && (user.email == null || user.email.isEmpty()))
+        if (authMethod == AuthMethods.EMAIL && (user.email == null || user.email.isEmpty()))
             throw RuntimeException("You've chooses `email` number as authentication method, but forgot to provide admin email in security.properties?")
 
         this.userService.save(user)

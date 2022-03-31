@@ -2,6 +2,7 @@ package com.example.acl.domains.users.services.beans
 
 import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
+import com.example.acl.domains.users.models.enums.AuthMethods
 import com.example.acl.domains.users.repositories.UserRepository
 import com.example.acl.domains.users.services.AcValidationTokenService
 import com.example.acl.domains.users.services.RoleService
@@ -109,7 +110,8 @@ open class UserServiceImpl @Autowired constructor(
             throw InvalidException("Token invalid!")
         val acValidationToken = this.acValidationTokenService.findByToken(token)
 
-        val username = if (authMethod == "phone") user.phone else user.email
+        val authMethod = AuthMethods.fromValue(this.authMethod)
+        val username = if (authMethod == AuthMethods.PHONE) user.phone else user.email
         if (username != acValidationToken.username) throw InvalidException("Token invalid!")
 
         val savedUser = this.save(user)
@@ -121,7 +123,8 @@ open class UserServiceImpl @Autowired constructor(
 
 
     override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken {
-        val isPhone = this.authMethod == "phone"
+		val authMethod = AuthMethods.fromValue(this.authMethod)
+		val isPhone = authMethod == AuthMethods.PHONE
         this.validateIdentity(isPhone, phoneOrEmail)
 
         val user = if (isPhone) this.userRepository.findByPhone(phoneOrEmail)
