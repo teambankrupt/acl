@@ -2,6 +2,7 @@ package com.example.acl.domains.users.services.beans
 
 import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
+import com.example.acl.domains.users.models.enums.AuthMethods
 import com.example.acl.domains.users.repositories.UserRepository
 import com.example.acl.domains.users.services.AcValidationTokenService
 import com.example.acl.domains.users.services.RoleService
@@ -16,6 +17,7 @@ import com.example.common.exceptions.invalid.InvalidException
 import com.example.common.exceptions.notfound.NotFoundException
 import com.example.common.exceptions.notfound.UserNotFoundException
 import com.example.common.exceptions.unknown.UnknownException
+import com.example.common.utils.DateUtil
 import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.SessionIdentifierGenerator
 import com.example.common.utils.Validator
@@ -108,7 +110,8 @@ open class UserServiceImpl @Autowired constructor(
             throw InvalidException("Token invalid!")
         val acValidationToken = this.acValidationTokenService.findByToken(token)
 
-        val username = if (authMethod == "phone") user.phone else user.email
+        val authMethod = AuthMethods.fromValue(this.authMethod)
+        val username = if (authMethod == AuthMethods.PHONE) user.phone else user.email
         if (username != acValidationToken.username) throw InvalidException("Token invalid!")
 
         val savedUser = this.save(user)
@@ -120,7 +123,8 @@ open class UserServiceImpl @Autowired constructor(
 
 
     override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken {
-        val isPhone = this.authMethod == "phone"
+		val authMethod = AuthMethods.fromValue(this.authMethod)
+		val isPhone = authMethod == AuthMethods.PHONE
         this.validateIdentity(isPhone, phoneOrEmail)
 
         val user = if (isPhone) this.userRepository.findByPhone(phoneOrEmail)
@@ -301,6 +305,32 @@ open class UserServiceImpl @Autowired constructor(
         cur.available = true
         cur.reason = "Available"
         return cur
+    }
+
+    override fun getGrowthStats(period: DateUtil.Periods): LinkedHashMap<String, Any> {
+
+        val dates: Collection<Date> = DateUtil.getDatesForPeriod(period)
+
+        val map = LinkedHashMap<String, Any>()
+        dates.forEach {
+            val total = this.userRepository.countByDateRange(
+                DateUtil.getPolarizedDatesForPeriod(period, it, true).toInstant(),
+                DateUtil.getPolarizedDatesForPeriod(period, it, false).toInstant()
+            )
+            when (period) {
+                DateUtil.Periods.TODAY -> map[DateUtil.getReadableDateWithDayName(
+                    it,
+                    DateUtil.DATE_PATTERN_DAY_MONTH_NAME
+                )] = total
+                DateUtil.Periods.THIS_WEEK -> map[DateUtil.getDateType(it)] = total
+                DateUtil.Periods.THIS_MONTH -> map[DateUtil.getReadableDateWithDayName(
+                    it,
+                    DateUtil.DATE_PATTERN_READABLE
+                )] = total
+                else -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE_MONTH_YEAR)] = total
+            }
+        }
+        return map
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.acl.domains.users.services
 import com.example.acl.domains.home.models.CheckUsernameResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.auth.entities.User
+import com.example.common.utils.DateUtil
 import org.springframework.data.domain.Page
 import java.time.Instant
 import java.util.*
@@ -32,4 +33,6 @@ interface UserService {
 
     fun toggleAccess(userId: Long, enable: Boolean)
     fun checkUsername(username: String): CheckUsernameResponse
+
+    fun getGrowthStats(period: DateUtil.Periods): LinkedHashMap<String, Any>
 }

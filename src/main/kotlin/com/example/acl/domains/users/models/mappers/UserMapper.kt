@@ -4,6 +4,7 @@ import com.example.acl.domains.users.models.dtos.UserRequest
 import com.example.acl.domains.users.models.dtos.UserResponse
 import com.example.acl.domains.users.models.dtos.UserSlice
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
+import com.example.acl.domains.users.models.enums.AuthMethods
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.auth.config.security.SecurityContext
@@ -127,27 +128,27 @@ class UserMapper @Autowired constructor(
 		return dto
 	}
 
-	fun validate(user: User) {
 
+	fun validate(user: User) {
+		val authMethod = AuthMethods.fromValue(this.authMethod)
 		if (user.id == null) { // For new user
 			if (this.userService.findByUsername(user.username).isPresent) throw AlreadyExistsException("User already exists with username: ${user.username}")
-			if (authMethod == "phone") {
+			if (authMethod == AuthMethods.PHONE) {
 				if (user.phone == null || user.phone.isEmpty()) throw InvalidException("Phone number can't be null or empty!")
 				if (this.userService.findByPhone(user.phone).isPresent) throw AlreadyExistsException("User already exists with phone: ${user.phone}")
-			} else if (authMethod == "email") {
+			} else if (authMethod == AuthMethods.EMAIL) {
 				if (user.email == null || user.email.isEmpty()) throw InvalidException("Email can't be null or empty!")
 				if (this.userService.findByEmail(user.email).isPresent) throw AlreadyExistsException("User already exists with email: ${user.email}")
 			} else { // both
 				if ((user.phone == null || user.phone.isEmpty()) && (user.email == null || user.email.isEmpty())) throw InvalidException(
 					"Email or phone can not be empty!"
 				)
-				if (user.phone.isNotEmpty()) if (this.userService.findByPhone(user.phone).isPresent) throw AlreadyExistsException(
-					"User already exists with phone: ${user.phone}"
-				)
-				if (user.email.isNotEmpty()) if (this.userService.findByEmail(user.email).isPresent) throw AlreadyExistsException(
-					"User already exists with email: ${user.email}"
-				)
+				if (user.phone.isNotEmpty())
+					if (this.userService.findByPhone(user.phone).isPresent) throw AlreadyExistsException("User already exists with phone: ${user.phone}")
+				if (user.email.isNotEmpty())
+					if (this.userService.findByEmail(user.email).isPresent) throw AlreadyExistsException("User already exists with email: ${user.email}")
 			}
 		}
 	}
+
 }

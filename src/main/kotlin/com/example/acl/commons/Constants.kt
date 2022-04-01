@@ -27,6 +27,9 @@ class Constants {
             const val PROFILE = "Profile"
             const val CONTACT = "Contact"
             const val USERS = "Users"
+
+            // Statistics
+            const val USERS_STATISTICS = "Users Statistics"
         }
     }
 }
