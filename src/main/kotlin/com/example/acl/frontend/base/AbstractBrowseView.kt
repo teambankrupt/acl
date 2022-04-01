@@ -24,6 +24,7 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 		this.data = data
 		this.selectedObj = selectedObj
 
+		this.removeAll()
 		this.createGridLayout(this.defineColumnFields())
 	}
 
@@ -69,18 +70,20 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 	abstract override fun beforeEnter(event: BeforeEnterEvent)
 
 	fun onRowSelected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>) {
-			val item = event.value
-			this.listener?.onItemSelected(true, item)
+		val item = event.value
+		this.listener?.onItemSelected(true, item)
 	}
 
 	fun onRowUnselected(event: AbstractField.ComponentValueChangeEvent<Grid<T>, T>) {
-			val item = event.value
-			this.listener?.onItemSelected(false, item)
+		val item = event.value
+		this.listener?.onItemSelected(false, item)
 	}
 
-	fun setItemSelectionListener(listener: ItemSelectionListener<T>){
+	fun setItemSelectionListener(listener: ItemSelectionListener<T>) {
 		this.listener = listener
 	}
+
+	abstract fun onFilterSubmitted(result: Map<String, Any?>)
 
 	abstract fun onItemPersisted(item: T?)
 

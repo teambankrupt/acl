@@ -1,6 +1,7 @@
 package com.example.acl.frontend.base
 
 import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.splitlayout.SplitLayout
 import java.lang.reflect.Field
 
@@ -11,6 +12,7 @@ abstract class AbstractFlowView<T> : Div() {
 
 	fun initialize(
 		klass: Class<T>,
+		filterView: AbstractFilterView<T>,
 		browseView: AbstractBrowseView<T>,
 		formView: AbstractFormView<T>
 	) {
@@ -22,14 +24,13 @@ abstract class AbstractFlowView<T> : Div() {
 		val splitLayout = SplitLayout()
 		splitLayout.setSizeFull()
 
-		splitLayout.addToPrimary(browseView)
+		val filterBrowseView = VerticalLayout()
+		filterBrowseView.add(filterView)
+		filterBrowseView.add(browseView)
+
+		splitLayout.addToPrimary(filterBrowseView)
 		splitLayout.addToSecondary(formView)
 		add(splitLayout)
 	}
-
-//	abstract fun getFormView(): AbstractFormView<T>
-//
-//	abstract fun getBrowseView(): AbstractBrowseView<T>
-
 
 }

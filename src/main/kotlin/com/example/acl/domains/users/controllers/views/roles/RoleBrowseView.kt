@@ -37,4 +37,8 @@ class RoleBrowseView constructor(
 	override fun onItemPersisted(item: RoleDto?) {
 
 	}
+
+	override fun onFilterSubmitted(result: Map<String, Any?>) {
+		TODO("Not yet implemented")
+	}
 }

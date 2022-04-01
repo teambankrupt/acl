@@ -7,6 +7,7 @@ import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.auth.entities.User
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.router.BeforeEnterEvent
+import org.springframework.data.domain.Page
 import java.util.*
 
 class UserBrowseView(
@@ -16,8 +17,7 @@ class UserBrowseView(
 	private var event: BeforeEnterEvent? = null
 
 	init {
-		val users = this.userService.findAll(0)
-		val dtos = users.map { this.userMapper.mapToAdminDto(it) }
+		val dtos = this.getUsers(0, 10, mapOf())
 		val username = event?.routeParameters?.get("username") ?: Optional.empty()
 		val user: Optional<User> =
 			if (username.isPresent) this.userService.findByUsername(username.get()) else Optional.empty()
@@ -26,6 +26,17 @@ class UserBrowseView(
 		this.initialize(
 			UserUpdateAdminDto::class.java, dtos, dto
 		)
+	}
+
+	fun getUsers(page: Int, size: Int, filters: Map<String, Any?>): Page<UserUpdateAdminDto> {
+		val users: Page<User>
+		users = if (filters.isEmpty())
+			this.userService.findAll(page)
+		else {
+			val role = filters["role"] as String?
+			this.userService.search("", role, page, size)
+		}
+		return users.map { this.userMapper.mapToAdminDto(it) }
 	}
 
 	override fun beforeEnter(event: BeforeEnterEvent) {
@@ -49,6 +60,13 @@ class UserBrowseView(
 
 	override fun onItemPersisted(item: UserUpdateAdminDto?) {
 		UI.getCurrent().page.reload()
+	}
+
+	override fun onFilterSubmitted(result: Map<String, Any?>) {
+		val users = this.getUsers(0, 10, result)
+		this.initialize(
+			UserUpdateAdminDto::class.java, users, Optional.empty()
+		)
 	}
 
 
