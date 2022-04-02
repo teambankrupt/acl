@@ -6,7 +6,9 @@ import com.vaadin.flow.component.AttachEvent
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.component.orderedlayout.FlexComponent
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
+
 
 abstract class AbstractFilterView<T> : Div() {
 	private var formLayout: FormLayout = FormLayout()
@@ -17,9 +19,9 @@ abstract class AbstractFilterView<T> : Div() {
 	var listener: FilterListener? = null
 
 	init {
-		this.formLayout.setSizeFull()
+		this.className = "flex flex-col space-s"
+		this.setWidthFull()
 		this.buttonLayout = this.createButtonLayout()
-
 		this.add(this.formLayout, this.buttonLayout)
 	}
 
@@ -34,8 +36,7 @@ abstract class AbstractFilterView<T> : Div() {
 
 	private fun createButtonLayout(): HorizontalLayout {
 		val buttonLayout = HorizontalLayout()
-//		buttonLayout.className = "w-full flex-wrap bg-contrast-5 py-s px-l"
-		buttonLayout.isSpacing = true
+		buttonLayout.alignItems = FlexComponent.Alignment.END
 
 		this.btnClear = Button(ActionButtons.CLEAR.label)
 		this.btnClear.setId(ActionButtons.CLEAR.id)

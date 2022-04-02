@@ -22,13 +22,8 @@ abstract class AbstractFormView<T> : Div() {
 
 	init {
 		this.className = "flex flex-col space-s"
-		this.width = "400px"
-		val editorDiv = Div()
-		editorDiv.className = "p-l flex-grow"
-		this.add(editorDiv)
-
+		this.width = "30%"
 		this.buttonLayout = this.createButtonLayout()
-
 		this.add(this.formLayout, this.buttonLayout)
 	}
 
