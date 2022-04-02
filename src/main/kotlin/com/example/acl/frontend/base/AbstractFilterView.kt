@@ -35,7 +35,7 @@ abstract class AbstractFilterView<T> : Div() {
 	private fun createButtonLayout(): HorizontalLayout {
 		val buttonLayout = HorizontalLayout()
 //		buttonLayout.className = "w-full flex-wrap bg-contrast-5 py-s px-l"
-		buttonLayout.isSpacing = true
+//		buttonLayout.isSpacing = true
 
 		this.btnClear = Button(ActionButtons.CLEAR.label)
 		this.btnClear.setId(ActionButtons.CLEAR.id)

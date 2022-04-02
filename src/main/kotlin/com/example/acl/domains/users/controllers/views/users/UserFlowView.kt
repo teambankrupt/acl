@@ -52,4 +52,8 @@ class UserFlowView(
 		)
 	}
 
+	override fun isNewButtonEnabled(): Boolean {
+		return true
+	}
+
 }

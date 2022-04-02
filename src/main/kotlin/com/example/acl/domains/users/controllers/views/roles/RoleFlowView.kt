@@ -47,4 +47,8 @@ class RoleFlowView constructor(
 			formView
 		)
 	}
+
+	override fun isNewButtonEnabled(): Boolean {
+		return true
+	}
 }
