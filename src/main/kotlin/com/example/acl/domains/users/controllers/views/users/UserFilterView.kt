@@ -19,6 +19,7 @@ import com.vaadin.flow.component.button.Button
 class UserFilterView(
 	private val roleService: RoleService
 ) : AbstractFilterView<UserUpdateAdminDto>() {
+	lateinit var txtSearch: TextInput
 	lateinit var cbxRole: SelectInput<String>
 
 	override fun initForm(formLayout: FormLayout) {
@@ -26,12 +27,13 @@ class UserFilterView(
 
 		formLayout.addInputs(
 			listOf(
-				this.cbxRole
+				this.txtSearch, this.cbxRole
 			)
 		)
 	}
 
 	private fun initFields() {
+		this.txtSearch = TextInput("query", "Search Users", null)
 		this.cbxRole = SelectInput(
 			"role",
 			"Select Role",

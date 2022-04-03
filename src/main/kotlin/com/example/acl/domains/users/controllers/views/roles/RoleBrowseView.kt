@@ -5,6 +5,7 @@ import com.example.acl.domains.users.models.mappers.RoleMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.frontend.base.AbstractBrowseView
 import com.vaadin.flow.router.BeforeEnterEvent
+import org.springframework.data.domain.Page
 import java.util.*
 
 class RoleBrowseView constructor(
@@ -13,13 +14,19 @@ class RoleBrowseView constructor(
 ) : AbstractBrowseView<RoleDto>() {
 
 	init {
-		val roles = this.roleService.search("",0,100)
-
 		this.initialize(
 			RoleDto::class.java,
-			roles.map { this.roleMapper.map(it) },
+			this.getRoles(0, 10, mapOf()),
 			Optional.empty()
 		)
+	}
+
+	fun getRoles(page: Int, size: Int, filters: Map<String, Any?>): Page<RoleDto> {
+		if (filters.isEmpty())
+			return this.roleService.search("", page, size).map { this.roleMapper.map(it) }
+		val query = filters["query"] as String?
+		val restricted = filters["restricted"] as Boolean
+		return this.roleService.search(query ?: "", page, size).map { this.roleMapper.map(it) }
 	}
 
 	override fun defineColumnFields(): Map<String, String>? {
@@ -39,6 +46,10 @@ class RoleBrowseView constructor(
 	}
 
 	override fun onFilterSubmitted(result: Map<String, Any?>) {
-		TODO("Not yet implemented")
+		this.initialize(
+			RoleDto::class.java,
+			this.getRoles(0, 10, result),
+			Optional.empty()
+		)
 	}
 }

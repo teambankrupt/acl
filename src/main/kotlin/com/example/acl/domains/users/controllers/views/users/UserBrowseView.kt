@@ -34,7 +34,8 @@ class UserBrowseView(
 			this.userService.findAll(page)
 		else {
 			val role = filters["role"] as String?
-			this.userService.search("", role, page, size)
+			val query = filters["query"] as String?
+			this.userService.search(query ?: "", role, page, size)
 		}
 		return users.map { this.userMapper.mapToAdminDto(it) }
 	}

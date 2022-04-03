@@ -3,6 +3,7 @@ package com.example.acl.frontend.base
 import com.example.acl.frontend.components.layouts.FormLayout
 import com.example.acl.frontend.models.enums.ActionButtons
 import com.vaadin.flow.component.AttachEvent
+import com.vaadin.flow.component.Key
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.html.Div
@@ -51,6 +52,7 @@ abstract class AbstractFilterView<T> : Div() {
 		this.btnSubmit.addClickListener {
 			this.listener?.onFilterSubmitted(this.formLayout.getValues())
 		}
+		this.btnSubmit.addClickShortcut(Key.ENTER)
 
 		buttonLayout.add(this.btnSubmit, this.btnClear)
 		return buttonLayout

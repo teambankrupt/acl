@@ -2,6 +2,7 @@ package com.example.acl.domains.users.controllers.views.roles
 
 import com.example.acl.domains.users.models.dtos.RoleDto
 import com.example.acl.domains.users.models.mappers.RoleMapper
+import com.example.acl.domains.users.services.PrivilegeService
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.base.AbstractFilterView
@@ -12,14 +13,15 @@ import com.vaadin.flow.router.Route
 
 @Route("/roles/:username?/:action?(edit)", layout = MainLayout::class)
 class RoleFlowView constructor(
-	val roleService: RoleService,
-	val roleMapper: RoleMapper
+	roleService: RoleService,
+	roleMapper: RoleMapper,
+	privilegeService: PrivilegeService
 ) : AbstractFlowView<RoleDto>() {
 
 	init {
 		val filterView = RoleFilterView()
 		val browseView = RoleBrowseView(roleService, roleMapper)
-		val formView = RoleFormView()
+		val formView = RoleFormView(roleService, privilegeService, roleMapper)
 
 		filterView.setFilterListener(object : AbstractFilterView.FilterListener {
 			override fun onFilterSubmitted(result: Map<String, Any?>) {
@@ -37,7 +39,6 @@ class RoleFlowView constructor(
 			override fun onItemPersisted(item: RoleDto?) {
 				browseView.onItemPersisted(item)
 			}
-
 		})
 
 		this.initialize(

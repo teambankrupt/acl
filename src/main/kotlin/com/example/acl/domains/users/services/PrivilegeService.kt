@@ -5,14 +5,15 @@ import org.springframework.data.domain.Page
 import java.util.*
 
 interface PrivilegeService {
-    fun search(query: String, page: Int, size: Int): Page<Privilege>
-    fun save(entity: Privilege): Privilege
-    fun find(id: Long): Optional<Privilege>
-    fun delete(id: Long, softDelete: Boolean)
+	fun search(query: String, page: Int, size: Int): Page<Privilege>
+	fun save(entity: Privilege): Privilege
+	fun find(id: Long): Optional<Privilege>
+	fun delete(id: Long, softDelete: Boolean)
 
-    fun find(name: String): Optional<Privilege>
+	fun find(name: String): Optional<Privilege>
 
-    fun empty(): Boolean
+	fun empty(): Boolean
 
-    fun findAll(): List<Privilege>
+	fun findAll(): List<Privilege>
+	fun findByIds(privilegeIds: List<Long>): List<Privilege>
 }

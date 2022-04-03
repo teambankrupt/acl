@@ -7,21 +7,24 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 class RoleDto : BaseDto() {
-    @NotBlank
-    lateinit var name: String
+	@NotBlank
+	lateinit var name: String
 
-    var description: String? = null
+	var description: String? = null
 
-    @NotNull
-    var restricted: Boolean = false
+	@NotNull
+	var restricted: Boolean = false
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    var privileges: List<PrivilegeDto>? = null
+	@NotNull
+	@NotEmpty
+	@JsonProperty(value = "privilege_ids", access = JsonProperty.Access.WRITE_ONLY)
+	lateinit var privilegeIds: List<Long>
 
-    @NotNull
-    @NotEmpty
-    @JsonProperty(value = "privilege_ids", access = JsonProperty.Access.WRITE_ONLY)
-    lateinit var privilegeIds: List<Long>
+	/*
+	READONLY
+	 */
 
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	var privileges: List<PrivilegeDto>? = null
 
 }

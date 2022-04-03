@@ -28,6 +28,10 @@ open class PrivilegeServiceImpl @Autowired constructor(
         return this.privilegeRepo.findAll()
     }
 
+    override fun findByIds(privilegeIds: List<Long>): List<Privilege> {
+        return this.privilegeRepo.findByIds(privilegeIds)
+    }
+
     override fun find(name: String): Optional<Privilege> {
         return this.privilegeRepo.find(name)
     }
@@ -53,7 +57,7 @@ open class PrivilegeServiceImpl @Autowired constructor(
     }
 
     override fun search(query: String, page: Int, size: Int): Page<Privilege> {
-        return this.privilegeRepo.search(query, PageAttr.getPageRequest(page, size))
+        return this.privilegeRepo.search(query.lowercase(), PageAttr.getPageRequest(page, size))
     }
 
 
