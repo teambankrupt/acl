@@ -4,6 +4,7 @@ import com.example.acl.domains.users.models.dtos.RoleDto
 import com.example.acl.domains.users.models.mappers.RoleMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.frontend.base.AbstractBrowseView
+import com.example.acl.frontend.models.Visual
 import com.vaadin.flow.router.BeforeEnterEvent
 import org.springframework.data.domain.Page
 import java.util.*
@@ -29,11 +30,11 @@ class RoleBrowseView constructor(
 		return this.roleService.search(query ?: "", page, size).map { this.roleMapper.map(it) }
 	}
 
-	override fun defineColumnFields(): Map<String, String>? {
+	override fun defineColumnFields(): Map<String, Visual<RoleDto>> {
 		return mapOf(
-			"name" to "Name",
-			"description" to "Description",
-			"restricted" to "Restricted"
+			"name" to Visual("Name",null),
+			"description" to Visual("Description",null),
+			"restricted" to Visual("Restricted",null)
 		)
 	}
 

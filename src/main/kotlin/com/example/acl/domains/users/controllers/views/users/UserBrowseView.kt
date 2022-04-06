@@ -1,9 +1,11 @@
 package com.example.acl.domains.users.controllers.views.users
 
+import com.example.acl.domains.users.models.dtos.RoleDto
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.frontend.base.AbstractBrowseView
+import com.example.acl.frontend.models.Visual
 import com.example.auth.entities.User
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.router.BeforeEnterEvent
@@ -44,18 +46,18 @@ class UserBrowseView(
 		this.event = event
 	}
 
-	override fun defineColumnFields(): Map<String, String>? {
+	override fun defineColumnFields(): Map<String, Visual<UserUpdateAdminDto>> {
 		return mapOf(
-			"avatar" to "Avatar",
-			"name" to "Name",
-			"username" to "Username",
-			"gender" to "Gender",
-			"email" to "Email",
-			"phone" to "Phone",
-			"enabled" to "Enabled",
-			"accountNonLocked" to "Account Non Locked",
-			"accountNonExpired" to "Account Non Expired",
-			"credentialsNonExpired" to "Credentials Non Expired"
+			"avatar" to Visual("Avatar", null),
+			"name" to Visual("Name", null),
+			"username" to Visual("Username", null),
+			"gender" to Visual("Gender", null),
+			"email" to Visual("Email", null),
+			"phone" to Visual("Phone", null),
+			"enabled" to Visual("Enabled", null),
+			"accountNonLocked" to Visual("Account Non Locked", null),
+			"accountNonExpired" to Visual("Account Non Expired", null),
+			"credentialsNonExpired" to Visual("Credentials Non Expired", null)
 		)
 	}
 

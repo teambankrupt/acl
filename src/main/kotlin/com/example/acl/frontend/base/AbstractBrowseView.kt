@@ -1,9 +1,11 @@
 package com.example.acl.frontend.base
 
+import com.example.acl.frontend.models.Visual
 import com.vaadin.flow.component.AbstractField
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.grid.GridVariant
 import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.data.renderer.Renderer
 import com.vaadin.flow.router.BeforeEnterEvent
 import com.vaadin.flow.router.BeforeEnterObserver
 import org.springframework.data.domain.Page
@@ -28,15 +30,15 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 		this.createGridLayout(this.defineColumnFields())
 	}
 
-	abstract fun defineColumnFields(): Map<String, String>?
+	abstract fun defineColumnFields(): Map<String, Visual<T>>?
 
-	fun createGridLayout(fieldsToShow: Map<String, String>?) {
+	fun createGridLayout(fieldsToShow: Map<String, Visual<T>>?) {
 		this.setId("grid-wrapper")
 		this.setSizeFull()
 		this.add(createGrid(fieldsToShow))
 	}
 
-	fun createGrid(columnFields: Map<String, String>?): Grid<T> {
+	fun createGrid(columnFields: Map<String, Visual<T>>?): Grid<T> {
 		val showAllFields = columnFields.isNullOrEmpty()
 		val grid: Grid<T> = Grid(klass, showAllFields)
 		grid.setItems(this.data.content)
@@ -47,9 +49,15 @@ abstract class AbstractBrowseView<T> : Div(), BeforeEnterObserver {
 			val fieldNames = fields.map { it.name }
 			columnFields!!.forEach {
 				if (fieldNames.contains(it.key)) {
-					grid.addColumn(it.key)
-						.setHeader(it.value)
-						.isAutoWidth = true
+					if (it.value.renderer != null) {
+						grid.addColumn(it.value.renderer)
+							.setHeader(it.value.label)
+							.isAutoWidth = true
+					} else {
+						grid.addColumn(it.key)
+							.setHeader(it.value.label)
+							.isAutoWidth = true
+					}
 				}
 			}
 		}

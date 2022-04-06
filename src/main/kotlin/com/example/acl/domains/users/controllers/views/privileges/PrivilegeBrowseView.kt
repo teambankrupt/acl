@@ -4,9 +4,16 @@ import com.example.acl.domains.users.models.dtos.PrivilegeDto
 import com.example.acl.domains.users.models.mappers.PrivilegeMapper
 import com.example.acl.domains.users.services.PrivilegeService
 import com.example.acl.frontend.base.AbstractBrowseView
+import com.example.acl.frontend.models.Visual
+import com.vaadin.flow.data.renderer.LocalDateRenderer
+import com.vaadin.flow.function.ValueProvider
 import com.vaadin.flow.router.BeforeEnterEvent
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 
@@ -32,13 +39,19 @@ class PrivilegeBrowseView constructor(
 		return PageImpl(dtos)
 	}
 
-	override fun defineColumnFields(): Map<String, String>? {
+	override fun defineColumnFields(): Map<String, Visual<PrivilegeDto>>? {
 		return mapOf(
-			"label" to "Label",
-			"name" to "Name",
-			"description" to "Description",
-			"createdAt" to "Created At",
-			"updatedAt" to "Updated At"
+			"label" to Visual("Label", null),
+			"name" to Visual("Name", null),
+			"description" to Visual("Description", null),
+			"lastUpdated" to Visual(
+				"Updated At", LocalDateRenderer(
+					{ it.lastUpdated?.atZone(ZoneOffset.systemDefault())?.toLocalDate() },
+					DateTimeFormatter.ofLocalizedDate(
+						FormatStyle.MEDIUM
+					)
+				)
+			)
 		)
 	}
 
