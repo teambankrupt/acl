@@ -18,12 +18,14 @@ class Route {
             const val WEB_ROLE_DETAILS_PAGE = "$ADMIN/roles/{role_id}"
             const val WEB_ROLE_CREATE = "$ADMIN/roles"
             const val WEB_ROLE_UPDATE = "$ADMIN/roles/{role_id}"
+            const val VAADIN_WEB_ROLES = "$ADMIN/roles/:role?/:action?(edit)"
 
             // Privileges (Admin)
             const val WEB_PRIVILEGES_PAGE = "$ADMIN/privileges"
             const val WEB_PRIVILEGE_CREATE = "$ADMIN/privileges"
             const val WEB_PRIVILEGE_DETAILS_PAGE = "$ADMIN/privileges/{privilege_id}"
             const val WEB_PRIVILEGE_UPDATE = "$ADMIN/privileges/{privilege_id}"
+            const val VAADIN_WEB_PRIVILEGES = "$ADMIN/privileges/:privilege?/:action?(edit)"
 
             // Users (Admin)
             const val WEB_USERS_SEARCH_PAGE = "$ADMIN/users"
@@ -31,6 +33,7 @@ class Route {
             const val WEB_USERS_DETAILS_PAGE = "$ADMIN/users/{user_id}"
             const val WEB_USERS_UPDATE = "$ADMIN/users/{user_id}"
             const val WEB_TOGGLE_ENABLED = "$ADMIN/users/{user_id}/toggle-access"
+            const val VAADIN_WEB_USERS = "$ADMIN/users/:username?/:action?(edit)"
 
             // Users
             const val FIND_AVATAR_URL = "$API$VERSION/public/users/{username}/avatar"

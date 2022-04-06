@@ -11,6 +11,7 @@ import com.example.acl.frontend.components.inputs.TextInput
 import com.example.acl.frontend.components.layouts.FormLayout
 import com.example.acl.frontend.models.FieldValidator
 import com.example.acl.frontend.utils.Notifications
+import com.example.auth.enums.Privileges
 import com.example.common.utils.ExceptionUtil
 import com.vaadin.flow.component.ClickEvent
 import com.vaadin.flow.component.button.Button
@@ -64,7 +65,6 @@ class RoleFormView(
 	}
 
 	override fun onSaveAction(event: ClickEvent<Button>, result: Map<String, Any?>) {
-		val ADMINISTRATION = "ADMINISTRATION"
 		val dto = RoleDto()
 		dto.name = result["name"] as String
 		dto.restricted = result["restricted"] as Boolean
@@ -75,7 +75,7 @@ class RoleFormView(
 		val selectedRole = getSelected()?.id?.let { this.roleService.find(it).get() }
 
 		// Validation so that admin can't be updated
-		if (privileges.map { it.first.uppercase() }.contains(ADMINISTRATION)
+		if (privileges.map { it.first.uppercase() }.contains(Privileges.ADMINISTRATION.name)
 			|| (selectedRole != null && selectedRole.isAdmin)
 		) {
 			Notifications.error("Admin can't be modified!")

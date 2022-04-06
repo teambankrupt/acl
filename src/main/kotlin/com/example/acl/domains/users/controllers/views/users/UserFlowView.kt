@@ -9,10 +9,10 @@ import com.example.acl.frontend.base.AbstractFilterView
 import com.example.acl.frontend.base.AbstractFlowView
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.layouts.MainLayout
+import com.example.acl.routing.Route
 import com.example.filehandler.domains.fileuploads.services.FileUploadService
-import com.vaadin.flow.router.Route
 
-@Route("/users/:username?/:action?(edit)", layout = MainLayout::class)
+@com.vaadin.flow.router.Route(Route.V1.VAADIN_WEB_USERS, layout = MainLayout::class)
 class UserFlowView(
 	userService: UserService,
 	userMapper: UserMapper,

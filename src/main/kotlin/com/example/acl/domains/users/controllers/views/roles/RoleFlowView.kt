@@ -9,9 +9,9 @@ import com.example.acl.frontend.base.AbstractFilterView
 import com.example.acl.frontend.base.AbstractFlowView
 import com.example.acl.frontend.base.AbstractFormView
 import com.example.acl.frontend.layouts.MainLayout
-import com.vaadin.flow.router.Route
+import com.example.acl.routing.Route
 
-@Route("/roles/:username?/:action?(edit)", layout = MainLayout::class)
+@com.vaadin.flow.router.Route(Route.V1.VAADIN_WEB_ROLES, layout = MainLayout::class)
 class RoleFlowView constructor(
 	roleService: RoleService,
 	roleMapper: RoleMapper,
