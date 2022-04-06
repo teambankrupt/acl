@@ -8,6 +8,12 @@ import com.example.acl.frontend.base.AbstractBrowseView
 import com.example.acl.frontend.models.Visual
 import com.example.auth.entities.User
 import com.vaadin.flow.component.UI
+import com.vaadin.flow.component.html.Image
+import com.vaadin.flow.component.icon.Icon
+import com.vaadin.flow.data.renderer.ClickableRenderer
+import com.vaadin.flow.data.renderer.ComponentRenderer
+import com.vaadin.flow.data.renderer.IconRenderer
+import com.vaadin.flow.data.renderer.NativeButtonRenderer
 import com.vaadin.flow.router.BeforeEnterEvent
 import org.springframework.data.domain.Page
 import java.util.*
@@ -48,7 +54,10 @@ class UserBrowseView(
 
 	override fun defineColumnFields(): Map<String, Visual<UserUpdateAdminDto>> {
 		return mapOf(
-			"avatar" to Visual("Avatar", null),
+			"avatar" to Visual(
+				"Avatar",
+				ComponentRenderer({ Image() }, { img: Image, it -> if (it.avatar != null) img.src = it.avatar })
+			),
 			"name" to Visual("Name", null),
 			"username" to Visual("Username", null),
 			"gender" to Visual("Gender", null),
