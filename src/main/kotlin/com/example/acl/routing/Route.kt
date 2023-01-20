@@ -4,8 +4,11 @@ class Route {
     class V1 {
         companion object {
             private const val API = "/api"
+            private const val WEB = "/web"
             private const val VERSION = "/v1"
             private const val ADMIN = "/admin"
+
+            const val VAADIN_WEB_LOGIN="/login"
 
             const val VERIFY_REGISTRATION = "$API$VERSION/register/verify"
             const val CHECK_USERNAME = "$API$VERSION/public/register/check-username"

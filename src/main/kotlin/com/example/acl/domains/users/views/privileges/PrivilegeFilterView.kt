@@ -1,4 +1,4 @@
-package com.example.acl.domains.users.controllers.views.privileges
+package com.example.acl.domains.users.views.privileges
 
 import com.example.acl.domains.users.models.dtos.PrivilegeDto
 import com.example.acl.frontend.base.AbstractFilterView

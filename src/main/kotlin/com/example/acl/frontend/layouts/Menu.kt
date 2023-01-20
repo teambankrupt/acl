@@ -1,8 +1,8 @@
 package com.example.acl.frontend.layouts
 
 import com.example.acl.domains.home.controllers.views.AdminHomeView
-import com.example.acl.domains.users.controllers.views.roles.RoleFlowView
-import com.example.acl.domains.users.controllers.views.users.UserFlowView
+import com.example.acl.domains.users.views.roles.RoleFlowView
+import com.example.acl.domains.users.views.users.UserFlowView
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.dependency.NpmPackage
 import com.vaadin.flow.component.html.ListItem
