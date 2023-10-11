@@ -153,7 +153,7 @@ open class UserServiceImpl @Autowired constructor(
         }.start()
 
         // build confirmation link
-        val tokenMessage = "Your " + this.applicationName + " token is: " + acValidationToken.token
+        val tokenMessage = "ওটিপি " + acValidationToken.token
         // send link by sms
         val provider = if (this.originRegion == "BD") Providers.MIM_SMS else Providers.TWILIO
         if (this.authMethod == "phone") this.smsService.sendSms(provider, phoneOrEmail, tokenMessage)
