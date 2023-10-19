@@ -55,7 +55,7 @@ public class AcValidationTokenServiceImpl implements AcValidationTokenService {
     @Override
     public Optional<AcValidationToken> getValidToken(String identity) {
         AcValidationToken token = this.tokenRepo.findFirstByUsernameOrderByIdDesc(identity);
-        return token.isTokenValid() ? Optional.of(token) : Optional.empty();
+        return token != null && token.isTokenValid() ? Optional.of(token) : Optional.empty();
     }
 
     @Override
