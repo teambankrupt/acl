@@ -7,10 +7,12 @@ import com.example.acl.domains.users.models.mappers.TokenMapper
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.AcValidationTokenService
 import com.example.acl.domains.users.services.UserService
+import com.example.acl.headers.ErrHeaders
 import com.example.acl.routing.Route
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.config.security.TokenService
 import com.example.auth.entities.UserAuth
+import com.example.common.misc.toHeaderMultiValueMap
 import com.example.coreweb.commons.Constants
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -44,23 +46,18 @@ class ApiHomeController @Autowired constructor(
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis() + Integer.parseInt(this.tokenValidity)
 
-//        val existingToken = this.acValidationTokenService.getValidToken(phoneOrEmail)
-//        if (existingToken.isPresent) {
-//            return ResponseEntity(
-//                tokenMapper.map(existingToken.get()),
-//                ErrHeaders.triggerOTPHeader.toHeaderMultiValueMap(),
-//                HttpStatus.OK
-//            )
-//        }
+        val existingToken = this.acValidationTokenService.getValidToken(phoneOrEmail)
+        if (existingToken.isPresent) {
+            return ResponseEntity(
+                tokenMapper.map(existingToken.get()),
+                ErrHeaders.triggerOTPHeader.toHeaderMultiValueMap(),
+                HttpStatus.OK
+            )
+        }
         val acValidationToken = this.userService.requireAccountValidationByOTP(phoneOrEmail, calendar.time.toInstant())
 
         return ResponseEntity.ok(this.tokenMapper.map(acValidationToken))
     }
-
-//    throw ExceptionUtil.notExists(
-//    message = "Couldn't find a random unsatisfied QuestionSet",
-//    headers = ErrHeaders.showUpcomingPageHeaders
-//    )
 
     @GetMapping(Route.V1.CHECK_USERNAME)
     fun checkUsername(@RequestParam("username") username: String): ResponseEntity<CheckUsernameResponse> {
