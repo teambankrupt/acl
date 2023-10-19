@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AcValidationTokenServiceImpl implements AcValidationTokenService {
@@ -49,6 +50,12 @@ public class AcValidationTokenServiceImpl implements AcValidationTokenService {
         if (token == null || token.isEmpty()) return false;
         AcValidationToken acValidationToken = this.findByToken(token);
         return acValidationToken != null && acValidationToken.isTokenValid();
+    }
+
+    @Override
+    public Optional<AcValidationToken> getValidToken(String identity) {
+        AcValidationToken token = this.tokenRepo.findFirstByUsernameOrderByIdDesc(identity);
+        return token.isTokenValid() ? Optional.of(token) : Optional.empty();
     }
 
     @Override

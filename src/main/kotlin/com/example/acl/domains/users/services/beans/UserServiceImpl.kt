@@ -7,6 +7,7 @@ import com.example.acl.domains.users.repositories.UserRepository
 import com.example.acl.domains.users.services.AcValidationTokenService
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
+import com.example.acl.headers.ErrHeaders
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.entities.User
 import com.example.auth.enums.Roles
@@ -123,16 +124,20 @@ open class UserServiceImpl @Autowired constructor(
 
 
     override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken {
-		val authMethod = AuthMethods.fromValue(this.authMethod)
-		val isPhone = authMethod == AuthMethods.PHONE
+        val authMethod = AuthMethods.fromValue(this.authMethod)
+        val isPhone = authMethod == AuthMethods.PHONE
         this.validateIdentity(isPhone, phoneOrEmail)
 
         val user = if (isPhone) this.userRepository.findByPhone(phoneOrEmail)
         else this.userRepository.findByEmail(phoneOrEmail)
         if (user.isPresent) throw UserAlreadyExistsException("User already registered with this ${authMethod}!")
 
-        if (!this.acValidationTokenService.canGetOTP(phoneOrEmail))
-            throw ForbiddenException("Already sent an OTP. Please try agin in two minutes!")
+        if (!this.acValidationTokenService.canGetOTP(phoneOrEmail)) {
+            throw ExceptionUtil.alreadyExists(
+                message = "Already sent an OTP. Please try again in ${tokenValidity.toInt() / 60000} minutes!",
+                headers = ErrHeaders.triggerOTPHeader
+            )
+        }
         var acValidationToken = AcValidationToken()
         acValidationToken.token = SessionIdentifierGenerator.generateOTP().toString()
         acValidationToken.isTokenValid = true
@@ -322,11 +327,13 @@ open class UserServiceImpl @Autowired constructor(
                     it,
                     DateUtil.DATE_PATTERN_DAY_MONTH_NAME
                 )] = total
+
                 DateUtil.Periods.THIS_WEEK -> map[DateUtil.getDateType(it)] = total
                 DateUtil.Periods.THIS_MONTH -> map[DateUtil.getReadableDateWithDayName(
                     it,
                     DateUtil.DATE_PATTERN_READABLE
                 )] = total
+
                 else -> map[DateUtil.getReadableDateWithDayName(it, DateUtil.DATE_PATTERN_READABLE_MONTH_YEAR)] = total
             }
         }
