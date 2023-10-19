@@ -35,6 +35,7 @@ class Route {
             // Users
             const val FIND_AVATAR_URL = "$API$VERSION/public/users/{username}/avatar"
             const val FIND_ME = "$API$VERSION/users/me"
+            const val DELETE_ME = "$API$VERSION/users/delete-me"
             const val UPDATE_AVATAR = "$API$VERSION/users/me/update-avatar"
 
             // User Admin Statistics
