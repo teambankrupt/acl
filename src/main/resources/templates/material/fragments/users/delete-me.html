@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <div th:include="material/fragments/head"></div>
+</head>
+
+<body class="theme-red">
+
+<section class="content">
+    <div class="container-fluid">
+        <div layout:fragment="main_content">
+
+            <div class="block-header">
+                <h2>REQUEST ACCOUNT DELETION</h2>
+            </div>
+
+            <!-- Widgets -->
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div th:if="${!deleted}" class="card">
+                        <div class="card-title p-l-50 p-r-50 p-t-50">
+                            <span class="text title">Are you sure you want to permanently delete your account?</span>
+                        </div>
+                        <div class="card-content p-l-50 p-r-50 p-t-20 p-b-50">
+                            <p>
+                                You're about to delete your account permanently and this will delete all of your data.
+                                You'll get a 90 days period of time to re-login if you change your mind later. If you
+                                don't login back within 90 days of submitting your request, your account and data will
+                                be permanently deleted and can't be brought back.
+                            </p>
+
+                            <div th:if="${user!=null}" class="p-t-20 p-b-20">
+                                    <span>INFORMATION</span>
+                                <p class="text text-info">
+                                    You're logged in as: <span th:text="${user.username}"></span>
+                                </p>
+                                <form class="p-t-20 p-b-20" method="post" th:action="@{/users/delete-account}"
+                                      onclick="return confirm('Are you sure?')">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                            <div th:if="${user==null}" class="p-t-20 p-b-20">
+                                You need to <a th:href="@{/login}">login</a> to complete this action.
+                                <div class="p-t-20 p-b-20">
+                                    <a class="btn btn-danger" th:href="@{/login}">Login</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div th:if="${deleted}" class="card">
+                        <div class="card-title p-l-50 p-r-50 p-t-50">
+                            <span class="text title">Your request is being processed.</span>
+                        </div>
+                        <div class="card-content p-l-50 p-r-50 p-t-20 p-b-50">
+                            <p>
+                                You've successfully submitted your request and your data is scheduled to delete in 90
+                                days. If you change your mind, please re-login within that period to retain your account
+                                and data associated with that account.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Widgets -->
+        </div>
+    </div>
+</section>
+
+</body>
+
+</html>

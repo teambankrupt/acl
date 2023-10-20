@@ -32,6 +32,9 @@ class Route {
             const val WEB_USERS_UPDATE = "$ADMIN/users/{user_id}"
             const val WEB_TOGGLE_ENABLED = "$ADMIN/users/{user_id}/toggle-access"
 
+            const val WEB_REQUEST_DELETION = "/public/users/request-account-deletion"
+            const val WEB_DELETE_ACCOUNT = "/users/delete-account"
+
             // Users
             const val FIND_AVATAR_URL = "$API$VERSION/public/users/{username}/avatar"
             const val FIND_ME = "$API$VERSION/users/me"

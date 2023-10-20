@@ -1,11 +1,12 @@
 package com.example.acl.domains.users.controllers.web
 
-import com.example.common.utils.ExceptionUtil
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.RoleService
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.routing.Route
+import com.example.auth.config.security.SecurityContext
+import com.example.common.utils.ExceptionUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -62,6 +63,27 @@ class UserWebController @Autowired constructor(
                       @RequestParam("enable") enable: Boolean): String {
         this.userService.toggleAccess(userId, enable)
         return "redirect:${Route.V1.WEB_USERS_SEARCH_PAGE}"
+    }
+
+    /*
+    Delete User
+     */
+    @GetMapping(Route.V1.WEB_REQUEST_DELETION)
+    fun requestDeletionPage(
+        model: Model
+    ): String{
+        val user = SecurityContext.getCurrentUser()
+
+        model.addAttribute("deleted", false)
+        model.addAttribute("user", user)
+        return "material/fragments/users/delete-me"
+    }
+    @PostMapping(Route.V1.WEB_DELETE_ACCOUNT)
+    fun deleteAccount(
+        model: Model
+    ): String{
+        model.addAttribute("deleted", true)
+        return "material/fragments/users/delete-me"
     }
 
 }
