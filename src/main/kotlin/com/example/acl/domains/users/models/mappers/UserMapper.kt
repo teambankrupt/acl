@@ -70,6 +70,7 @@ class UserMapper @Autowired constructor(
             this.name = user.name
             this.username = user.username
             this.avatar = user.avatar
+            this.label = "${user.name.trim()} (${user.username})"
         }
     }
 
@@ -112,7 +113,7 @@ class UserMapper @Autowired constructor(
     }
 
     fun validate(user: User) {
-		val authMethod = AuthMethods.fromValue(this.authMethod)
+        val authMethod = AuthMethods.fromValue(this.authMethod)
         if (user.id == null) { // For new user
             if (this.userService.findByUsername(user.username).isPresent) throw AlreadyExistsException("User already exists with username: ${user.username}")
             if (authMethod == AuthMethods.PHONE) {
