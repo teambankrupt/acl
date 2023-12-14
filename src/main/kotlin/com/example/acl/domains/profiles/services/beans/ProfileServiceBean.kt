@@ -78,6 +78,7 @@ open class ProfileServiceBean @Autowired constructor(
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound(Constants.Swagger.PROFILE, id) }
             entity.isDeleted = true
             this.profileRepository.save(entity)
+            return
         }
         this.profileRepository.deleteById(id)
     }
