@@ -1,5 +1,6 @@
 package com.example.acl.domains.users.models.dtos;
 
+import com.example.acl.domains.users.models.enums.AuthMethods;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,6 +18,17 @@ public class TokenResponse {
     @ApiModelProperty(readOnly = true)
     @JsonProperty("token_validity_millis")
     private long tokenValidityMillis;
+
+    @JsonProperty("reg_method")
+    private AuthMethods regMethod;
+
+    public AuthMethods getRegMethod() {
+        return regMethod;
+    }
+
+    public void setRegMethod(AuthMethods regMethod) {
+        this.regMethod = regMethod;
+    }
 
     public String getUsername() {
         return username;

@@ -15,6 +15,7 @@ public class TokenMapper {
         response.setUsername(token.getUsername());
         response.setTokenValidityMillis(Integer.parseInt(tokenValidity));
         response.setTokenValidUntill(token.getTokenValidUntil());
+        response.setRegMethod(token.getRegistrationMethod());
         return response;
     }
 
