@@ -12,7 +12,7 @@ public class TokenMapper {
 
     public TokenResponse map(AcValidationToken token) {
         TokenResponse response = new TokenResponse();
-        response.setUsername(token.getUsername());
+        response.setIdentity(token.getUsername());
         response.setTokenValidityMillis(Integer.parseInt(tokenValidity));
         response.setTokenValidUntill(token.getTokenValidUntil());
         response.setRegMethod(token.getRegistrationMethod());

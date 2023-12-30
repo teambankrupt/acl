@@ -8,8 +8,8 @@ import java.time.Instant;
 
 public class TokenResponse {
     @ApiModelProperty(readOnly = true)
-    @JsonProperty("username")
-    private String username;
+    @JsonProperty("identity")
+    private String identity;
 
     @ApiModelProperty(readOnly = true)
     @JsonProperty("token_valid_until")
@@ -30,12 +30,12 @@ public class TokenResponse {
         this.regMethod = regMethod;
     }
 
-    public String getUsername() {
-        return username;
+    public String getIdentity() {
+        return identity;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     public Instant getTokenValidUntill() {
