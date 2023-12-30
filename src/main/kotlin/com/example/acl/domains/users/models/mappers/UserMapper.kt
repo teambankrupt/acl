@@ -126,9 +126,9 @@ class UserMapper @Autowired constructor(
                 if ((user.phone == null || user.phone.isEmpty()) && (user.email == null || user.email.isEmpty())) throw InvalidException(
                     "Email or phone can not be empty!"
                 )
-                if (user.phone.isNotEmpty())
+                if (user.phone != null && user.phone.isNotEmpty())
                     if (this.userService.findByPhone(user.phone).isPresent) throw AlreadyExistsException("User already exists with phone: ${user.phone}")
-                if (user.email.isNotEmpty())
+                if (user.email != null && user.email.isNotEmpty())
                     if (this.userService.findByEmail(user.email).isPresent) throw AlreadyExistsException("User already exists with email: ${user.email}")
             }
         }

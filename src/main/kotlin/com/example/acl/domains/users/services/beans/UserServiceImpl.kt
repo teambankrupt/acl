@@ -1,6 +1,7 @@
 package com.example.acl.domains.users.services.beans
 
 import com.example.acl.domains.home.models.CheckUsernameResponse
+import com.example.acl.domains.users.models.constants.otpTemplate
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.acl.domains.users.models.enums.AuthMethods
 import com.example.acl.domains.users.repositories.UserRepository
@@ -106,6 +107,7 @@ open class UserServiceImpl @Autowired constructor(
 
     }
 
+    @Transactional
     override fun register(token: String, user: User): User {
         if (!this.acValidationTokenService.isTokenValid(token))
             throw InvalidException("Token invalid!")
@@ -118,6 +120,7 @@ open class UserServiceImpl @Autowired constructor(
         val savedUser = this.save(user)
         acValidationToken.isTokenValid = false
         acValidationToken.reason = "Registration/Otp Confirmation"
+        acValidationToken.user = savedUser
         this.acValidationTokenService.save(acValidationToken)
         return savedUser
     }
@@ -125,12 +128,20 @@ open class UserServiceImpl @Autowired constructor(
 
     override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Instant): AcValidationToken {
         val authMethod = AuthMethods.fromValue(this.authMethod)
-        val isPhone = authMethod == AuthMethods.PHONE
+        val isPhone = when (authMethod) {
+            AuthMethods.PHONE -> true
+            AuthMethods.EMAIL -> false
+            AuthMethods.BOTH -> {
+                if (Validator.isValidPhoneNumber(this.originRegion, phoneOrEmail)) true
+                else if (Validator.isValidEmail(phoneOrEmail)) false
+                else throw InvalidException("Phone number: $phoneOrEmail is invalid!")
+            }
+        }
         this.validateIdentity(isPhone, phoneOrEmail)
 
         val user = if (isPhone) this.userRepository.findByPhone(phoneOrEmail)
         else this.userRepository.findByEmail(phoneOrEmail)
-        if (user.isPresent) throw UserAlreadyExistsException("User already registered with this ${authMethod}!")
+        if (user.isPresent) throw UserAlreadyExistsException("User already registered with ${phoneOrEmail}!")
 
         if (!this.acValidationTokenService.canGetOTP(phoneOrEmail)) {
             throw ExceptionUtil.alreadyExists(
@@ -144,7 +155,7 @@ open class UserServiceImpl @Autowired constructor(
         acValidationToken.username = phoneOrEmail
         acValidationToken.tokenValidUntil = tokenValidUntil
         acValidationToken.reason = "User Registration"
-        // save acvalidationtoken
+        acValidationToken.registrationMethod = if (isPhone) AuthMethods.PHONE else AuthMethods.EMAIL
         acValidationToken = this.acValidationTokenService.save(acValidationToken)
         val finalAcValidationToken = acValidationToken
         Thread {
@@ -164,9 +175,9 @@ open class UserServiceImpl @Autowired constructor(
         if (this.authMethod == "phone") this.smsService.sendSms(provider, phoneOrEmail, tokenMessage)
         else this.mailService.send(
             phoneOrEmail,
-            this.applicationName + " Registration",
-            tokenMessage,
-            false
+            this.applicationName + " OTP verification",
+            otpTemplate(this.applicationName, acValidationToken.token),
+            true
         )
         return acValidationToken
     }

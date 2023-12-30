@@ -1,6 +1,6 @@
 package com.example.acl.domains.users.models.enums
 
-enum class AuthMethods constructor(
+enum class AuthMethods(
 	val value: String
 ) {
 	PHONE("phone"),
@@ -9,7 +9,7 @@ enum class AuthMethods constructor(
 
 	companion object {
 		fun fromValue(value: String): AuthMethods {
-			return values().first { it.value == value }
+			return entries.first { it.value == value }
 		}
 	}
 }
