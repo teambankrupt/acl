@@ -47,22 +47,6 @@ class UserMapper @Autowired constructor(
         return user
     }
 
-    fun map(user: User): UserResponse {
-        val dto = UserResponse()
-        dto.id = user.id
-        dto.createdAt = user.createdAt
-        dto.updatedAt = user.updatedAt
-
-        dto.name = user.name
-        dto.gender = user.gender
-        dto.username = user.username
-        dto.phone = user.phone
-        dto.email = user.email
-        dto.roles = user.roles.stream().map { role -> role.id }.collect(Collectors.toList())
-        dto.avatar = user.avatar
-        return dto
-    }
-
     fun mapToSlice(user: User): UserSlice {
         val slice = UserSlice()
         return slice.apply {

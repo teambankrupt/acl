@@ -1,32 +1,43 @@
 package com.example.acl.domains.users.models.dtos
 
+import com.example.auth.entities.User
 import com.example.auth.enums.Genders
-import com.example.coreweb.domains.base.models.dtos.BaseDto
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.Instant
 
-class UserResponse : BaseDto() {
-    @NotBlank
-    lateinit var name: String
+data class UserResponse(
+    val id: Long = 0,
 
-    @NotBlank
-    @Size(min = 3)
-    lateinit var username: String
+    @JsonProperty("created_at")
+    val createdAt: Instant,
 
-    var phone: String? = null
+    @JsonProperty("updated_at")
+    val updatedAt: Instant? = null,
 
-    @Email
-    var email: String? = null
+    val name: String,
 
-    @NotBlank
-    lateinit var gender: Genders
+    val username: String,
 
-    lateinit var roles: List<Long>
+    var phone: String? = null,
 
-    /*
-    READONLY
-     */
+    var email: String? = null,
 
-    var avatar: String?=null
-}
+    val gender: Genders,
+
+    val roles: List<Long>,
+
+    var avatar: String? = null
+)
+
+fun User.toResponse(): UserResponse = UserResponse(
+    id = this.id,
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt,
+    name = this.name,
+    username = this.username,
+    phone = this.phone,
+    email = this.email,
+    gender = this.gender,
+    roles = this.roles.map { it.id },
+    avatar = this.avatar
+)

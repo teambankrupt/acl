@@ -64,5 +64,10 @@ class Route {
         Request Credentials / lockouts
          */
         const val ADMIN_GET_LOCKOUTS = "$API$VERSION$ADMIN/request-credentials/lockouts"
+
+        /*
+        Get validation tokens
+         */
+        const val ADMIN_GET_VALIDATION_TOKENS = "$API$VERSION$ADMIN/validation-tokens"
     }
 }

@@ -1,7 +1,7 @@
 package com.example.acl.domains.users.controllers
 
 import com.example.acl.domains.users.models.dtos.UserResponse
-import com.example.acl.domains.users.models.mappers.UserMapper
+import com.example.acl.domains.users.models.dtos.toResponse
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.routing.Route
 import com.example.auth.config.security.SecurityContext
@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.*
 @Api(tags = ["Users"])
 class UserController @Autowired constructor(
     private val userService: UserService,
-    private val userMapper: UserMapper
 ) {
 
     @GetMapping(Route.V1.FIND_ME)
     fun me(): ResponseEntity<UserResponse> {
         val auth = SecurityContext.getCurrentUser()
         val user = this.userService.find(auth.id).orElseThrow { ExceptionUtil.notFound(User::class.java, auth.id) }
-        return ResponseEntity.ok(this.userMapper.map(user))
+        return ResponseEntity.ok(user.toResponse())
     }
 
     @DeleteMapping(Route.V1.DELETE_ME)
@@ -43,7 +42,7 @@ class UserController @Autowired constructor(
             .orElseThrow { ExceptionUtil.notFound("User doesn't exist") }
         user.avatar = avatar
         user = this.userService.save(user)
-        return ResponseEntity.ok(this.userMapper.map(user))
+        return ResponseEntity.ok(user.toResponse())
     }
 
 }

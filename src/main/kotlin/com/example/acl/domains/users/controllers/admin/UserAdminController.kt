@@ -1,11 +1,12 @@
 package com.example.acl.domains.users.controllers.admin
 
-import com.example.coreweb.commons.Constants
+import com.example.acl.domains.users.models.dtos.toResponse
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.auth.config.security.TokenService
 import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.notfound.UserNotFoundException
+import com.example.coreweb.commons.Constants
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -33,14 +34,14 @@ class UserAdminController @Autowired constructor(
         return if (slice)
             ResponseEntity.ok(userPage.map { this.userMapper.mapToSlice(it) })
         else
-            ResponseEntity.ok(userPage.map { this.userMapper.map(it) })
+            ResponseEntity.ok(userPage.map { it.toResponse() })
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
         val user =
             this.userService.find(userId).orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
-        return ResponseEntity.ok(this.userMapper.map(user))
+        return ResponseEntity.ok(user.toResponse())
     }
 
 
@@ -53,7 +54,7 @@ class UserAdminController @Autowired constructor(
         user.isEnabled = enabled
         user = this.userService.save(user)
         this.tokenService.revokeAuthentication(UserAuth(user))
-        return ResponseEntity.ok(this.userMapper.map(user))
+        return ResponseEntity.ok(user.toResponse())
     }
 
     @PutMapping("/{id}/change_role")
@@ -62,7 +63,7 @@ class UserAdminController @Autowired constructor(
         @RequestParam("roles") roles: List<Long>
     ): ResponseEntity<*> {
         val user = this.userService.setRoles(id, roles)
-        return ResponseEntity.ok(this.userMapper.map(user))
+        return ResponseEntity.ok(user.toResponse())
     }
 
     @PatchMapping("/{id}/changePassword")
