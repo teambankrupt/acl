@@ -1,6 +1,6 @@
 package com.example.acl.domains.validationtokens.controllers
 
-import com.example.acl.domains.validationtokens.models.AcValidationTokenDto
+import com.example.acl.domains.validationtokens.models.AcValidationTokenResponse
 import com.example.acl.domains.validationtokens.models.toDto
 import com.example.acl.domains.validationtokens.services.AcValidationTokenServiceV2
 import com.example.acl.routing.Route
@@ -28,7 +28,7 @@ class AcValidationTokenController(
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
-    ): ResponseEntity<Page<AcValidationTokenDto>> = ResponseEntity.ok(
+    ): ResponseEntity<Page<AcValidationTokenResponse>> = ResponseEntity.ok(
         this.acValidationTokenService.search(
             fromDate = fromDate ?: Instant.EPOCH,
             toDate = toDate ?: Instant.now(),

@@ -7,25 +7,43 @@ import com.example.acl.domains.users.models.enums.AuthMethods
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 
-data class AcValidationTokenDto(
+data class AcValidationTokenResponse(
+    val id: Long,
+
+    @JsonProperty("created_at")
+    val createdAt: Instant,
+
+    @JsonProperty("updated_at")
+    val updatedAt: Instant?,
+
     val token: String,
+
     @JsonProperty("is_token_valid")
     val tokenValid: Boolean,
+
     @JsonProperty("token_valid_until")
     val tokenValidUntil: Instant,
+
     val user: UserResponse?,
+
     val reason: String,
-    val username: String,
+
+    @JsonProperty("identity")
+    val identity: String,
+
     @JsonProperty("registration_method")
     val registrationMethod: AuthMethods?
 )
 
-fun AcValidationToken.toDto() = AcValidationTokenDto(
+fun AcValidationToken.toDto() = AcValidationTokenResponse(
+    id = this.id,
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt,
     token = this.token,
     tokenValid = this.isTokenValid(),
     tokenValidUntil = this.tokenValidUntil,
     user = this.user?.toResponse(),
     reason = this.reason,
-    username = this.username,
+    identity = this.username,
     registrationMethod = this.registrationMethod
 )
