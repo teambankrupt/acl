@@ -12,7 +12,7 @@ import com.example.acl.routing.Route
 import com.example.auth.config.security.SecurityContext
 import com.example.auth.config.security.TokenService
 import com.example.auth.entities.UserAuth
-import com.example.common.misc.toHeaderMultiValueMap
+import com.example.common.utils.toHeaderMultiValueMap
 import com.example.coreweb.commons.Constants
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
