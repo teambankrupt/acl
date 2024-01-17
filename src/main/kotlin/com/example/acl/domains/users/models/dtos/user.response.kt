@@ -5,7 +5,7 @@ import com.example.auth.enums.Genders
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 
-data class UserResponse(
+data class UserBriefResponse(
     val id: Long = 0,
 
     @JsonProperty("created_at")
@@ -26,10 +26,12 @@ data class UserResponse(
 
     val roles: List<Long>,
 
-    var avatar: String? = null
+    val avatar: String? = null,
+
+    val label: String,
 )
 
-fun User.toResponse(): UserResponse = UserResponse(
+fun User.toResponse(): UserBriefResponse = UserBriefResponse(
     id = this.id,
     createdAt = this.createdAt,
     updatedAt = this.updatedAt,
@@ -39,5 +41,6 @@ fun User.toResponse(): UserResponse = UserResponse(
     email = this.email,
     gender = this.gender,
     roles = this.roles.map { it.id },
-    avatar = this.avatar
+    avatar = this.avatar,
+    label = "${this.name.trim()} (${this.username})",
 )

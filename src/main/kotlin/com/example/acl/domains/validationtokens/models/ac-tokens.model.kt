@@ -1,6 +1,6 @@
 package com.example.acl.domains.validationtokens.models
 
-import com.example.acl.domains.users.models.dtos.UserResponse
+import com.example.acl.domains.users.models.dtos.UserBriefResponse
 import com.example.acl.domains.users.models.dtos.toResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.acl.domains.users.models.enums.AuthMethods
@@ -24,7 +24,7 @@ data class AcValidationTokenResponse(
     @JsonProperty("token_valid_until")
     val tokenValidUntil: Instant,
 
-    val user: UserResponse?,
+    val user: UserBriefResponse?,
 
     val reason: String,
 

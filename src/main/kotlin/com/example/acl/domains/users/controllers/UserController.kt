@@ -1,6 +1,6 @@
 package com.example.acl.domains.users.controllers
 
-import com.example.acl.domains.users.models.dtos.UserResponse
+import com.example.acl.domains.users.models.dtos.UserBriefResponse
 import com.example.acl.domains.users.models.dtos.toResponse
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.routing.Route
@@ -20,14 +20,14 @@ class UserController @Autowired constructor(
 ) {
 
     @GetMapping(Route.V1.FIND_ME)
-    fun me(): ResponseEntity<UserResponse> {
+    fun me(): ResponseEntity<UserBriefResponse> {
         val auth = SecurityContext.getCurrentUser()
         val user = this.userService.find(auth.id).orElseThrow { ExceptionUtil.notFound(User::class.java, auth.id) }
         return ResponseEntity.ok(user.toResponse())
     }
 
     @DeleteMapping(Route.V1.DELETE_ME)
-    fun deleteMe(): ResponseEntity<UserResponse> {
+    fun deleteMe(): ResponseEntity<UserBriefResponse> {
         val auth = SecurityContext.getCurrentUser()
         val user = this.userService.find(auth.id).orElseThrow { ExceptionUtil.notFound(User::class.java, auth.id) }
         userService.delete(user.id, true)
@@ -35,7 +35,7 @@ class UserController @Autowired constructor(
     }
 
     @PatchMapping(Route.V1.UPDATE_AVATAR)
-    fun updateAvatar(@RequestParam("avatar") avatar: String): ResponseEntity<UserResponse> {
+    fun updateAvatar(@RequestParam("avatar") avatar: String): ResponseEntity<UserBriefResponse> {
         if (!Validator.isValidUrl(avatar)) return ResponseEntity.badRequest().build()
         val username = SecurityContext.getLoggedInUsername()
         var user = this.userService.findByUsername(username)

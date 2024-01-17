@@ -1,7 +1,6 @@
 package com.example.acl.domains.users.models.mappers
 
 import com.example.acl.domains.users.models.dtos.UserRequest
-import com.example.acl.domains.users.models.dtos.UserResponse
 import com.example.acl.domains.users.models.dtos.UserSlice
 import com.example.acl.domains.users.models.dtos.UserUpdateAdminDto
 import com.example.acl.domains.users.models.enums.AuthMethods
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
-import java.util.stream.Collectors
 
 @Component
 @PropertySource("classpath:security.properties")
