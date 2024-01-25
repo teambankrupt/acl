@@ -13,7 +13,7 @@ interface UserService {
     fun search(query: String, page: Int, size: Int): Page<User>
     fun find(id: Long): Optional<User>
     fun delete(id: Long, softDelete: Boolean)
-    fun search(query: String, role: String?, page: Int, size: Int): Page<User>
+    fun search(query: String?, role: String?, page: Int, size: Int): Page<User>
     fun findAll(page: Int): Page<User>
     fun findByRole(role: String, page: Int): Page<User>
     fun findByRole(role: String): List<User>

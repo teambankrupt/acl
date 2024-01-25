@@ -23,8 +23,8 @@ class UserAdminController @Autowired constructor(
 
     @GetMapping("")
     fun search(
-        @RequestParam("q", defaultValue = "") query: String,
-        @RequestParam(value = "role", defaultValue = "User") role: String,
+        @RequestParam("q", required = false) query: String?,
+        @RequestParam(value = "role", required = false) role: String?,
         @RequestParam(value = "page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("slice", defaultValue = "false") slice: Boolean

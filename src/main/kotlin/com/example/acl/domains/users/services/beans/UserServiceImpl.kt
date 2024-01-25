@@ -59,7 +59,7 @@ open class UserServiceImpl @Autowired constructor(
     @Value("\${app.origin.region}")
     lateinit var originRegion: String
 
-    override fun search(query: String, role: String?, page: Int, size: Int): Page<User> {
+    override fun search(query: String?, role: String?, page: Int, size: Int): Page<User> {
         val r = role?.let {
             this.roleService.find(it).orElseThrow { ExceptionUtil.notFound("Could not find role with name: $role") }
         }

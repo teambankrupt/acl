@@ -19,7 +19,7 @@ interface UserRepository : JpaRepository<User, Long> {
     fun search(@Param("q") query: String, pageable: Pageable): Page<User>
 
     @Query("SELECT u FROM User u WHERE (:q IS NULL OR (u.username LIKE %:q% OR u.name LIKE %:q%)) AND (:role IS NULL OR :role MEMBER OF u.roles) AND u.deleted=false")
-    fun search(@Param("q") query: String, @Param("role") role: Role?, pageable: Pageable): Page<User>
+    fun search(@Param("q") query: String?, @Param("role") role: Role?, pageable: Pageable): Page<User>
 
     @Query("SELECT u FROM User u WHERE u.id=:id AND u.deleted=false")
     fun find(@Param("id") id: Long): Optional<User>
