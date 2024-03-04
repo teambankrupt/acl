@@ -31,7 +31,7 @@ data class UserBriefResponse(
     val label: String,
 )
 
-fun User.toResponse(): UserBriefResponse = UserBriefResponse(
+fun User.toBriefResponse(): UserBriefResponse = UserBriefResponse(
     id = this.id,
     createdAt = this.createdAt,
     updatedAt = this.updatedAt,

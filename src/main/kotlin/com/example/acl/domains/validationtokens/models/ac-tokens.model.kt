@@ -1,7 +1,7 @@
 package com.example.acl.domains.validationtokens.models
 
 import com.example.acl.domains.users.models.dtos.UserBriefResponse
-import com.example.acl.domains.users.models.dtos.toResponse
+import com.example.acl.domains.users.models.dtos.toBriefResponse
 import com.example.acl.domains.users.models.entities.AcValidationToken
 import com.example.acl.domains.users.models.enums.AuthMethods
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -42,7 +42,7 @@ fun AcValidationToken.toDto() = AcValidationTokenResponse(
     token = this.token,
     tokenValid = this.isTokenValid(),
     tokenValidUntil = this.tokenValidUntil,
-    user = this.user?.toResponse(),
+    user = this.user?.toBriefResponse(),
     reason = this.reason,
     identity = this.username,
     registrationMethod = this.registrationMethod

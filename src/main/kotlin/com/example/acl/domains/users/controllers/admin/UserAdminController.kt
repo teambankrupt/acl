@@ -1,6 +1,6 @@
 package com.example.acl.domains.users.controllers.admin
 
-import com.example.acl.domains.users.models.dtos.toResponse
+import com.example.acl.domains.users.models.dtos.toBriefResponse
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.auth.config.security.TokenService
@@ -34,14 +34,14 @@ class UserAdminController @Autowired constructor(
         return if (slice)
             ResponseEntity.ok(userPage.map { this.userMapper.mapToSlice(it) })
         else
-            ResponseEntity.ok(userPage.map { it.toResponse() })
+            ResponseEntity.ok(userPage.map { it.toBriefResponse() })
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
         val user =
             this.userService.find(userId).orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
-        return ResponseEntity.ok(user.toResponse())
+        return ResponseEntity.ok(user.toBriefResponse())
     }
 
 
@@ -54,7 +54,7 @@ class UserAdminController @Autowired constructor(
         user.isEnabled = enabled
         user = this.userService.save(user)
         this.tokenService.revokeAuthentication(UserAuth(user))
-        return ResponseEntity.ok(user.toResponse())
+        return ResponseEntity.ok(user.toBriefResponse())
     }
 
     @PutMapping("/{id}/change_role")
@@ -63,7 +63,7 @@ class UserAdminController @Autowired constructor(
         @RequestParam("roles") roles: List<Long>
     ): ResponseEntity<*> {
         val user = this.userService.setRoles(id, roles)
-        return ResponseEntity.ok(user.toResponse())
+        return ResponseEntity.ok(user.toBriefResponse())
     }
 
     @PatchMapping("/{id}/changePassword")

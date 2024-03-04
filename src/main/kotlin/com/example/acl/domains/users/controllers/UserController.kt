@@ -1,7 +1,7 @@
 package com.example.acl.domains.users.controllers
 
 import com.example.acl.domains.users.models.dtos.UserBriefResponse
-import com.example.acl.domains.users.models.dtos.toResponse
+import com.example.acl.domains.users.models.dtos.toBriefResponse
 import com.example.acl.domains.users.services.UserService
 import com.example.acl.routing.Route
 import com.example.auth.config.security.SecurityContext
@@ -23,7 +23,7 @@ class UserController @Autowired constructor(
     fun me(): ResponseEntity<UserBriefResponse> {
         val auth = SecurityContext.getCurrentUser()
         val user = this.userService.find(auth.id).orElseThrow { ExceptionUtil.notFound(User::class.java, auth.id) }
-        return ResponseEntity.ok(user.toResponse())
+        return ResponseEntity.ok(user.toBriefResponse())
     }
 
     @DeleteMapping(Route.V1.DELETE_ME)
@@ -42,7 +42,7 @@ class UserController @Autowired constructor(
             .orElseThrow { ExceptionUtil.notFound("User doesn't exist") }
         user.avatar = avatar
         user = this.userService.save(user)
-        return ResponseEntity.ok(user.toResponse())
+        return ResponseEntity.ok(user.toBriefResponse())
     }
 
 }
