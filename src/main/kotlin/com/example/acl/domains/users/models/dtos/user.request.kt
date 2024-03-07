@@ -3,6 +3,7 @@ package com.example.acl.domains.users.models.dtos
 import com.example.auth.entities.Role
 import com.example.auth.entities.User
 import com.example.auth.enums.Genders
+import com.example.auth.utils.PasswordUtil
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.jetbrains.annotations.NotNull
 import javax.validation.constraints.Email
@@ -31,14 +32,14 @@ data class UserReq(
     @field:JsonProperty("role_names")
     val roleNames: Set<String>
 ) {
-    fun asUser(getRoles: (roleNames: Set<String>)-> List<Role>): User =
+    fun asUser(getRoles: (roleNames: Set<String>) -> List<Role>): User =
         this.let { req ->
             User().apply {
                 this.name = req.name
                 this.username = req.username
                 this.phone = req.phone
                 this.email = req.email
-                this.password = req.password
+                this.password = PasswordUtil.encryptPassword(req.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
                 this.gender = Genders.NOT_SPECIFIED
                 this.roles = getRoles(req.roleNames)
             }
