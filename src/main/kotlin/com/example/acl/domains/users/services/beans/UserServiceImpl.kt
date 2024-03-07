@@ -93,13 +93,13 @@ open class UserServiceImpl @Autowired constructor(
         if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
             throw ExceptionUtil.exists("User already exists with username: ${entity.username}")
 
-        if (entity.phone != null) {
+        if (entity.phone != null && entity.phone.isNotEmpty()) {
             user = this.findByPhone(entity.phone)
             if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
                 throw ExceptionUtil.exists("User already exists with phone: ${entity.phone}")
         }
 
-        if (entity.email != null) {
+        if (entity.email != null && entity.email.isNotEmpty()) {
             user = this.findByEmail(entity.email)
             if ((entity.isNew && user.isPresent) || (!entity.isNew && user.isPresent && user.get().id != entity.id))
                 throw ExceptionUtil.exists("User already exists with email: ${entity.email}")
