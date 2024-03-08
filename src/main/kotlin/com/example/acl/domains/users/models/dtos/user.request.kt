@@ -35,6 +35,8 @@ data class UserReq(
     fun asUser(getRoles: (roleNames: Set<String>) -> List<Role>): User =
         this.let { req ->
             User().apply {
+                this.avatar =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/100px-User-avatar.svg.png"
                 this.name = req.name
                 this.username = req.username
                 this.phone = req.phone
