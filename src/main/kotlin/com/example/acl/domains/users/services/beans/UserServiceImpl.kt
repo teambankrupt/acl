@@ -84,6 +84,12 @@ open class UserServiceImpl @Autowired constructor(
 
 
     override fun save(entity: User): User {
+        if (entity.phone != null && entity.phone.isEmpty()) {
+            entity.phone = null
+        }
+        if (entity.email != null && entity.email.isEmpty()) {
+            entity.email = null
+        }
         this.validate(entity)
         return this.userRepository.save(entity)
     }
