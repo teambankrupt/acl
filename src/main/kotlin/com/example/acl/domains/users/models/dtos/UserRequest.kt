@@ -31,4 +31,6 @@ class UserRequest : BaseDto() {
 
     @Size(max = 511)
     var avatar: String? = null
+
+    var timezone: String? = null
 }

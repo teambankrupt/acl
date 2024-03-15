@@ -14,6 +14,7 @@ import com.example.common.exceptions.invalid.InvalidException
 import com.example.common.exceptions.notfound.NotFoundException
 import com.example.common.utils.ExceptionUtil
 import com.example.common.utils.Validator
+import com.example.common.utils.isValidTimeZone
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.PropertySource
@@ -36,6 +37,7 @@ class UserMapper @Autowired constructor(
         user.username = dto.username
         user.avatar = dto.avatar
             ?: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/100px-User-avatar.svg.png"
+        user.timeZone = if (dto.timezone.isNullOrBlank() || !isValidTimeZone(dto.timezone!!)) "UTC" else dto.timezone
         user.password = PasswordUtil.encryptPassword(dto.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.email = dto.email
         val unrestrictedRole = this.roleService.findUnrestricted(dto.role)
