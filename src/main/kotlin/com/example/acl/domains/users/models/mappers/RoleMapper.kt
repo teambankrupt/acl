@@ -1,17 +1,16 @@
 package com.example.acl.domains.users.models.mappers
 
 import com.example.acl.domains.users.models.dtos.RoleDto
-import com.example.auth.entities.Role
 import com.example.acl.domains.users.services.PrivilegeService
+import com.example.auth.entities.Role
 import com.example.common.exceptions.notfound.NotFoundException
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class RoleMapper @Autowired constructor(
-        private val privilegeMapper: PrivilegeMapper,
-        private val privilegeService: PrivilegeService
+    private val privilegeMapper: PrivilegeMapper,
+    private val privilegeService: PrivilegeService,
 ) {
 
     fun map(entity: Role): RoleDto {
@@ -23,7 +22,9 @@ class RoleMapper @Autowired constructor(
         dto.name = entity.name
         dto.description = entity.description
         dto.restricted = entity.isRestricted
-        dto.privileges = entity.privileges?.map { privilege -> this.privilegeMapper.map(privilege) }
+        dto.privileges = entity.privileges?.map {
+            this.privilegeMapper.map(it, this.privilegeService.findAccesses(it.id))
+        }
         return dto
     }
 
@@ -35,7 +36,7 @@ class RoleMapper @Autowired constructor(
         role.isRestricted = dto.restricted
         role.privileges = dto.privilegeIds.map { privilegeId ->
             this.privilegeService.find(privilegeId)
-                    .orElseThrow { NotFoundException("Could not find privilege with id: $privilegeId") }
+                .orElseThrow { NotFoundException("Could not find privilege with id: $privilegeId") }
         }
         return role
     }

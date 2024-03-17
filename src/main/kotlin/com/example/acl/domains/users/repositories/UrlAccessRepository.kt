@@ -12,4 +12,7 @@ interface UrlAccessRepository : JpaRepository<UrlAccess, Long> {
     @Modifying
     @Query("DELETE FROM UrlAccess u WHERE u.privilege.id=:privilegeId")
     fun deleteByPrivilegeId(@Param("privilegeId") privilegeId: Long)
+
+    @Query("SELECT u FROM UrlAccess u WHERE u.privilege.id=:privilegeId")
+    fun findByPrivilege(@Param("privilegeId") privilegeId: Long): List<UrlAccess>
 }

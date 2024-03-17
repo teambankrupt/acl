@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class PrivilegeMapper {
 
-    fun map(privilege: Privilege): PrivilegeDto {
+    fun map(privilege: Privilege, accesses: List<UrlAccess>): PrivilegeDto {
         val dto = PrivilegeDto()
         dto.id = privilege.id
         dto.createdAt = privilege.createdAt
@@ -19,19 +19,19 @@ class PrivilegeMapper {
         dto.name = privilege.name
         dto.description = privilege.description
 
-        dto.urlsAllAccess = privilege.urlAccesses
+        dto.urlsAllAccess = accesses
                 .filter { it.accessLevel==AccessLevels.ALL }
                 .map { it.url }
-        dto.urlsReadAccess = privilege.urlAccesses
+        dto.urlsReadAccess = accesses
                 .filter { it.accessLevel==AccessLevels.READ }
                 .map { it.url }
-        dto.urlsCreateAccess = privilege.urlAccesses
+        dto.urlsCreateAccess = accesses
                 .filter { it.accessLevel==AccessLevels.CREATE }
                 .map { it.url }
-        dto.urlsUpdateAccess = privilege.urlAccesses
+        dto.urlsUpdateAccess = accesses
                 .filter { it.accessLevel==AccessLevels.UPDATE }
                 .map { it.url }
-        dto.urlsDeleteAccess = privilege.urlAccesses
+        dto.urlsDeleteAccess = accesses
                 .filter { it.accessLevel==AccessLevels.DELETE }
                 .map { it.url }
         return dto

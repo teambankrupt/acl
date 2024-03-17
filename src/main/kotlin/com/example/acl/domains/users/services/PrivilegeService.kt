@@ -1,6 +1,7 @@
 package com.example.acl.domains.users.services
 
 import com.example.auth.entities.Privilege
+import com.example.auth.entities.UrlAccess
 import org.springframework.data.domain.Page
 import java.util.*
 
@@ -15,4 +16,6 @@ interface PrivilegeService {
     fun empty(): Boolean
 
     fun findAll(): List<Privilege>
+
+    fun findAccesses(privilegeId: Long): List<UrlAccess>
 }

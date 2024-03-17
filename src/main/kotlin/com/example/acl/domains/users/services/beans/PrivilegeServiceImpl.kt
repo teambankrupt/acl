@@ -1,13 +1,13 @@
 package com.example.acl.domains.users.services.beans
 
-import com.example.coreweb.utils.PageAttr
-import com.example.common.utils.ExceptionUtil
-import com.example.auth.entities.Privilege
 import com.example.acl.domains.users.repositories.PrivilegeRepository
 import com.example.acl.domains.users.repositories.UrlAccessRepository
 import com.example.acl.domains.users.services.PrivilegeService
+import com.example.auth.entities.Privilege
 import com.example.auth.entities.UrlAccess
 import com.example.common.exceptions.exists.AlreadyExistsException
+import com.example.common.utils.ExceptionUtil
+import com.example.coreweb.utils.PageAttr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
@@ -16,8 +16,8 @@ import java.util.*
 
 @Service
 open class PrivilegeServiceImpl @Autowired constructor(
-        private val privilegeRepo: PrivilegeRepository,
-        private val urlAccessRepository: UrlAccessRepository
+    private val privilegeRepo: PrivilegeRepository,
+    private val urlAccessRepository: UrlAccessRepository
 ) : PrivilegeService {
 
     override fun empty(): Boolean {
@@ -28,6 +28,9 @@ open class PrivilegeServiceImpl @Autowired constructor(
         return this.privilegeRepo.findAll()
     }
 
+    override fun findAccesses(privilegeId: Long): List<UrlAccess> =
+        this.urlAccessRepository.findByPrivilege(privilegeId)
+
     override fun find(name: String): Optional<Privilege> {
         return this.privilegeRepo.find(name)
     }
@@ -37,7 +40,8 @@ open class PrivilegeServiceImpl @Autowired constructor(
         // When creating new privilege check if already exists with same name
         if (entity.id == null) {
             if (this.privilegeRepo.existsByName(entity.name)
-                    || this.privilegeRepo.existsByLabel(entity.label))
+                || this.privilegeRepo.existsByLabel(entity.label)
+            )
                 throw AlreadyExistsException("Privilege with same name or label already exists!")
         }
         val privilege = this.privilegeRepo.save(entity)
