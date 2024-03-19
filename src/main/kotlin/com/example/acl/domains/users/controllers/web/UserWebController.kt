@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import java.time.ZoneId
 import javax.validation.Valid
 
 @Controller
@@ -42,6 +43,7 @@ class UserWebController @Autowired constructor(
                     model: Model): String {
         val user = this.userService.find(id).orElseThrow { ExceptionUtil.notFound("User", id) }
 
+        model.addAttribute("timeZones", ZoneId.getAvailableZoneIds().sorted())
         model.addAttribute("query", query)
         model.addAttribute("user", user)
         model.addAttribute("users", this.userService.search(query, role, page, size))

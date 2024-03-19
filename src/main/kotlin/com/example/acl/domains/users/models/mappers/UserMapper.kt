@@ -66,6 +66,7 @@ class UserMapper @Autowired constructor(
             phone = dto.phone
             username = dto.username
             avatar = dto.avatar
+            timeZone = if (dto.timeZone.isNullOrBlank() || !isValidTimeZone(dto.timeZone!!)) "UTC" else dto.timeZone
 
             if (dto.password.isNotBlank()) {
                 if (dto.password.length < 6) throw ExceptionUtil.forbidden("Invalid password length!")

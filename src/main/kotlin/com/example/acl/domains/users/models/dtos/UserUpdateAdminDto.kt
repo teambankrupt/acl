@@ -14,6 +14,8 @@ class UserUpdateAdminDto : BaseDto() {
 
     var phone: String? = null
 
+    var timeZone: String? = null
+
     @Email
     var email: String? = null
 
