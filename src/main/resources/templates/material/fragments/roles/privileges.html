@@ -35,7 +35,7 @@
                     <ul class="list-group">
                         <a th:each="privilege: ${privileges}" th:href="@{/admin/privileges/}+${privilege.id}"
                            class="list-group-item"
-                           th:classappend="${selectedPrivilege!=null && privilege.id==selectedPrivilege.id?'active':''}">
+                           th:classappend="${selectedPrivilege!=null && privilege.id==selectedPrivilege?.id?'active':''}">
                             <h5 class="list-group-item-heading">
                                 <small class="badge bg-pink pull-left" style="font-size: 10px;"
                                        th:text="${privilege.name}">ADMINISTRATION</small><br/>
@@ -121,7 +121,7 @@
                                 </label>
                                 <textarea id="urlsAllAccess" name="urlsAllAccess" class="form-control" rows="5"
                                           placeholder="Enter access urls"
-                                          th:text="${selectedPrivilege?.accessesStr(selectedPrivilege.getUrlAccesses(),'ALL')}">
+                                          th:text="${selectedPrivilege?.accessesStr(selectedPrivilege?.getUrlAccesses(),'ALL')}">
                                 </textarea>
                             </div>
                         </div>
@@ -136,7 +136,7 @@
                                       style="margin-bottom: 0;">
                                     <input type="checkbox" name="urlsReadAccess" th:id="${'md_checkbox_read'+endpoint}"
                                            class="chk-col-green"
-                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege.getUrlAccesses(),'READ',endpoint)}"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege?.getUrlAccesses(),'READ',endpoint)}"
                                            th:value="${endpoint}"/>
                                     <label th:for="${'md_checkbox_read'+endpoint}"><small
                                             th:text="${endpoint}"></small></label>
@@ -153,7 +153,7 @@
                                     <input type="checkbox" name="urlsCreateAccess"
                                            th:id="${'md_checkbox_create'+endpoint}"
                                            class="chk-col-green"
-                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege.getUrlAccesses(),'CREATE',endpoint)}"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege?.getUrlAccesses(),'CREATE',endpoint)}"
                                            th:value="${endpoint}"/>
                                     <label th:for="${'md_checkbox_create'+endpoint}"><small
                                             th:text="${endpoint}"></small></label>
@@ -170,7 +170,7 @@
                                     <input type="checkbox" name="urlsUpdateAccess"
                                            th:id="${'md_checkbox_update'+endpoint}"
                                            class="chk-col-green"
-                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege.getUrlAccesses(),'UPDATE',endpoint)}"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege?.getUrlAccesses(),'UPDATE',endpoint)}"
                                            th:value="${endpoint}"/>
                                     <label th:for="${'md_checkbox_update'+endpoint}"><small
                                             th:text="${endpoint}"></small></label>
@@ -187,7 +187,7 @@
                                     <input type="checkbox" name="urlsDeleteAccess"
                                            th:id="${'md_checkbox_delete'+endpoint}"
                                            class="chk-col-green"
-                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege.getUrlAccesses(),'DELETE',endpoint)}"
+                                           th:checked="${selectedPrivilege?.containsAccessUrl(selectedPrivilege?.getUrlAccesses(),'DELETE',endpoint)}"
                                            th:value="${endpoint}"/>
                                     <label th:for="${'md_checkbox_delete'+endpoint}"><small
                                             th:text="${endpoint}"></small></label>
