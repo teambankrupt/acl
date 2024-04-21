@@ -8,10 +8,10 @@ import java.time.Instant
 data class UserBriefResponse(
     val id: Long = 0,
 
-    @JsonProperty("created_at")
+    @field:JsonProperty("created_at")
     val createdAt: Instant,
 
-    @JsonProperty("updated_at")
+    @field:JsonProperty("updated_at")
     val updatedAt: Instant? = null,
 
     val name: String,
