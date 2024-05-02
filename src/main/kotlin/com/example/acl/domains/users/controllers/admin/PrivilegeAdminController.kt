@@ -55,8 +55,8 @@ class PrivilegeAdminController @Autowired constructor(
         @PathVariable id: Long,
         @RequestBody dto: PrivilegeDto
     ): ResponseEntity<PrivilegeDto> {
-        var privilege =
-            this.privilegeService.find(id).orElseThrow { NotFoundException("Could not find privilege with id: $id") }
+        var privilege = this.privilegeService.find(id)
+            .orElseThrow { NotFoundException("Could not find privilege with id: $id") }
         privilege = this.privilegeService.save(this.privilegeMapper.map(dto, privilege))
         fun accesses(privilegeId: Long) = this.privilegeService.findAccesses(privilegeId)
         return ResponseEntity.ok(this.privilegeMapper.map(privilege, accesses(privilege.id)))

@@ -1,6 +1,7 @@
 package com.example.acl.domains.users.controllers.admin
 
 import com.example.acl.domains.users.models.dtos.toBriefResponse
+import com.example.acl.domains.users.models.dtos.toDetailResponse
 import com.example.acl.domains.users.models.mappers.UserMapper
 import com.example.acl.domains.users.services.UserService
 import com.example.auth.config.security.TokenService
@@ -39,9 +40,9 @@ class UserAdminController @Autowired constructor(
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
-        val user =
-            this.userService.find(userId).orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
-        return ResponseEntity.ok(user.toBriefResponse())
+        val user = this.userService.find(userId)
+            .orElseThrow { UserNotFoundException("Could not find user with id: $userId") }
+        return ResponseEntity.ok(user.toDetailResponse())
     }
 
 
