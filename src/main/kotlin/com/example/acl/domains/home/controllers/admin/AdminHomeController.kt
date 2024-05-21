@@ -9,16 +9,16 @@ import springfox.documentation.annotations.ApiIgnore
 @ApiIgnore
 class AdminHomeController {
 
-//    @GetMapping("/login")
-//    fun loginPage(): String {
-//        if (SecurityContext.isAuthenticated())
-//            return "redirect:/admin/dashboard"
-//        return "material/pages/login"
-//    }
-//
-//    @GetMapping("/admin/dashboard")
-//    fun dashboard(): String {
-//        return "material/fragments/dashboard/dashboard"
-//    }
+    @GetMapping("/login")
+    fun loginPage(): String {
+        if (SecurityContext.isAuthenticated())
+            return "redirect:/admin/dashboard"
+        return "material/pages/login"
+    }
+
+    @GetMapping("/admin/dashboard")
+    fun dashboard(): String {
+        return "material/fragments/dashboard/dashboard"
+    }
 
 }

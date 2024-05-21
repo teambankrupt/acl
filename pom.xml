@@ -19,7 +19,7 @@
         <java.version>1.8</java.version>
         <kotlin.version>1.5.0</kotlin.version>
         <flyway.version>5.2.4</flyway.version>
-        <vaadin.version>21.0.9</vaadin.version>
+        <vaadin.version>24.1.5</vaadin.version>
     </properties>
 
     <profiles>
@@ -100,12 +100,12 @@
         <dependency>
             <groupId>com.vaadin.componentfactory</groupId>
             <artifactId>autocomplete</artifactId>
-            <version>2.3.2</version>
+            <version>${vaadin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.appreciated</groupId>
             <artifactId>apexcharts</artifactId>
-            <version>2.0.0-beta13</version>
+            <version>23.0.1</version>
         </dependency>
 
         <dependency>
@@ -123,28 +123,28 @@
         </dependency>
         <!--END PRIMARY-->
 
-        <!--TEMPLATES-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+<!--        &lt;!&ndash;TEMPLATES&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>nz.net.ultraq.thymeleaf</groupId>
-            <artifactId>thymeleaf-layout-dialect</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>nz.net.ultraq.thymeleaf</groupId>-->
+<!--            <artifactId>thymeleaf-layout-dialect</artifactId>-->
+<!--        </dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity4 -->
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-            <version>3.0.4.RELEASE</version>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity4 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.thymeleaf.extras</groupId>-->
+<!--            <artifactId>thymeleaf-extras-springsecurity4</artifactId>-->
+<!--            <version>3.0.4.RELEASE</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.sourceforge.nekohtml</groupId>-->
+<!--            <artifactId>nekohtml</artifactId>-->
+<!--        </dependency>-->
 
 
         <!--DEV DEPENDENCIES-->
